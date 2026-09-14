@@ -1,11 +1,11 @@
-<meta charset="UTF-8">
+﻿<meta charset="UTF-8">
 <title>GTS 현장 기반 UX 제안</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css">
 <style>
 :root {
-  --r-heading-font: 'Segoe UI', sans-serif;
-  --r-main-font: 'Segoe UI', sans-serif;
+  --r-heading-font: 'Segoe UI';
+  --r-main-font: 'Segoe UI';
   --r-heading-color: #1a1a2e;
   --primary: #1a73e8;
   --danger: #d93025;
@@ -14,8 +14,8 @@
   --orange: #e65100;
   --dark: #0d1b2a;
 }
-.reveal { font-family: 'Segoe UI', sans-serif; }
-.reveal h1, .reveal h2, .reveal h3 { font-family: 'Segoe UI', sans-serif; font-weight: 800; }
+.reveal { font-family: 'Segoe UI'; }
+.reveal h1, .reveal h2, .reveal h3 { font-family: 'Segoe UI'; font-weight: 800; }
 .reveal .slides { text-align: left; }
 .reveal .slides section { padding: 40px 180px 40px 60px; }
 
@@ -163,23 +163,7 @@
 .gui-overview-table tr:nth-child(even) { background: #f8f9fa; }
 .gui-overview-table .cat { font-weight: 700; color: var(--primary); white-space: nowrap; }
 
-/* Green triangle decoration (matching renewalAOI style) */
 .deco-slide { position: relative; overflow: hidden; }
-.deco-slide::after {
-  content: '';
-  position: absolute;
-  right: 0; bottom: 0;
-  width: 120px; height: 120px;
-  background: linear-gradient(135deg, transparent 50%, rgba(30,142,62,0.12) 50%);
-}
-.deco-slide::before {
-  content: '';
-  position: absolute;
-  right: 30px; bottom: 30px;
-  width: 80px; height: 80px;
-  background: linear-gradient(135deg, transparent 50%, rgba(30,142,62,0.08) 50%);
-  z-index: 1;
-}
 
 /* Page number styling */
 .reveal .slide-number { font-family: 'Pretendard', 'Malgun Gothic', '맑은 고딕', sans-serif; font-size: 14px; font-weight: 700; color: #999; }
@@ -255,61 +239,7 @@
 <div class="reveal">
   <div class="slides">
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     
     
@@ -328,16 +258,16 @@
       </div>
     </section>
 
-    <section class="deco-slide" style="" data-index-h="1">
-      <h2 style="font-size: 40px !important; color: var(--dark);">GTS 파견에서 배운 것</h2>
+    <section class="deco-slide" style="padding: 40px 50px;" data-index-h="1">
+      <h2 style="font-size:32px;color:var(--dark);margin:0 0 16px;font-weight:700 !important;">GTS 파견에서 배운 것</h2>
       <div class="exp-grid">
         <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
           <div class="num">1</div>
-          <div><div class="label">장비 설치·셋업·운용</div><div class="value">장비 Installation·Leveling·Calibration부터 기동 및 기본 운용까지 실습</div></div>
+          <div><div class="label">장비 설치·셋업·운용</div><div class="value" style="position: relative; left: 0px; top: 0px;">장비 Installation·Leveling·Calibration 및 기본 운용 실습</div></div>
         </div>
         <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
           <div class="num">2</div>
-          <div><div class="label">JOB Programming</div><div class="value">ePM 기반 KYJOB 생성부터 Component 추가 및 검사조건 설정까지 전 과정 실습</div></div>
+          <div><div class="label">JOB Programming</div><div class="value" style="position: relative;">ePM 기반 KYJOB 생성, Component 추가 및 검사조건 설정 전 과정 실습</div></div>
         </div>
         <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
           <div class="num">3</div>
@@ -345,7 +275,7 @@
         </div>
         <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
           <div class="num">4</div>
-          <div><div class="label">GTS 업무 이해 및 고객 분석</div><div class="value">GTS 기술지원 Process 경험 및 CRM 6,769건 + Service Report 3,750건 기반 Pain Point 분석</div></div>
+          <div><div class="label">GTS 업무 이해 및 고객 분석</div><div class="value" style="position: relative;">GTS 기술지원 Process 및 CRM 6,769건 + Service Report 3,750건 기반 Pain Point 분석</div></div>
         </div>
         <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
           <div class="num">5</div>
@@ -356,26 +286,34 @@
 
     <section class="deco-slide" style="padding: 40px 50px;" data-index-h="2">
 
-      <h2 style="font-size: 32px; color: var(--dark); margin: 0px 0px 16px; position: relative; left: -25.1428px; top: 4.7619e-07px; font-weight: 700 !important; ">CRM Case Analysis &amp; TS Service Blueprint Design</h2>
+      <h2 style="font-size:32px;color:var(--dark);margin:0 0 16px;font-weight:700 !important;">CRM Case Analysis 기반 TS Service Blueprint 구축</h2>
       <div style="display:flex;gap:24px;align-items:flex-start;justify-content:center;">
         <div style="flex:0 0 auto;text-align:center;">
-          <img src="crmReport.png" alt="CRM 케이스 분석 종합 리포트" style="max-height: 58vh; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; position: relative; left: -1.52388px; top: -8.38093px; width: 352px !important; height: 502px !important;">
-          <p style="font-size: 12px; color: rgb(136, 136, 136); margin: 8px 0px 0px; font-weight: 600; position: relative; left: 22.0952px; top: -21.3333px;">CRM CASE 분석</p>
+          <img src="crmReport.png" alt="CRM 케이스 분석 종합 리포트" style="max-height: 58vh; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; position: relative; left: 11.4285px; top: -8.38093px; width: 352px !important; height: 502px !important;">
+          <p style="font-size: 12px; color: rgb(136, 136, 136); margin: 8px 0px 0px; font-weight: 600; position: relative; left: -1.52387px; top: -21.3333px;">CRM CASE ANALYSIS</p>
         </div>
         <div style="flex:0 0 auto;text-align:center;">
-          <img src="BluePrint.png" alt="GTS Service Blueprint" style="max-height: 58vh; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; width: 943px !important; height: 506px !important; top: -11.2381px; text-align: left !important; position: relative; left: -45.7144px;">
-          <p style="font-size: 12px; color: rgb(136, 136, 136); margin: 8px 0px 0px; font-weight: 600; position: relative; left: 28.9524px; top: -24.381px;">TS Service Blueprint</p>
+          <img src="BluePrint.png" alt="GTS Service Blueprint" style="max-height: 58vh; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; top: -11.2381px; position: relative; left: -40.3811px; width: 943px !important; height: 506px !important; text-align: left !important;">
+          <p style="font-size: 12px; color: rgb(136, 136, 136); margin: 8px 0px 0px; font-weight: 600; position: relative; left: -44.9524px; top: -24.381px;">TS Service Blueprint</p>
         </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 50px;">
+      
+      <h2 style="font-size:32px;color:var(--dark);margin:0 0 16px;font-weight:700 !important;">고객 여정 전반의 행동·접점·감정·Pain Point를 분석</h2>
+      <div style="text-align: center; width: 1280px !important; height: 625px !important;">
+        <img src="journymap.png" alt="Customer Journey Map" style="max-height: 62vh; max-width: 100%; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; width: 1150px !important; height: 454px !important; position: relative; left: -70.8574px; top: -12.9523px;">
       </div>
     </section>
 
     <section style="padding: 0px !important; background: linear-gradient(135deg, rgb(13, 27, 42) 0%, rgb(27, 45, 79) 50%, rgb(13, 27, 42) 100%) !important; align-items: center !important; justify-content: center !important; min-height: 720px !important; height: 100% !important; box-sizing: border-box !important;">
       <div style="text-align:center;max-width:1100px;margin:0 auto;padding:60px 60px;">
         <p style="font-size:14px;font-weight:700;color:#4dabf7;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px;">Core Strategy</p>
-        <h2 style="font-size:32px;font-weight:700;color:#fff;margin:0 0 50px;line-height:1.4;">교육·실습, CRM 데이터, 현장 경험을 기반으로 한 3가지 핵심 전략</h2>
-        <div style="display:flex;gap:60px;justify-content:center;align-items:flex-start;">
+        <h2 style="font-size: 32px; font-weight: 700; color: rgb(255, 255, 255); margin: 0px 0px 50px; line-height: 1.4; position: relative; left: -0.810127px; top: 0.810127px;">교육·실습, CRM 데이터, 현장 경험을&nbsp;<div>기반으로 3가지 핵심 전략</div></h2>
+        <div style="display: flex; gap: 60px; justify-content: center; align-items: flex-start; position: relative;">
           <!-- 1. Self-Resolution -->
-          <div style="flex:1;text-align:center;max-width:300px;">
+          <div style="flex: 1 1 0%; text-align: center; max-width: 300px; position: relative;">
             <div style="width:140px;height:140px;border-radius:50%;background:var(--primary);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;">
               <svg viewBox="0 0 64 64" width="70" height="70" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="28" cy="28" r="14"></circle><line x1="38" y1="38" x2="52" y2="52"></line><path d="M22 28h12M28 22v12" stroke-width="2"></path></svg>
             </div>
@@ -387,7 +325,7 @@
             </ul>
           </div>
           <!-- 2. AOI Programming -->
-          <div style="flex:1;text-align:center;max-width:300px;">
+          <div style="flex: 1 1 0%; text-align: center; max-width: 300px; position: relative;">
             <div style="width:140px;height:140px;border-radius:50%;background:var(--primary);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;">
               <svg viewBox="0 0 64 64" width="70" height="70" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="8" width="36" height="28" rx="3"></rect><line x1="14" y1="16" x2="50" y2="16"></line><circle cx="18" cy="12" r="1.5" fill="#fff" stroke="none"></circle><circle cx="23" cy="12" r="1.5" fill="#fff" stroke="none"></circle><path d="M22 26l4-4 4 4M34 22l4 4 4-4"></path><line x1="24" y1="42" x2="40" y2="42"></line><line x1="20" y1="48" x2="44" y2="48"></line><line x1="28" y1="36" x2="36" y2="36"></line></svg>
             </div>
@@ -416,22 +354,22 @@
 
     <section class="deco-slide" style="" data-index-h="4">
       <p style="font-size: 14px; font-weight: 700; color: var(--primary); margin: 0px 0px 4px; position: relative; left: 1.52381px; top: 8.38095px;">기획 아이템 1</p>
-      <h2 style="font-size: 36px; color: var(--dark); margin: 0px 0px 20px; font-weight: 700 !important;">Field AI</h2>
+      <h2 style="font-size: 36px; color: var(--dark); margin: 0px 0px 20px; font-weight: 700 !important; position: relative;">Field AI</h2>
       <p style="font-size: 18px; color: rgb(51, 51, 51); margin: 0px 0px 24px; position: relative; left: 3.80952px; top: 6.09526px; font-weight: 400 !important;">기획 배경 _ 현장 Setup &amp; Troubleshooting의 문제</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;align-items:stretch;justify-content:start;max-width:1040px;">
         <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
-          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">복잡한 현장 환경</p>
-          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; font-size: 15px !important; position: relative; left: 0px; top: 9.90476px;">장비·라인·공장별로 설비 구성과 환경이 달라, 상황에 따라 필요한 설정과 확인 항목이 달라짐</p>
-          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">상황별 설정 편차</div>
+          <p style="font-weight: 700; margin: 0px 0px 10px; font-size: 17px !important; color: rgb(0, 0, 0) !important; position: relative; left: -0.810127px; top: 0px;">다양한 현장 환경</p>
+          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px; font-size: 15px !important;">연동 장비와 고객 옵션에 따른 셋팅 다양화,<br><span data-teams="true">연동장비 maker 별 통신 설정 및 고객 현장 특수성 및 적용 Option에 따른 Detail 설정 필요</span></p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0px; font-size: 16px !important; font-weight: 700 !important; position: relative;">환경별 대응 편차</div>
         </div>
         <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
-          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">분산된 정보와 Context</p>
-          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; font-size: 15px !important; position: relative; left: 0px; top: 9.90476px;">설정값, 장비 상태, 네트워크, 과거 Issue 등 문제 해결에 필요한 정보가 여러 곳에 분산</p>
-          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">정보 접근 비효율</div>
+          <p style="font-weight: 700; margin: 0px 0px 10px; font-size: 17px !important; color: rgb(0, 0, 0) !important; position: relative;">분산된 설정 정보</p>
+          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px; font-size: 15px !important;"><span data-teams="true" style="position: relative; width: 316px !important; height: 92px !important;">장비와 고객 환경에 따라 설정 항목과 방법이 <br>다르고,&nbsp;여러 APP과 설정 화면을 오가며<br>각각의 항목을&nbsp;개별적으로 설정해야 함</span></p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0px; font-size: 16px !important; font-weight: 700 !important; position: relative; left: -0.810127px; top: -0.810127px;">복잡한 설정 과정</div>
         </div>
         <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
-          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">높은 숙련도 의존성</p>
-          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; font-size: 15px !important; position: relative; left: 0px; top: 9.90476px;">경험이 부족할수록 설정 변경과 시행착오를 반복하고, 결국 숙련된 Engineer의 경험에 의존</p>
+          <p style="font-weight: 700; margin: 0px 0px 10px; font-size: 17px !important; color: rgb(0, 0, 0) !important; position: relative;">엔지니어 경험 의존</p>
+          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px; font-size: 15px !important;"><span data-teams="true" style="position: relative; left: -0.810126px; top: 0.81013px;">Setup 및 Troubleshooting에 필요한 <br>Know-how가 경험과&nbsp;숙련도에 의존&nbsp;&nbsp;</span></p>
           <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">경험 의존 구조</div>
         </div>
       </div>
@@ -773,26 +711,34 @@
 
     <section class="deco-slide" style="" data-index-h="25">
       <h2 style="font-size:1.4em;color:var(--dark)">GTS 파견 산출물</h2>
-      <p class="small">현장 경험에서 도출한 분석 리포트, 기획서, 프로토타입 — 5개 산출물</p>
+      <p class="small">현장 경험에서 도출한 분석 리포트, 기획서, 프로토타입 — 7개 산출물</p>
       <div class="output-grid">
-        <div class="output-item">
+        <div class="output-item" onclick="window.open('file:///D:/Project/CRM_Project/LINK/CRM_UX_Analysis_Report.html','_blank')" style="cursor:pointer;">
           <div class="num green">1</div>
           <div><div class="name">CRM 케이스 분석 종합 리포트 <span class="built-badge">완성</span></div><div class="desc">UX/기획팀 사용성 개선 우선순위 도출</div></div>
         </div>
-        <div class="output-item">
+        <div class="output-item" onclick="window.open('https://kimieseul.github.io/gts-blueprint-journey/','_blank')" style="cursor:pointer;">
           <div class="num green">2</div>
+          <div><div class="name">TS Service Blueprint <span class="built-badge">완성</span></div><div class="desc">고객 이슈 발생~해결 AS-IS/TO-BE 프로세스 설계</div></div>
+        </div>
+        <div class="output-item" onclick="window.open('https://kimieseul.github.io/gts-blueprint-journey/','_blank')" style="cursor:pointer;">
+          <div class="num green">3</div>
+          <div><div class="name">Customer Journey Map <span class="built-badge">완성</span></div><div class="desc">고객 여정 행동·접점·감정·Pain Point 분석</div></div>
+        </div>
+        <div class="output-item" onclick="window.open('http://127.0.0.1:8790/#install:AOI','_blank')" style="cursor:pointer;">
+          <div class="num green">4</div>
           <div><div class="name">Field AI <span class="built-badge">프로토타입</span></div><div class="desc">CRM 13.8만건 AI 검색 답변</div></div>
         </div>
-        <div class="output-item">
-          <div class="num green">3</div>
+        <div class="output-item" onclick="window.open('https://kimieseul.github.io/gts-error-catalog/','_blank')" style="cursor:pointer;">
+          <div class="num green">5</div>
           <div><div class="name">Error Message Catalog + 인앱 트러블슈팅 <span class="built-badge">완성</span></div><div class="desc">에러 메시지 개선 + 단계별 해결 가이드</div></div>
         </div>
         <div class="output-item">
-          <div class="num green">4</div>
+          <div class="num green">6</div>
           <div><div class="name">프리셋팅 가이드 <span class="built-badge">프로토타입</span></div><div class="desc">증상→추천 조합 자동 도출</div></div>
         </div>
         <div class="output-item">
-          <div class="num blue">5</div>
+          <div class="num blue">7</div>
           <div><div class="name">CBI JOB One-Click Setting</div><div class="desc">8단계 → 1단계 자동화 설계</div></div>
         </div>
       </div>
@@ -812,74 +758,16 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
 <script>
-Reveal.initialize({
-  hash: true,
-  slideNumber: true,
-  width: 1280,
-  height: 720,
-  margin: 0,
-  center: false,
-  transition: 'slide',
-  backgroundTransition: 'fade',
-});
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0, center: false,
+    hash: true, slideNumber: true,
+    transition: 'none',
+    plugins: []
+  });
 </script>
+<script src="slide-live-editor.js"></script>
