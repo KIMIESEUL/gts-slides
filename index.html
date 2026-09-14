@@ -1,0 +1,946 @@
+<meta charset="UTF-8">
+<title>GTS 현장 기반 UX 제안</title>
+<style>/*!
+* reveal.js 4.5.0
+* https://revealjs.com
+* MIT licensed
+*
+* Copyright (C) 2011-2023 Hakim El Hattab, https://hakim.se
+*/.reveal .r-stretch,.reveal .stretch{max-width:none;max-height:none}.reveal pre.r-stretch code,.reveal pre.stretch code{height:100%;max-height:100%;box-sizing:border-box}.reveal .r-fit-text{display:inline-block;white-space:nowrap}.reveal .r-stack{display:grid}.reveal .r-stack>*{grid-area:1/1;margin:auto}.reveal .r-hstack,.reveal .r-vstack{display:flex}.reveal .r-hstack img,.reveal .r-hstack video,.reveal .r-vstack img,.reveal .r-vstack video{min-width:0;min-height:0;object-fit:contain}.reveal .r-vstack{flex-direction:column;align-items:center;justify-content:center}.reveal .r-hstack{flex-direction:row;align-items:center;justify-content:center}.reveal .items-stretch{align-items:stretch}.reveal .items-start{align-items:flex-start}.reveal .items-center{align-items:center}.reveal .items-end{align-items:flex-end}.reveal .justify-between{justify-content:space-between}.reveal .justify-around{justify-content:space-around}.reveal .justify-start{justify-content:flex-start}.reveal .justify-center{justify-content:center}.reveal .justify-end{justify-content:flex-end}html.reveal-full-page{width:100%;height:100%;height:100vh;height:calc(var(--vh,1vh) * 100);overflow:hidden}.reveal-viewport{height:100%;overflow:hidden;position:relative;line-height:1;margin:0;background-color:#fff;color:#000}.reveal-viewport:fullscreen{top:0!important;left:0!important;width:100%!important;height:100%!important;transform:none!important}.reveal .fragment{transition:all .2s ease}.reveal .fragment:not(.custom){opacity:0;visibility:hidden;will-change:opacity}.reveal .fragment.visible{opacity:1;visibility:inherit}.reveal .fragment.disabled{transition:none}.reveal .fragment.grow{opacity:1;visibility:inherit}.reveal .fragment.grow.visible{transform:scale(1.3)}.reveal .fragment.shrink{opacity:1;visibility:inherit}.reveal .fragment.shrink.visible{transform:scale(.7)}.reveal .fragment.zoom-in{transform:scale(.1)}.reveal .fragment.zoom-in.visible{transform:none}.reveal .fragment.fade-out{opacity:1;visibility:inherit}.reveal .fragment.fade-out.visible{opacity:0;visibility:hidden}.reveal .fragment.semi-fade-out{opacity:1;visibility:inherit}.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.strike{opacity:1;visibility:inherit}.reveal .fragment.strike.visible{text-decoration:line-through}.reveal .fragment.fade-up{transform:translate(0,40px)}.reveal .fragment.fade-up.visible{transform:translate(0,0)}.reveal .fragment.fade-down{transform:translate(0,-40px)}.reveal .fragment.fade-down.visible{transform:translate(0,0)}.reveal .fragment.fade-right{transform:translate(-40px,0)}.reveal .fragment.fade-right.visible{transform:translate(0,0)}.reveal .fragment.fade-left{transform:translate(40px,0)}.reveal .fragment.fade-left.visible{transform:translate(0,0)}.reveal .fragment.current-visible,.reveal .fragment.fade-in-then-out{opacity:0;visibility:hidden}.reveal .fragment.current-visible.current-fragment,.reveal .fragment.fade-in-then-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-semi-out{opacity:0;visibility:hidden}.reveal .fragment.fade-in-then-semi-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.fade-in-then-semi-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.highlight-blue,.reveal .fragment.highlight-current-blue,.reveal .fragment.highlight-current-green,.reveal .fragment.highlight-current-red,.reveal .fragment.highlight-green,.reveal .fragment.highlight-red{opacity:1;visibility:inherit}.reveal .fragment.highlight-red.visible{color:#ff2c2d}.reveal .fragment.highlight-green.visible{color:#17ff2e}.reveal .fragment.highlight-blue.visible{color:#1b91ff}.reveal .fragment.highlight-current-red.current-fragment{color:#ff2c2d}.reveal .fragment.highlight-current-green.current-fragment{color:#17ff2e}.reveal .fragment.highlight-current-blue.current-fragment{color:#1b91ff}.reveal:after{content:"";font-style:italic}.reveal iframe{z-index:1}.reveal a{position:relative}@keyframes bounce-right{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(10px)}30%{transform:translateX(-5px)}}@keyframes bounce-left{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(-10px)}30%{transform:translateX(5px)}}@keyframes bounce-down{0%,10%,25%,40%,50%{transform:translateY(0)}20%{transform:translateY(10px)}30%{transform:translateY(-5px)}}.reveal .controls{display:none;position:absolute;top:auto;bottom:12px;right:12px;left:auto;z-index:11;color:#000;pointer-events:none;font-size:10px}.reveal .controls button{position:absolute;padding:0;background-color:transparent;border:0;outline:0;cursor:pointer;color:currentColor;transform:scale(.9999);transition:color .2s ease,opacity .2s ease,transform .2s ease;z-index:2;pointer-events:auto;font-size:inherit;visibility:hidden;opacity:0;-webkit-appearance:none;-webkit-tap-highlight-color:transparent}.reveal .controls .controls-arrow:after,.reveal .controls .controls-arrow:before{content:"";position:absolute;top:0;left:0;width:2.6em;height:.5em;border-radius:.25em;background-color:currentColor;transition:all .15s ease,background-color .8s ease;transform-origin:.2em 50%;will-change:transform}.reveal .controls .controls-arrow{position:relative;width:3.6em;height:3.6em}.reveal .controls .controls-arrow:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal .controls .controls-arrow:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}.reveal .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(40deg)}.reveal .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-40deg)}.reveal .controls .controls-arrow:active:before{transform:translateX(.5em) translateY(1.55em) rotate(36deg)}.reveal .controls .controls-arrow:active:after{transform:translateX(.5em) translateY(1.55em) rotate(-36deg)}.reveal .controls .navigate-left{right:6.4em;bottom:3.2em;transform:translateX(-10px)}.reveal .controls .navigate-left.highlight{animation:bounce-left 2s 50 both ease-out}.reveal .controls .navigate-right{right:0;bottom:3.2em;transform:translateX(10px)}.reveal .controls .navigate-right .controls-arrow{transform:rotate(180deg)}.reveal .controls .navigate-right.highlight{animation:bounce-right 2s 50 both ease-out}.reveal .controls .navigate-up{right:3.2em;bottom:6.4em;transform:translateY(-10px)}.reveal .controls .navigate-up .controls-arrow{transform:rotate(90deg)}.reveal .controls .navigate-down{right:3.2em;bottom:-1.4em;padding-bottom:1.4em;transform:translateY(10px)}.reveal .controls .navigate-down .controls-arrow{transform:rotate(-90deg)}.reveal .controls .navigate-down.highlight{animation:bounce-down 2s 50 both ease-out}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled{opacity:.3}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled:hover{opacity:1}.reveal .controls[data-controls-back-arrows=hidden] .navigate-up.enabled{opacity:0;visibility:hidden}.reveal .controls .enabled{visibility:visible;opacity:.9;cursor:pointer;transform:none}.reveal .controls .enabled.fragmented{opacity:.5}.reveal .controls .enabled.fragmented:hover,.reveal .controls .enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled{opacity:.3}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=hidden] .navigate-left.enabled{opacity:0;visibility:hidden}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled{opacity:.3}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled:hover{opacity:1}.reveal.rtl .controls[data-controls-back-arrows=hidden] .navigate-right.enabled{opacity:0;visibility:hidden}.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-down,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-up{display:none}.reveal:not(.has-vertical-slides) .controls .navigate-left,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-left{bottom:1.4em;right:5.5em}.reveal:not(.has-vertical-slides) .controls .navigate-right,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-right{bottom:1.4em;right:.5em}.reveal:not(.has-horizontal-slides) .controls .navigate-up{right:1.4em;bottom:5em}.reveal:not(.has-horizontal-slides) .controls .navigate-down{right:1.4em;bottom:.5em}.reveal.has-dark-background .controls{color:#fff}.reveal.has-light-background .controls{color:#000}.reveal.no-hover .controls .controls-arrow:active:before,.reveal.no-hover .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal.no-hover .controls .controls-arrow:active:after,.reveal.no-hover .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}@media screen and (min-width:500px){.reveal .controls[data-controls-layout=edges]{top:0;right:0;bottom:0;left:0}.reveal .controls[data-controls-layout=edges] .navigate-down,.reveal .controls[data-controls-layout=edges] .navigate-left,.reveal .controls[data-controls-layout=edges] .navigate-right,.reveal .controls[data-controls-layout=edges] .navigate-up{bottom:auto;right:auto}.reveal .controls[data-controls-layout=edges] .navigate-left{top:50%;left:.8em;margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-right{top:50%;right:.8em;margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-up{top:.8em;left:50%;margin-left:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:-.3em;left:50%;margin-left:-1.8em}}.reveal .progress{position:absolute;display:none;height:3px;width:100%;bottom:0;left:0;z-index:10;background-color:rgba(0,0,0,.2);color:#fff}.reveal .progress:after{content:"";display:block;position:absolute;height:10px;width:100%;top:-10px}.reveal .progress span{display:block;height:100%;width:100%;background-color:currentColor;transition:transform .8s cubic-bezier(.26,.86,.44,.985);transform-origin:0 0;transform:scaleX(0)}.reveal .slide-number{position:absolute;display:block;right:8px;bottom:8px;z-index:31;font-family:Helvetica,sans-serif;font-size:12px;line-height:1;color:#fff;background-color:rgba(0,0,0,.4);padding:5px}.reveal .slide-number a{color:currentColor}.reveal .slide-number-delimiter{margin:0 3px}.reveal{position:relative;width:100%;height:100%;overflow:hidden;touch-action:pinch-zoom}.reveal.embedded{touch-action:pan-y}.reveal .slides{position:absolute;width:100%;height:100%;top:0;right:0;bottom:0;left:0;margin:auto;pointer-events:none;overflow:visible;z-index:1;text-align:center;perspective:600px;perspective-origin:50% 40%}.reveal .slides>section{perspective:600px}.reveal .slides>section,.reveal .slides>section>section{display:none;position:absolute;width:100%;pointer-events:auto;z-index:10;transform-style:flat;transition:transform-origin .8s cubic-bezier(.26,.86,.44,.985),transform .8s cubic-bezier(.26,.86,.44,.985),visibility .8s cubic-bezier(.26,.86,.44,.985),opacity .8s cubic-bezier(.26,.86,.44,.985)}.reveal[data-transition-speed=fast] .slides section{transition-duration:.4s}.reveal[data-transition-speed=slow] .slides section{transition-duration:1.2s}.reveal .slides section[data-transition-speed=fast]{transition-duration:.4s}.reveal .slides section[data-transition-speed=slow]{transition-duration:1.2s}.reveal .slides>section.stack{padding-top:0;padding-bottom:0;pointer-events:none;height:100%}.reveal .slides>section.present,.reveal .slides>section>section.present{display:block;z-index:11;opacity:1}.reveal .slides>section:empty,.reveal .slides>section>section:empty,.reveal .slides>section>section[data-background-interactive],.reveal .slides>section[data-background-interactive]{pointer-events:none}.reveal.center,.reveal.center .slides,.reveal.center .slides section{min-height:0!important}.reveal .slides>section:not(.present),.reveal .slides>section>section:not(.present){pointer-events:none}.reveal.overview .slides>section,.reveal.overview .slides>section>section{pointer-events:auto}.reveal .slides>section.future,.reveal .slides>section.future>section,.reveal .slides>section.past,.reveal .slides>section.past>section,.reveal .slides>section>section.future,.reveal .slides>section>section.past{opacity:0}.reveal .slides>section[data-transition=slide].past,.reveal .slides>section[data-transition~=slide-out].past,.reveal.slide .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=slide].future,.reveal .slides>section[data-transition~=slide-in].future,.reveal.slide .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=slide].past,.reveal .slides>section>section[data-transition~=slide-out].past,.reveal.slide .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=slide].future,.reveal .slides>section>section[data-transition~=slide-in].future,.reveal.slide .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides>section[data-transition=linear].past,.reveal .slides>section[data-transition~=linear-out].past,.reveal.linear .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=linear].future,.reveal .slides>section[data-transition~=linear-in].future,.reveal.linear .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=linear].past,.reveal .slides>section>section[data-transition~=linear-out].past,.reveal.linear .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=linear].future,.reveal .slides>section>section[data-transition~=linear-in].future,.reveal.linear .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides section[data-transition=default].stack,.reveal.default .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=default].past,.reveal .slides>section[data-transition~=default-out].past,.reveal.default .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=default].future,.reveal .slides>section[data-transition~=default-in].future,.reveal.default .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=default].past,.reveal .slides>section>section[data-transition~=default-out].past,.reveal.default .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=default].future,.reveal .slides>section>section[data-transition~=default-in].future,.reveal.default .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=convex].stack,.reveal.convex .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=convex].past,.reveal .slides>section[data-transition~=convex-out].past,.reveal.convex .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=convex].future,.reveal .slides>section[data-transition~=convex-in].future,.reveal.convex .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=convex].past,.reveal .slides>section>section[data-transition~=convex-out].past,.reveal.convex .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=convex].future,.reveal .slides>section>section[data-transition~=convex-in].future,.reveal.convex .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=concave].stack,.reveal.concave .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=concave].past,.reveal .slides>section[data-transition~=concave-out].past,.reveal.concave .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=concave].future,.reveal .slides>section[data-transition~=concave-in].future,.reveal.concave .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=concave].past,.reveal .slides>section>section[data-transition~=concave-out].past,.reveal.concave .slides>section>section:not([data-transition]).past{transform:translate3d(0,-80%,0) rotateX(-70deg) translate3d(0,-80%,0)}.reveal .slides>section>section[data-transition=concave].future,.reveal .slides>section>section[data-transition~=concave-in].future,.reveal.concave .slides>section>section:not([data-transition]).future{transform:translate3d(0,80%,0) rotateX(70deg) translate3d(0,80%,0)}.reveal .slides section[data-transition=zoom],.reveal.zoom .slides section:not([data-transition]){transition-timing-function:ease}.reveal .slides>section[data-transition=zoom].past,.reveal .slides>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section:not([data-transition]).past{visibility:hidden;transform:scale(16)}.reveal .slides>section[data-transition=zoom].future,.reveal .slides>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section:not([data-transition]).future{visibility:hidden;transform:scale(.2)}.reveal .slides>section>section[data-transition=zoom].past,.reveal .slides>section>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section>section:not([data-transition]).past{transform:scale(16)}.reveal .slides>section>section[data-transition=zoom].future,.reveal .slides>section>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section>section:not([data-transition]).future{transform:scale(.2)}.reveal.cube .slides{perspective:1300px}.reveal.cube .slides section{padding:30px;min-height:700px;backface-visibility:hidden;box-sizing:border-box;transform-style:preserve-3d}.reveal.center.cube .slides section{min-height:0}.reveal.cube .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);border-radius:4px;transform:translateZ(-20px)}.reveal.cube .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);transform:translateZ(-90px) rotateX(65deg)}.reveal.cube .slides>section.stack{padding:0;background:0 0}.reveal.cube .slides>section.past{transform-origin:100% 0;transform:translate3d(-100%,0,0) rotateY(-90deg)}.reveal.cube .slides>section.future{transform-origin:0 0;transform:translate3d(100%,0,0) rotateY(90deg)}.reveal.cube .slides>section>section.past{transform-origin:0 100%;transform:translate3d(0,-100%,0) rotateX(90deg)}.reveal.cube .slides>section>section.future{transform-origin:0 0;transform:translate3d(0,100%,0) rotateX(-90deg)}.reveal.page .slides{perspective-origin:0 50%;perspective:3000px}.reveal.page .slides section{padding:30px;min-height:700px;box-sizing:border-box;transform-style:preserve-3d}.reveal.page .slides section.past{z-index:12}.reveal.page .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);transform:translateZ(-20px)}.reveal.page .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);-webkit-transform:translateZ(-90px) rotateX(65deg)}.reveal.page .slides>section.stack{padding:0;background:0 0}.reveal.page .slides>section.past{transform-origin:0 0;transform:translate3d(-40%,0,0) rotateY(-80deg)}.reveal.page .slides>section.future{transform-origin:100% 0;transform:translate3d(0,0,0)}.reveal.page .slides>section>section.past{transform-origin:0 0;transform:translate3d(0,-40%,0) rotateX(80deg)}.reveal.page .slides>section>section.future{transform-origin:0 100%;transform:translate3d(0,0,0)}.reveal .slides section[data-transition=fade],.reveal.fade .slides section:not([data-transition]),.reveal.fade .slides>section>section:not([data-transition]){transform:none;transition:opacity .5s}.reveal.fade.overview .slides section,.reveal.fade.overview .slides>section>section{transition:none}.reveal .slides section[data-transition=none],.reveal.none .slides section:not([data-transition]){transform:none;transition:none}.reveal .pause-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;visibility:hidden;opacity:0;z-index:100;transition:all 1s ease}.reveal .pause-overlay .resume-button{position:absolute;bottom:20px;right:20px;color:#ccc;border-radius:2px;padding:6px 14px;border:2px solid #ccc;font-size:16px;background:0 0;cursor:pointer}.reveal .pause-overlay .resume-button:hover{color:#fff;border-color:#fff}.reveal.paused .pause-overlay{visibility:visible;opacity:1}.reveal .no-transition,.reveal .no-transition *,.reveal .slides.disable-slide-transitions section{transition:none!important}.reveal .slides.disable-slide-transitions section{transform:none!important}.reveal .backgrounds{position:absolute;width:100%;height:100%;top:0;left:0;perspective:600px}.reveal .slide-background{display:none;position:absolute;width:100%;height:100%;opacity:0;visibility:hidden;overflow:hidden;background-color:rgba(0,0,0,0);transition:all .8s cubic-bezier(.26,.86,.44,.985)}.reveal .slide-background-content{position:absolute;width:100%;height:100%;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background.stack{display:block}.reveal .slide-background.present{opacity:1;visibility:visible;z-index:2}.print-pdf .reveal .slide-background{opacity:1!important;visibility:visible!important}.reveal .slide-background video{position:absolute;width:100%;height:100%;max-width:none;max-height:none;top:0;left:0;object-fit:cover}.reveal .slide-background[data-background-size=contain] video{object-fit:contain}.reveal>.backgrounds .slide-background[data-background-transition=none],.reveal[data-background-transition=none]>.backgrounds .slide-background:not([data-background-transition]){transition:none}.reveal>.backgrounds .slide-background[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background:not([data-background-transition]){opacity:1}.reveal>.backgrounds .slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.past:not([data-background-transition]){transform:translate(-100%,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.future:not([data-background-transition]){transform:translate(100%,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){transform:translate(0,-100%)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){transform:translate(0,100%)}.reveal>.backgrounds .slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(-90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(-90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background:not([data-background-transition]){transition-timing-function:ease}.reveal>.backgrounds .slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal[data-transition-speed=fast]>.backgrounds .slide-background{transition-duration:.4s}.reveal[data-transition-speed=slow]>.backgrounds .slide-background{transition-duration:1.2s}.reveal [data-auto-animate-target^=unmatched]{will-change:opacity}.reveal section[data-auto-animate]:not(.stack):not([data-auto-animate=running]) [data-auto-animate-target^=unmatched]{opacity:0}.reveal.overview{perspective-origin:50% 50%;perspective:700px}.reveal.overview .slides{-moz-transform-style:preserve-3d}.reveal.overview .slides section{height:100%;top:0!important;opacity:1!important;overflow:hidden;visibility:visible!important;cursor:pointer;box-sizing:border-box}.reveal.overview .slides section.present,.reveal.overview .slides section:hover{outline:10px solid rgba(150,150,150,.4);outline-offset:10px}.reveal.overview .slides section .fragment{opacity:1;transition:none}.reveal.overview .slides section:after,.reveal.overview .slides section:before{display:none!important}.reveal.overview .slides>section.stack{padding:0;top:0!important;background:0 0;outline:0;overflow:visible}.reveal.overview .backgrounds{perspective:inherit;-moz-transform-style:preserve-3d}.reveal.overview .backgrounds .slide-background{opacity:1;visibility:visible;outline:10px solid rgba(150,150,150,.1);outline-offset:10px}.reveal.overview .backgrounds .slide-background.stack{overflow:visible}.reveal.overview .slides section,.reveal.overview-deactivating .slides section{transition:none}.reveal.overview .backgrounds .slide-background,.reveal.overview-deactivating .backgrounds .slide-background{transition:none}.reveal.rtl .slides,.reveal.rtl .slides h1,.reveal.rtl .slides h2,.reveal.rtl .slides h3,.reveal.rtl .slides h4,.reveal.rtl .slides h5,.reveal.rtl .slides h6{direction:rtl;font-family:sans-serif}.reveal.rtl code,.reveal.rtl pre{direction:ltr}.reveal.rtl ol,.reveal.rtl ul{text-align:right}.reveal.rtl .progress span{transform-origin:100% 0}.reveal.has-parallax-background .backgrounds{transition:all .8s ease}.reveal.has-parallax-background[data-transition-speed=fast] .backgrounds{transition-duration:.4s}.reveal.has-parallax-background[data-transition-speed=slow] .backgrounds{transition-duration:1.2s}.reveal>.overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;background:rgba(0,0,0,.9);transition:all .3s ease}.reveal>.overlay .spinner{position:absolute;display:block;top:50%;left:50%;width:32px;height:32px;margin:-16px 0 0 -16px;z-index:10;background-image:url(data:image/gif;base64,R0lGODlhIAAgAPMAAJmZmf%2F%2F%2F6%2Bvr8nJybW1tcDAwOjo6Nvb26ioqKOjo7Ozs%2FLy8vz8%2FAAAAAAAAAAAACH%2FC05FVFNDQVBFMi4wAwEAAAAh%2FhpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh%2BQQJCgAAACwAAAAAIAAgAAAE5xDISWlhperN52JLhSSdRgwVo1ICQZRUsiwHpTJT4iowNS8vyW2icCF6k8HMMBkCEDskxTBDAZwuAkkqIfxIQyhBQBFvAQSDITM5VDW6XNE4KagNh6Bgwe60smQUB3d4Rz1ZBApnFASDd0hihh12BkE9kjAJVlycXIg7CQIFA6SlnJ87paqbSKiKoqusnbMdmDC2tXQlkUhziYtyWTxIfy6BE8WJt5YJvpJivxNaGmLHT0VnOgSYf0dZXS7APdpB309RnHOG5gDqXGLDaC457D1zZ%2FV%2FnmOM82XiHRLYKhKP1oZmADdEAAAh%2BQQJCgAAACwAAAAAIAAgAAAE6hDISWlZpOrNp1lGNRSdRpDUolIGw5RUYhhHukqFu8DsrEyqnWThGvAmhVlteBvojpTDDBUEIFwMFBRAmBkSgOrBFZogCASwBDEY%2FCZSg7GSE0gSCjQBMVG023xWBhklAnoEdhQEfyNqMIcKjhRsjEdnezB%2BA4k8gTwJhFuiW4dokXiloUepBAp5qaKpp6%2BHo7aWW54wl7obvEe0kRuoplCGepwSx2jJvqHEmGt6whJpGpfJCHmOoNHKaHx61WiSR92E4lbFoq%2BB6QDtuetcaBPnW6%2BO7wDHpIiK9SaVK5GgV543tzjgGcghAgAh%2BQQJCgAAACwAAAAAIAAgAAAE7hDISSkxpOrN5zFHNWRdhSiVoVLHspRUMoyUakyEe8PTPCATW9A14E0UvuAKMNAZKYUZCiBMuBakSQKG8G2FzUWox2AUtAQFcBKlVQoLgQReZhQlCIJesQXI5B0CBnUMOxMCenoCfTCEWBsJColTMANldx15BGs8B5wlCZ9Po6OJkwmRpnqkqnuSrayqfKmqpLajoiW5HJq7FL1Gr2mMMcKUMIiJgIemy7xZtJsTmsM4xHiKv5KMCXqfyUCJEonXPN2rAOIAmsfB3uPoAK%2B%2BG%2Bw48edZPK%2BM6hLJpQg484enXIdQFSS1u6UhksENEQAAIfkECQoAAAAsAAAAACAAIAAABOcQyEmpGKLqzWcZRVUQnZYg1aBSh2GUVEIQ2aQOE%2BG%2BcD4ntpWkZQj1JIiZIogDFFyHI0UxQwFugMSOFIPJftfVAEoZLBbcLEFhlQiqGp1Vd140AUklUN3eCA51C1EWMzMCezCBBmkxVIVHBWd3HHl9JQOIJSdSnJ0TDKChCwUJjoWMPaGqDKannasMo6WnM562R5YluZRwur0wpgqZE7NKUm%2BFNRPIhjBJxKZteWuIBMN4zRMIVIhffcgojwCF117i4nlLnY5ztRLsnOk%2BaV%2BoJY7V7m76PdkS4trKcdg0Zc0tTcKkRAAAIfkECQoAAAAsAAAAACAAIAAABO4QyEkpKqjqzScpRaVkXZWQEximw1BSCUEIlDohrft6cpKCk5xid5MNJTaAIkekKGQkWyKHkvhKsR7ARmitkAYDYRIbUQRQjWBwJRzChi9CRlBcY1UN4g0%2FVNB0AlcvcAYHRyZPdEQFYV8ccwR5HWxEJ02YmRMLnJ1xCYp0Y5idpQuhopmmC2KgojKasUQDk5BNAwwMOh2RtRq5uQuPZKGIJQIGwAwGf6I0JXMpC8C7kXWDBINFMxS4DKMAWVWAGYsAdNqW5uaRxkSKJOZKaU3tPOBZ4DuK2LATgJhkPJMgTwKCdFjyPHEnKxFCDhEAACH5BAkKAAAALAAAAAAgACAAAATzEMhJaVKp6s2nIkolIJ2WkBShpkVRWqqQrhLSEu9MZJKK9y1ZrqYK9WiClmvoUaF8gIQSNeF1Er4MNFn4SRSDARWroAIETg1iVwuHjYB1kYc1mwruwXKC9gmsJXliGxc%2BXiUCby9ydh1sOSdMkpMTBpaXBzsfhoc5l58Gm5yToAaZhaOUqjkDgCWNHAULCwOLaTmzswadEqggQwgHuQsHIoZCHQMMQgQGubVEcxOPFAcMDAYUA85eWARmfSRQCdcMe0zeP1AAygwLlJtPNAAL19DARdPzBOWSm1brJBi45soRAWQAAkrQIykShQ9wVhHCwCQCACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiRMDjI0Fd30%2FiI2UA5GSS5UDj2l6NoqgOgN4gksEBgYFf0FDqKgHnyZ9OX8HrgYHdHpcHQULXAS2qKpENRg7eAMLC7kTBaixUYFkKAzWAAnLC7FLVxLWDBLKCwaKTULgEwbLA4hJtOkSBNqITT3xEgfLpBtzE%2FjiuL04RGEBgwWhShRgQExHBAAh%2BQQJCgAAACwAAAAAIAAgAAAE7xDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfZiCqGk5dTESJeaOAlClzsJsqwiJwiqnFrb2nS9kmIcgEsjQydLiIlHehhpejaIjzh9eomSjZR%2BipslWIRLAgMDOR2DOqKogTB9pCUJBagDBXR6XB0EBkIIsaRsGGMMAxoDBgYHTKJiUYEGDAzHC9EACcUGkIgFzgwZ0QsSBcXHiQvOwgDdEwfFs0sDzt4S6BK4xYjkDOzn0unFeBzOBijIm1Dgmg5YFQwsCMjp1oJ8LyIAACH5BAkKAAAALAAAAAAgACAAAATwEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GGl6NoiPOH16iZKNlH6KmyWFOggHhEEvAwwMA0N9GBsEC6amhnVcEwavDAazGwIDaH1ipaYLBUTCGgQDA8NdHz0FpqgTBwsLqAbWAAnIA4FWKdMLGdYGEgraigbT0OITBcg5QwPT4xLrROZL6AuQAPUS7bxLpoWidY0JtxLHKhwwMJBTHgPKdEQAACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GAULDJCRiXo1CpGXDJOUjY%2BYip9DhToJA4RBLwMLCwVDfRgbBAaqqoZ1XBMHswsHtxtFaH1iqaoGNgAIxRpbFAgfPQSqpbgGBqUD1wBXeCYp1AYZ19JJOYgH1KwA4UBvQwXUBxPqVD9L3sbp2BNk2xvvFPJd%2BMFCN6HAAIKgNggY0KtEBAAh%2BQQJCgAAACwAAAAAIAAgAAAE6BDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfYIDMaAFdTESJeaEDAIMxYFqrOUaNW4E4ObYcCXaiBVEgULe0NJaxxtYksjh2NLkZISgDgJhHthkpU4mW6blRiYmZOlh4JWkDqILwUGBnE6TYEbCgevr0N1gH4At7gHiRpFaLNrrq8HNgAJA70AWxQIH1%2BvsYMDAzZQPC9VCNkDWUhGkuE5PxJNwiUK4UfLzOlD4WvzAHaoG9nxPi5d%2BjYUqfAhhykOFwJWiAAAIfkECQoAAAAsAAAAACAAIAAABPAQyElpUqnqzaciSoVkXVUMFaFSwlpOCcMYlErAavhOMnNLNo8KsZsMZItJEIDIFSkLGQoQTNhIsFehRww2CQLKF0tYGKYSg%2BygsZIuNqJksKgbfgIGepNo2cIUB3V1B3IvNiBYNQaDSTtfhhx0CwVPI0UJe0%2Bbm4g5VgcGoqOcnjmjqDSdnhgEoamcsZuXO1aWQy8KAwOAuTYYGwi7w5h%2BKr0SJ8MFihpNbx%2B4Erq7BYBuzsdiH1jCAzoSfl0rVirNbRXlBBlLX%2BBP0XJLAPGzTkAuAOqb0WT5AH7OcdCm5B8TgRwSRKIHQtaLCwg1RAAAOwAAAAAAAAAAAA%3D%3D);visibility:visible;opacity:.6;transition:all .3s ease}.reveal>.overlay header{position:absolute;left:0;top:0;width:100%;padding:5px;z-index:2;box-sizing:border-box}.reveal>.overlay header a{display:inline-block;width:40px;height:40px;line-height:36px;padding:0 10px;float:right;opacity:.6;box-sizing:border-box}.reveal>.overlay header a:hover{opacity:1}.reveal>.overlay header a .icon{display:inline-block;width:20px;height:20px;background-position:50% 50%;background-size:100%;background-repeat:no-repeat}.reveal>.overlay header a.close .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABkklEQVRYR8WX4VHDMAxG6wnoJrABZQPYBCaBTWAD2g1gE5gg6OOsXuxIlr40d81dfrSJ9V4c2VLK7spHuTJ/5wpM07QXuXc5X0opX2tEJcadjHuV80li/FgxTIEK/5QBCICBD6xEhSMGHgQPgBgLiYVAB1dpSqKDawxTohFw4JSEA3clzgIBPCURwE2JucBR7rhPJJv5OpJwDX+SfDjgx1wACQeJG1aChP9K/IMmdZ8DtESV1WyP3Bt4MwM6sj4NMxMYiqUWHQu4KYA/SYkIjOsm3BXYWMKFDwU2khjCQ4ELJUJ4SmClRArOCmSXGuKma0fYD5CbzHxFpCSGAhfAVSSUGDUk2BWZaff2g6GE15BsBQ9nwmpIGDiyHQddwNTMKkbZaf9fajXQca1EX44puJZUsnY0ObGmITE3GVLCbEhQUjGVt146j6oasWN+49Vph2w1pZ5EansNZqKBm1txbU57iRRcZ86RWMDdWtBJUHBHwoQPi1GV+JCbntmvok7iTX4/Up9mgyTc/FJYDTcndgH/AA5A/CHsyEkVAAAAAElFTkSuQmCC)}.reveal>.overlay header a.external .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAcElEQVRYR+2WSQoAIQwEzf8f7XiOMkUQxUPlGkM3hVmiQfQR9GYnH1SsAQlI4DiBqkCMoNb9y2e90IAEJPAcgdznU9+engMaeJ7Azh5Y1U67gAho4DqBqmB1buAf0MB1AlVBek83ZPkmJMGc1wAR+AAqod/B97TRpQAAAABJRU5ErkJggg==)}.reveal>.overlay .viewport{position:absolute;display:flex;top:50px;right:0;bottom:0;left:0}.reveal>.overlay.overlay-preview .viewport iframe{width:100%;height:100%;max-width:100%;max-height:100%;border:0;opacity:0;visibility:hidden;transition:all .3s ease}.reveal>.overlay.overlay-preview.loaded .viewport iframe{opacity:1;visibility:visible}.reveal>.overlay.overlay-preview.loaded .viewport-inner{position:absolute;z-index:-1;left:0;top:45%;width:100%;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-preview .x-frame-error{opacity:0;transition:opacity .3s ease .3s}.reveal>.overlay.overlay-preview.loaded .x-frame-error{opacity:1}.reveal>.overlay.overlay-preview.loaded .spinner{opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.overlay.overlay-help .viewport{overflow:auto;color:#fff}.reveal>.overlay.overlay-help .viewport .viewport-inner{width:600px;margin:auto;padding:20px 20px 80px 20px;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-help .viewport .viewport-inner .title{font-size:20px}.reveal>.overlay.overlay-help .viewport .viewport-inner table{border:1px solid #fff;border-collapse:collapse;font-size:16px}.reveal>.overlay.overlay-help .viewport .viewport-inner table td,.reveal>.overlay.overlay-help .viewport .viewport-inner table th{width:200px;padding:14px;border:1px solid #fff;vertical-align:middle}.reveal>.overlay.overlay-help .viewport .viewport-inner table th{padding-top:20px;padding-bottom:20px}.reveal .playback{position:absolute;left:15px;bottom:20px;z-index:30;cursor:pointer;transition:all .4s ease;-webkit-tap-highlight-color:transparent}.reveal.overview .playback{opacity:0;visibility:hidden}.reveal .hljs{min-height:100%}.reveal .hljs table{margin:initial}.reveal .hljs-ln-code,.reveal .hljs-ln-numbers{padding:0;border:0}.reveal .hljs-ln-numbers{opacity:.6;padding-right:.75em;text-align:right;vertical-align:top}.reveal .hljs.has-highlights tr:not(.highlight-line){opacity:.4}.reveal .hljs.has-highlights.fragment{transition:all .2s ease}.reveal .hljs:not(:first-child).fragment{position:absolute;top:0;left:0;width:100%;box-sizing:border-box}.reveal pre[data-auto-animate-target]{overflow:hidden}.reveal pre[data-auto-animate-target] code{height:100%}.reveal .roll{display:inline-block;line-height:1.2;overflow:hidden;vertical-align:top;perspective:400px;perspective-origin:50% 50%}.reveal .roll:hover{background:0 0;text-shadow:none}.reveal .roll span{display:block;position:relative;padding:0 2px;pointer-events:none;transition:all .4s ease;transform-origin:50% 0;transform-style:preserve-3d;backface-visibility:hidden}.reveal .roll:hover span{background:rgba(0,0,0,.5);transform:translate3d(0,0,-45px) rotateX(90deg)}.reveal .roll span:after{content:attr(data-title);display:block;position:absolute;left:0;top:0;padding:0 2px;backface-visibility:hidden;transform-origin:50% 0;transform:translate3d(0,110%,0) rotateX(-90deg)}.reveal aside.notes{display:none}.reveal .speaker-notes{display:none;position:absolute;width:33.3333333333%;height:100%;top:0;left:100%;padding:14px 18px 14px 18px;z-index:1;font-size:18px;line-height:1.4;border:1px solid rgba(0,0,0,.05);color:#222;background-color:#f5f5f5;overflow:auto;box-sizing:border-box;text-align:left;font-family:Helvetica,sans-serif;-webkit-overflow-scrolling:touch}.reveal .speaker-notes .notes-placeholder{color:#ccc;font-style:italic}.reveal .speaker-notes:focus{outline:0}.reveal .speaker-notes:before{content:"Speaker notes";display:block;margin-bottom:10px;opacity:.5}.reveal.show-notes{max-width:75%;overflow:visible}.reveal.show-notes .speaker-notes{display:block}@media screen and (min-width:1600px){.reveal .speaker-notes{font-size:20px}}@media screen and (max-width:1024px){.reveal.show-notes{border-left:0;max-width:none;max-height:70%;max-height:70vh;overflow:visible}.reveal.show-notes .speaker-notes{top:100%;left:0;width:100%;height:30vh;border:0}}@media screen and (max-width:600px){.reveal.show-notes{max-height:60%;max-height:60vh}.reveal.show-notes .speaker-notes{top:100%;height:40vh}.reveal .speaker-notes{font-size:14px}}.reveal .jump-to-slide{position:absolute;top:15px;left:15px;z-index:30;font-size:32px;-webkit-tap-highlight-color:transparent}.reveal .jump-to-slide-input{background:0 0;padding:8px;font-size:inherit;color:currentColor;border:0}.reveal .jump-to-slide-input::placeholder{color:currentColor;opacity:.5}.reveal.has-dark-background .jump-to-slide-input{color:#fff}.reveal.has-light-background .jump-to-slide-input{color:#222}.reveal .jump-to-slide-input:focus{outline:0}.zoomed .reveal *,.zoomed .reveal :after,.zoomed .reveal :before{backface-visibility:visible!important}.zoomed .reveal .controls,.zoomed .reveal .progress{opacity:0}.zoomed .reveal .roll span{background:0 0}.zoomed .reveal .roll span:after{visibility:hidden}html.print-pdf *{-webkit-print-color-adjust:exact}html.print-pdf{width:100%;height:100%;overflow:visible}html.print-pdf body{margin:0 auto!important;border:0;padding:0;float:none!important;overflow:visible}html.print-pdf .nestedarrow,html.print-pdf .reveal .controls,html.print-pdf .reveal .playback,html.print-pdf .reveal .progress,html.print-pdf .reveal.overview,html.print-pdf .state-background{display:none!important}html.print-pdf .reveal pre code{overflow:hidden!important}html.print-pdf .reveal{width:auto!important;height:auto!important;overflow:hidden!important}html.print-pdf .reveal .slides{position:static;width:100%!important;height:auto!important;zoom:1!important;pointer-events:initial;left:auto;top:auto;margin:0!important;padding:0!important;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}html.print-pdf .reveal .slides .pdf-page{position:relative;overflow:hidden;z-index:1;page-break-after:always}html.print-pdf .reveal .slides section{visibility:visible!important;display:block!important;position:absolute!important;margin:0!important;padding:0!important;box-sizing:border-box!important;min-height:1px;opacity:1!important;transform-style:flat!important;transform:none!important}html.print-pdf .reveal section.stack{position:relative!important;margin:0!important;padding:0!important;page-break-after:avoid!important;height:auto!important;min-height:auto!important}html.print-pdf .reveal img{box-shadow:none}html.print-pdf .reveal .backgrounds{display:none}html.print-pdf .reveal .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important}html.print-pdf .reveal.show-notes{max-width:none;max-height:none}html.print-pdf .reveal .speaker-notes-pdf{display:block;width:100%;height:auto;max-height:none;top:auto;right:auto;bottom:auto;left:auto;z-index:100}html.print-pdf .reveal .speaker-notes-pdf[data-layout=separate-page]{position:relative;color:inherit;background-color:transparent;padding:20px;page-break-after:always;border:0}html.print-pdf .reveal .slide-number-pdf{display:block;position:absolute;font-size:14px}html.print-pdf .aria-status{display:none}@media print{html:not(.print-pdf){overflow:visible;width:auto;height:auto}html:not(.print-pdf) body{margin:0;padding:0;overflow:visible}html:not(.print-pdf) .reveal{background:#fff;font-size:20pt}html:not(.print-pdf) .reveal .backgrounds,html:not(.print-pdf) .reveal .controls,html:not(.print-pdf) .reveal .progress,html:not(.print-pdf) .reveal .slide-number,html:not(.print-pdf) .reveal .state-background{display:none!important}html:not(.print-pdf) .reveal li,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal td{font-size:20pt!important;color:#000}html:not(.print-pdf) .reveal h1,html:not(.print-pdf) .reveal h2,html:not(.print-pdf) .reveal h3,html:not(.print-pdf) .reveal h4,html:not(.print-pdf) .reveal h5,html:not(.print-pdf) .reveal h6{color:#000!important;height:auto;line-height:normal;text-align:left;letter-spacing:normal}html:not(.print-pdf) .reveal h1{font-size:28pt!important}html:not(.print-pdf) .reveal h2{font-size:24pt!important}html:not(.print-pdf) .reveal h3{font-size:22pt!important}html:not(.print-pdf) .reveal h4{font-size:22pt!important;font-variant:small-caps}html:not(.print-pdf) .reveal h5{font-size:21pt!important}html:not(.print-pdf) .reveal h6{font-size:20pt!important;font-style:italic}html:not(.print-pdf) .reveal a:link,html:not(.print-pdf) .reveal a:visited{color:#000!important;font-weight:700;text-decoration:underline}html:not(.print-pdf) .reveal div,html:not(.print-pdf) .reveal ol,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal ul{visibility:visible;position:static;width:auto;height:auto;display:block;overflow:visible;margin:0;text-align:left!important}html:not(.print-pdf) .reveal pre,html:not(.print-pdf) .reveal table{margin-left:0;margin-right:0}html:not(.print-pdf) .reveal pre code{padding:20px}html:not(.print-pdf) .reveal blockquote{margin:20px 0}html:not(.print-pdf) .reveal .slides{position:static!important;width:auto!important;height:auto!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:0!important;zoom:1!important;transform:none!important;overflow:visible!important;display:block!important;text-align:left!important;perspective:none;perspective-origin:50% 50%}html:not(.print-pdf) .reveal .slides section{visibility:visible!important;position:static!important;width:auto!important;height:auto!important;display:block!important;overflow:visible!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:60px 20px!important;z-index:auto!important;opacity:1!important;page-break-after:always!important;transform-style:flat!important;transform:none!important;transition:none!important}html:not(.print-pdf) .reveal .slides section.stack{padding:0!important}html:not(.print-pdf) .reveal .slides section:last-of-type{page-break-after:avoid!important}html:not(.print-pdf) .reveal .slides section .fragment{opacity:1!important;visibility:visible!important;transform:none!important}html:not(.print-pdf) .reveal .r-fit-text{white-space:normal!important}html:not(.print-pdf) .reveal section img{display:block;margin:15px 0;background:#fff;border:1px solid #666;box-shadow:none}html:not(.print-pdf) .reveal section small{font-size:.8em}html:not(.print-pdf) .reveal .hljs{max-height:100%;white-space:pre-wrap;word-wrap:break-word;word-break:break-word;font-size:15pt}html:not(.print-pdf) .reveal .hljs .hljs-ln-numbers{white-space:nowrap}html:not(.print-pdf) .reveal .hljs td{font-size:inherit!important;color:inherit!important}}</style>
+<style>@font-face{font-family:'Source Sans Pro';src:url(fonts/source-sans-pro/source-sans-pro-regular.eot);src:url(fonts/source-sans-pro/source-sans-pro-regular.eot?#iefix) format('embedded-opentype'),url(fonts/source-sans-pro/source-sans-pro-regular.woff) format('woff'),url(fonts/source-sans-pro/source-sans-pro-regular.ttf) format('truetype');font-weight:400;font-style:normal}@font-face{font-family:'Source Sans Pro';src:url(fonts/source-sans-pro/source-sans-pro-italic.eot);src:url(fonts/source-sans-pro/source-sans-pro-italic.eot?#iefix) format('embedded-opentype'),url(fonts/source-sans-pro/source-sans-pro-italic.woff) format('woff'),url(fonts/source-sans-pro/source-sans-pro-italic.ttf) format('truetype');font-weight:400;font-style:italic}@font-face{font-family:'Source Sans Pro';src:url(fonts/source-sans-pro/source-sans-pro-semibold.eot);src:url(fonts/source-sans-pro/source-sans-pro-semibold.eot?#iefix) format('embedded-opentype'),url(fonts/source-sans-pro/source-sans-pro-semibold.woff) format('woff'),url(fonts/source-sans-pro/source-sans-pro-semibold.ttf) format('truetype');font-weight:600;font-style:normal}@font-face{font-family:'Source Sans Pro';src:url(fonts/source-sans-pro/source-sans-pro-semibolditalic.eot);src:url(fonts/source-sans-pro/source-sans-pro-semibolditalic.eot?#iefix) format('embedded-opentype'),url(fonts/source-sans-pro/source-sans-pro-semibolditalic.woff) format('woff'),url(fonts/source-sans-pro/source-sans-pro-semibolditalic.ttf) format('truetype');font-weight:600;font-style:italic}section.has-dark-background,section.has-dark-background h1,section.has-dark-background h2,section.has-dark-background h3,section.has-dark-background h4,section.has-dark-background h5,section.has-dark-background h6{color:#fff}:root{--r-background-color:#fff;--r-main-font:Source Sans Pro,Helvetica,sans-serif;--r-main-font-size:42px;--r-main-color:#222;--r-block-margin:20px;--r-heading-margin:0 0 20px 0;--r-heading-font:Source Sans Pro,Helvetica,sans-serif;--r-heading-color:#222;--r-heading-line-height:1.2;--r-heading-letter-spacing:normal;--r-heading-text-transform:uppercase;--r-heading-text-shadow:none;--r-heading-font-weight:600;--r-heading1-text-shadow:none;--r-heading1-size:2.5em;--r-heading2-size:1.6em;--r-heading3-size:1.3em;--r-heading4-size:1em;--r-code-font:monospace;--r-link-color:#2a76dd;--r-link-color-dark:#1a53a1;--r-link-color-hover:#6ca0e8;--r-selection-background-color:#98bdef;--r-selection-color:#fff}.reveal-viewport{background:#fff;background-color:var(--r-background-color)}.reveal{font-family:var(--r-main-font);font-size:var(--r-main-font-size);font-weight:400;color:var(--r-main-color)}.reveal ::selection{color:var(--r-selection-color);background:var(--r-selection-background-color);text-shadow:none}.reveal ::-moz-selection{color:var(--r-selection-color);background:var(--r-selection-background-color);text-shadow:none}.reveal .slides section,.reveal .slides section>section{line-height:1.3;font-weight:inherit}.reveal h1,.reveal h2,.reveal h3,.reveal h4,.reveal h5,.reveal h6{margin:var(--r-heading-margin);color:var(--r-heading-color);font-family:var(--r-heading-font);font-weight:var(--r-heading-font-weight);line-height:var(--r-heading-line-height);letter-spacing:var(--r-heading-letter-spacing);text-transform:var(--r-heading-text-transform);text-shadow:var(--r-heading-text-shadow);word-wrap:break-word}.reveal h1{font-size:var(--r-heading1-size)}.reveal h2{font-size:var(--r-heading2-size)}.reveal h3{font-size:var(--r-heading3-size)}.reveal h4{font-size:var(--r-heading4-size)}.reveal h1{text-shadow:var(--r-heading1-text-shadow)}.reveal p{margin:var(--r-block-margin) 0;line-height:1.3}.reveal h1:last-child,.reveal h2:last-child,.reveal h3:last-child,.reveal h4:last-child,.reveal h5:last-child,.reveal h6:last-child{margin-bottom:0}.reveal iframe,.reveal img,.reveal video{max-width:95%;max-height:95%}.reveal b,.reveal strong{font-weight:700}.reveal em{font-style:italic}.reveal dl,.reveal ol,.reveal ul{display:inline-block;text-align:left;margin:0 0 0 1em}.reveal ol{list-style-type:decimal}.reveal ul{list-style-type:disc}.reveal ul ul{list-style-type:square}.reveal ul ul ul{list-style-type:circle}.reveal ol ol,.reveal ol ul,.reveal ul ol,.reveal ul ul{display:block;margin-left:40px}.reveal dt{font-weight:700}.reveal dd{margin-left:40px}.reveal blockquote{display:block;position:relative;width:70%;margin:var(--r-block-margin) auto;padding:5px;font-style:italic;background:rgba(255,255,255,.05);box-shadow:0 0 2px rgba(0,0,0,.2)}.reveal blockquote p:first-child,.reveal blockquote p:last-child{display:inline-block}.reveal q{font-style:italic}.reveal pre{display:block;position:relative;width:90%;margin:var(--r-block-margin) auto;text-align:left;font-size:.55em;font-family:var(--r-code-font);line-height:1.2em;word-wrap:break-word;box-shadow:0 5px 15px rgba(0,0,0,.15)}.reveal code{font-family:var(--r-code-font);text-transform:none;tab-size:2}.reveal pre code{display:block;padding:5px;overflow:auto;max-height:400px;word-wrap:normal}.reveal .code-wrapper{white-space:normal}.reveal .code-wrapper code{white-space:pre}.reveal table{margin:auto;border-collapse:collapse;border-spacing:0}.reveal table th{font-weight:700}.reveal table td,.reveal table th{text-align:left;padding:.2em .5em .2em .5em;border-bottom:1px solid}.reveal table td[align=center],.reveal table th[align=center]{text-align:center}.reveal table td[align=right],.reveal table th[align=right]{text-align:right}.reveal table tbody tr:last-child td,.reveal table tbody tr:last-child th{border-bottom:none}.reveal sup{vertical-align:super;font-size:smaller}.reveal sub{vertical-align:sub;font-size:smaller}.reveal small{display:inline-block;font-size:.6em;line-height:1.2em;vertical-align:top}.reveal small *{vertical-align:top}.reveal img{margin:var(--r-block-margin) 0}.reveal a{color:var(--r-link-color);text-decoration:none;transition:color .15s ease}.reveal a:hover{color:var(--r-link-color-hover);text-shadow:none;border:none}.reveal .roll span:after{color:#fff;background:var(--r-link-color-dark)}.reveal .r-frame{border:4px solid var(--r-main-color);box-shadow:0 0 10px rgba(0,0,0,.15)}.reveal a .r-frame{transition:all .15s linear}.reveal a:hover .r-frame{border-color:var(--r-link-color);box-shadow:0 0 20px rgba(0,0,0,.55)}.reveal .controls{color:var(--r-link-color)}.reveal .progress{background:rgba(0,0,0,.2);color:var(--r-link-color)}@media print{.backgrounds{background-color:var(--r-background-color)}}</style>
+<style>
+:root {
+  --r-heading-font: 'Segoe UI', sans-serif;
+  --r-main-font: 'Segoe UI', sans-serif;
+  --r-heading-color: #1a1a2e;
+  --primary: #1a73e8;
+  --danger: #d93025;
+  --success: #1e8e3e;
+  --warning: #f9ab00;
+  --orange: #e65100;
+  --dark: #0d1b2a;
+}
+.reveal { font-family: 'Segoe UI', sans-serif; }
+.reveal h1, .reveal h2, .reveal h3 { font-family: 'Segoe UI', sans-serif; font-weight: 800; }
+.reveal .slides { text-align: left; }
+.reveal .slides section { padding: 40px 180px 40px 60px; }
+
+/* Cover */
+.cover-slide { background: linear-gradient(135deg, #0d1b2a 0%, #1b2d4f 50%, #1a73e8 100%) !important; }
+.cover-slide * { color: white !important; text-align: left !important; }
+.cover-label { font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.5) !important; margin-bottom: 16px; }
+.cover-slide h1 { font-size: 2.2em !important; font-weight: 900 !important; line-height: 1.3 !important; margin-bottom: 12px !important; }
+.cover-slide h1 span { color: #4dabf7 !important; }
+.cover-sub { font-size: 18px; color: rgba(255,255,255,0.7) !important; margin-bottom: 40px; }
+.cover-meta { display: flex; gap: 40px; font-size: 13px; color: rgba(255,255,255,0.5) !important; }
+.cover-meta strong { color: rgba(255,255,255,0.85) !important; }
+
+/* Section divider */
+.section-slide { background: linear-gradient(135deg, #0d1b2a, #1b2d4f) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+.section-slide * { color: white !important; text-align: center !important; }
+.section-slide .section-num { font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.1) !important; line-height: 1; }
+.section-slide h2 { font-size: 2em !important; margin: 8px 0 !important; }
+.section-slide .section-sub { font-size: 18px; color: rgba(255,255,255,0.6) !important; }
+
+/* Content cards */
+.exp-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; width: 1100px; }
+.exp-item { background: #f8f9fa; border-radius: 0; padding: 18px 20px; position: relative; padding-left: 48px; }
+.exp-item .num { width: 26px; height: 26px; border-radius: 0; position: absolute; left: 0; top: 0; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+.exp-item .label { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.exp-item .value { font-size: 16px; font-weight: 600; color: #212529; line-height: 1.5; }
+
+/* Insight */
+.insight-box { background: #fff8e1; border-radius: 10px; padding: 18px 24px; border-left: 4px solid var(--warning); font-size: 15px; line-height: 1.8; margin-top: 20px; width: 1214px; box-sizing: border-box; }
+.insight-box strong { color: var(--danger); }
+
+/* Output grid */
+.output-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 16px; }
+.output-item { display: flex; align-items: flex-start; gap: 10px; background: #f8f9fa; border-radius: 10px; padding: 12px 14px; }
+.output-item .num { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: white; flex-shrink: 0; }
+.output-item .num.blue { background: var(--primary); }
+.output-item .num.green { background: var(--success); }
+.output-item .num.orange { background: var(--orange); }
+.output-item .name { font-size: 13px; font-weight: 700; color: #212529; }
+.output-item .desc { font-size: 11px; color: #6c757d; margin-top: 2px; }
+.built-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; background: #e8f5e9; color: var(--success); margin-left: 4px; }
+
+/* PS Grid (Problem/Solution) */
+.ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.ps-card { border-radius: 12px; padding: 20px 24px; }
+.ps-card.problem { background: #fef2f2; border: 1px solid #fecaca; }
+.ps-card.solution { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.ps-card h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.ps-card.problem h4 { color: var(--danger); }
+.ps-card.solution h4 { color: var(--success); }
+.ps-card ul { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+.ps-card ul li { padding: 4px 0 4px 16px; position: relative; line-height: 1.5; }
+.ps-card.problem ul li::before { content: '✕'; position: absolute; left: 0; color: var(--danger); font-weight: 700; font-size: 11px; }
+.ps-card.solution ul li::before { content: '→'; position: absolute; left: 0; color: var(--success); font-weight: 700; }
+
+/* Evidence */
+.evidence { background: #f8f9ff; border: 1px solid #e0e7ff; border-radius: 10px; padding: 16px 20px; margin-top: 16px; }
+.evidence-title { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.evidence-stats { display: flex; gap: 28px; }
+.evidence-stat .num { font-size: 28px; font-weight: 800; line-height: 1; }
+.evidence-stat .num.red { color: var(--danger); }
+.evidence-stat .num.blue { color: var(--primary); }
+.evidence-stat .num.green { color: var(--success); }
+.evidence-stat .num.orange { color: var(--orange); }
+.evidence-stat .desc { font-size: 11px; color: #6c757d; margin-top: 2px; }
+
+/* Impact chips */
+.impact-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.impact-chip { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 20px; }
+.impact-chip.time { background: #e8f5e9; color: #2e7d32; }
+.impact-chip.cost { background: #e3f2fd; color: #1565c0; }
+.impact-chip.quality { background: #fce4ec; color: #c62828; }
+
+/* Compare table */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+.compare-table th { background: #f8f9fa; padding: 8px 12px; text-align: left; font-weight: 700; font-size: 11px; color: #6c757d; text-transform: uppercase; border-bottom: 2px solid #e9ecef; }
+.compare-table td { padding: 8px 12px; border-bottom: 1px solid #e9ecef; vertical-align: top; font-size: 13px; }
+.compare-table .before { color: var(--danger); }
+.compare-table .after { color: var(--success); font-weight: 600; }
+
+/* AS-IS / TO-BE for renewal items */
+.asis-tobe { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+.asis-box, .tobe-box { border-radius: 12px; padding: 24px; }
+.asis-box { background: #fef2f2; border: 1px solid #fecaca; }
+.tobe-box { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.asis-box h4 { color: var(--danger); font-size: 14px; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #fecaca; }
+.tobe-box h4 { color: var(--success); font-size: 14px; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #bbf7d0; }
+.asis-box p, .tobe-box p { font-size: 14px; line-height: 1.8; margin: 0; color: #333; }
+.asis-box ul, .tobe-box ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.8; color: #333; }
+
+/* GUI item slides */
+.gui-item-title { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.gui-item-num { background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; }
+.gui-item-title h3 { font-size: 1.4em !important; margin: 0 !important; color: var(--dark); }
+.gui-category { font-size: 12px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+
+/* Flow */
+.advisor-flow { background: linear-gradient(135deg, #0d1b2a, #1b2d4f); border-radius: 12px; padding: 24px; color: white; margin-top: 16px; }
+.advisor-flow h4 { font-size: 13px; color: #4dabf7; margin-bottom: 14px; }
+.flow-steps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.flow-step { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; font-size: 12px; text-align: center; color: white; }
+.flow-step .icon { font-size: 18px; margin-bottom: 2px; }
+.flow-arrow { font-size: 16px; color: rgba(255,255,255,0.3); }
+
+/* Popup mockup */
+.popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.popup-mockup { background: #1e1e1e; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.popup-titlebar { padding: 8px 14px; display: flex; align-items: center; gap: 8px; }
+.popup-titlebar.old { background: #555; }
+.popup-titlebar.new { background: #c62828; }
+.popup-titlebar span { color: white; font-size: 12px; font-weight: 700; }
+.popup-content { padding: 16px 20px; }
+.popup-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.popup-label.error { color: #ef5350; }
+.popup-label.cause { color: #ffa726; }
+.popup-label.action { color: #66bb6a; }
+.popup-text { font-size: 12px; color: #e0e0e0; line-height: 1.6; font-family: 'Consolas', monospace; margin-bottom: 10px; }
+.popup-actions { display: flex; gap: 6px; padding-top: 10px; border-top: 1px solid #333; }
+.popup-btn { padding: 6px 14px; border-radius: 5px; font-size: 11px; font-weight: 600; border: none; }
+.popup-btn.primary { background: #1a73e8; color: white; }
+.popup-btn.secondary { background: #333; color: #aaa; }
+.popup-btn.pdanger { background: #b71c1c; color: white; }
+
+/* Proto banner */
+.proto-banner { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 2px solid #66bb6a; border-radius: 10px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+.proto-banner .badge { background: var(--success); color: white; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 4px; white-space: nowrap; }
+.proto-banner .text { font-size: 13px; color: #2e7d32; font-weight: 600; }
+
+/* Summary */
+.summary-slide { background: linear-gradient(135deg, #1a73e8, #1557b0) !important; }
+.summary-slide * { color: white !important; }
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-top: 24px; }
+.summary-card { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; text-align: center; }
+.summary-card .s-num { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5) !important; margin-bottom: 4px; }
+.summary-card .s-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.summary-card .s-metric { font-size: 12px; color: rgba(255,255,255,0.7) !important; }
+.summary-msg { text-align: center !important; font-size: 16px; line-height: 1.9; color: rgba(255,255,255,0.85) !important; margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+.summary-msg strong { color: white !important; }
+.highlight-blue { color: #4dabf7 !important; }
+
+/* GUI improvement overview table */
+.gui-overview-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+.gui-overview-table th { background: var(--primary); color: white; padding: 8px 10px; text-align: left; font-weight: 700; font-size: 11px; }
+.gui-overview-table td { padding: 7px 10px; border-bottom: 1px solid #e9ecef; vertical-align: top; }
+.gui-overview-table tr:nth-child(even) { background: #f8f9fa; }
+.gui-overview-table .cat { font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+/* Green triangle decoration (matching renewalAOI style) */
+.deco-slide { position: relative; overflow: hidden; }
+.deco-slide::after {
+  content: '';
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 120px; height: 120px;
+  background: linear-gradient(135deg, transparent 50%, rgba(30,142,62,0.12) 50%);
+}
+.deco-slide::before {
+  content: '';
+  position: absolute;
+  right: 30px; bottom: 30px;
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, transparent 50%, rgba(30,142,62,0.08) 50%);
+  z-index: 1;
+}
+
+/* Page number styling */
+.reveal .slide-number { font-family: 'Pretendard', 'Malgun Gothic', '맑은 고딕', sans-serif; font-size: 14px; font-weight: 700; color: #999; }
+
+/* Smaller text helper */
+.small { font-size: 12px; color: #6c757d; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+
+/* Field AI slides */
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+.problem-card { background: #f8f9fa; border-radius: 10px; padding: 20px; border-top: 3px solid var(--danger); }
+.problem-card .p-num { font-size: 20px; font-weight: 800; color: var(--danger); margin-bottom: 6px; }
+.problem-card h4 { font-size: 14px; font-weight: 700; color: #212529; margin-bottom: 8px; }
+.problem-card p { font-size: 12px; color: #555; line-height: 1.6; margin: 0; }
+.ux-insight { background: linear-gradient(135deg, #0d1b2a, #1b2d4f); border-radius: 10px; padding: 18px 24px; margin-top: 16px; color: white; font-size: 14px; line-height: 1.6; }
+.ux-insight .tag { font-size: 10px; font-weight: 700; color: #4dabf7; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+
+.flow-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+.flow-box { border-radius: 10px; padding: 24px; }
+.flow-box.before { background: #fef2f2; border: 1px solid #fecaca; }
+.flow-box.after { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.flow-box h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+.flow-box.before h4 { color: var(--danger); }
+.flow-box.after h4 { color: var(--success); }
+.flow-steps-v { display: flex; flex-direction: column; gap: 6px; }
+.flow-step-v { font-size: 13px; color: #333; padding: 8px 12px; background: rgba(0,0,0,0.04); border-radius: 6px; display: flex; align-items: center; gap: 8px; }
+.flow-step-v .arrow { color: #aaa; font-size: 11px; }
+.flow-box.after .flow-step-v { background: rgba(30,142,62,0.06); }
+.flow-desc { font-size: 12px; color: #666; margin-top: 12px; line-height: 1.6; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08); }
+
+.concept-pillars { display: flex; gap: 10px; margin-top: 16px; }
+.pillar { flex: 1; background: #f8f9fa; border-radius: 10px; padding: 16px; text-align: center; border-top: 3px solid var(--primary); }
+.pillar .p-icon { font-size: 24px; margin-bottom: 6px; }
+.pillar h4 { font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+.pillar p { font-size: 11px; color: #555; line-height: 1.5; margin: 0; }
+.pillar-arrow { display: flex; align-items: center; color: #ccc; font-size: 14px; flex-shrink: 0; }
+.concept-result { background: linear-gradient(135deg, #0d1b2a, #1b2d4f); border-radius: 10px; padding: 16px 24px; margin-top: 14px; color: white; font-size: 13px; line-height: 1.6; text-align: center; }
+
+.dual-mode { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; margin-top: 20px; align-items: center; }
+.mode-card { border-radius: 12px; padding: 28px 24px; text-align: center; }
+.mode-card.local { background: #f0f4ff; border: 1px solid #c7d7fe; }
+.mode-card.cloud { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.mode-card .mode-icon { font-size: 32px; margin-bottom: 8px; }
+.mode-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.mode-card.local h4 { color: var(--primary); }
+.mode-card.cloud h4 { color: var(--success); }
+.mode-card p { font-size: 13px; color: #555; line-height: 1.6; margin: 4px 0; }
+.mode-card .mode-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 8px; }
+.mode-card.local .mode-tag { background: #dbeafe; color: var(--primary); }
+.mode-card.cloud .mode-tag { background: #dcfce7; color: var(--success); }
+.mode-connector { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #aaa; }
+.mode-connector .line { width: 2px; height: 30px; background: #ddd; }
+.ux-same { background: #fff8e1; border-radius: 10px; padding: 16px 24px; margin-top: 16px; text-align: center; font-size: 14px; font-weight: 600; color: #333; border: 1px solid #fde68a; }
+
+.ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+.ba-card { border-radius: 12px; padding: 24px; }
+.ba-card.ba-before { background: #fef2f2; border: 1px solid #fecaca; }
+.ba-card.ba-after { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.ba-card h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+.ba-card.ba-before h4 { color: var(--danger); }
+.ba-card.ba-after h4 { color: var(--success); }
+.ba-step { font-size: 13px; color: #333; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+.ba-step .ba-arrow { color: #aaa; }
+.ba-value { background: linear-gradient(135deg, #0d1b2a, #1b2d4f); border-radius: 10px; padding: 20px 28px; margin-top: 16px; text-align: center; }
+.ba-value p { color: rgba(255,255,255,0.9); font-size: 15px; line-height: 1.8; margin: 0; }
+.ba-value strong { color: #4dabf7; }
+
+.img-slide { padding: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; background: #0d1b2a !important; width: 100% !important; height: 100% !important; }
+.img-slide img { max-width: 95%; max-height: 680px; object-fit: contain; }
+</style>
+
+<div class="reveal">
+  <div class="slides">
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <section class="cover-slide" style="flex-direction: column !important; height: 100% !important;" data-index-h="0">
+      <div class="cover-label" style="position: relative; left: 12.5728px; top: 6.70547px; color: rgb(237, 237, 237) !important; font-family: &quot;Noto Sans KR&quot;, sans-serif !important; font-size: 14px !important;">GTS 파견 결산 보고서</div>
+      <h1 style="position: relative; left: 6.70547px; top: 25.9837px; font-size: 77px !important; font-family: &quot;Segoe UI&quot;, sans-serif !important; font-weight: 700 !important;">경험은 <span>코드</span>로,<br>노하우는 <span>솔루션</span>으로</h1>
+      <div class="cover-sub" style="position: relative; left: 10.0301px; top: 22.4346px; font-size: 29px !important; color: rgb(209, 209, 209) !important; font-family: &quot;Segoe UI&quot;, sans-serif !important;">Experience into Code, Know-how into Solutions</div>
+      <div class="cover-meta" style="margin-top: auto !important; text-align: center !important; justify-content: center;">
+        <strong style="position: relative; left: -27.6601px; top: 252.571px; font-size: 14px !important; font-family: &quot;Segoe UI&quot;, sans-serif !important; font-weight: 600 !important;">UX Team ㅣ KIM IE SEUL</strong>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="1">
+      <h2 style="font-size: 40px !important; color: var(--dark);">GTS 파견에서 배운 것</h2>
+      <div class="exp-grid">
+        <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
+          <div class="num">1</div>
+          <div><div class="label">장비 설치·셋업·운용</div><div class="value">장비 Installation·Leveling·Calibration부터 기동 및 기본 운용까지 실습</div></div>
+        </div>
+        <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
+          <div class="num">2</div>
+          <div><div class="label">JOB Programming</div><div class="value">ePM 기반 KYJOB 생성부터 Component 추가 및 검사조건 설정까지 전 과정 실습</div></div>
+        </div>
+        <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
+          <div class="num">3</div>
+          <div><div class="label">CBI Case 분석·해결</div><div class="value">고객사 3D 복원 불량 Component 분석 → Presetting Parameter 최적화 → 정상 복원 검증</div></div>
+        </div>
+        <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
+          <div class="num">4</div>
+          <div><div class="label">GTS 업무 이해 및 고객 분석</div><div class="value">GTS 기술지원 Process 경험 및 CRM 6,769건 + Service Report 3,750건 기반 Pain Point 분석</div></div>
+        </div>
+        <div class="exp-item" style="left: 11.4285px; top: 21.3333px;">
+          <div class="num">5</div>
+          <div><div class="label">고객 현장 지원</div><div class="value">TFE 신규 설비 안정화 및 장비/서버 연동</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 50px;" data-index-h="2">
+
+      <h2 style="font-size: 32px; color: var(--dark); margin: 0px 0px 16px; position: relative; left: -25.1428px; top: 4.7619e-07px; font-weight: 700 !important; outline: rgb(168, 85, 247) solid 1.5px !important;">CRM Case Analysis &amp; TS Service Blueprint Design</h2>
+      <div style="display:flex;gap:24px;align-items:flex-start;justify-content:center;">
+        <div style="flex:0 0 auto;text-align:center;">
+          <img src="crmReport.png" alt="CRM 케이스 분석 종합 리포트" style="max-height: 58vh; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; position: relative; left: -1.52388px; top: -8.38093px; width: 352px !important; height: 502px !important;">
+          <p style="font-size: 12px; color: rgb(136, 136, 136); margin: 8px 0px 0px; font-weight: 600; position: relative; left: 22.0952px; top: -21.3333px;">CRM CASE 분석 종</p>
+        </div>
+        <div style="flex:0 0 auto;text-align:center;">
+          <img src="BluePrint.png" alt="GTS Service Blueprint" style="max-height: 58vh; object-fit: contain; border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 12px; width: 943px !important; height: 506px !important; top: -11.2381px; text-align: left !important; position: relative; left: -45.7144px;">
+          <p style="font-size: 12px; color: rgb(136, 136, 136); margin: 8px 0px 0px; font-weight: 600; position: relative; left: 28.9524px; top: -24.381px;">TS Service Blueprint</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Goal & Strategy Slide -->
+    <section class="deco-slide" style="padding:40px 50px 40px 60px;">
+      <p style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 4px;">Goal &amp; Strategy</p>
+      <h2 style="font-size:36px;color:var(--dark);margin:0 0 24px;font-weight:700 !important;">CRM Case Analysis &amp; TS Service Blueprint Design</h2>
+
+      <div style="display:flex;gap:28px;align-items:stretch;">
+
+        <!-- Left: Activity & Pain Point -->
+        <div style="flex:0 0 260px;display:flex;flex-direction:column;gap:16px;">
+          <div style="border:2px solid var(--primary);border-radius:8px;padding:24px 22px;">
+            <div style="display:inline-block;background:var(--primary);color:#fff;font-size:13px;font-weight:700;padding:5px 18px;border-radius:20px;margin-bottom:14px;">Activity</div>
+            <ul style="font-size:15px;color:rgb(85,85,85);line-height:1.8;padding-left:18px;margin:0;">
+              <li>CRM 7,368건 케이스 분석</li>
+              <li>Pain Point / 반복 이슈 도출</li>
+              <li>TS Service Blueprint 설계</li>
+              <li>Programming 교육 체계 수립</li>
+            </ul>
+          </div>
+          <div style="border:2px solid var(--primary);border-radius:8px;padding:24px 22px;">
+            <div style="display:inline-block;background:var(--primary);color:#fff;font-size:13px;font-weight:700;padding:5px 18px;border-radius:20px;margin-bottom:14px;">Pain Point</div>
+            <ul style="font-size:15px;color:rgb(85,85,85);line-height:1.8;padding-left:18px;margin:0;">
+              <li>반복 문의로 인한 TS 업무 과부하</li>
+              <li>고객 Self-Resolution 수단 부재</li>
+              <li>프로그래밍 교육 체계 미흡</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: 3 Goal Cards -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px;">
+
+          <!-- Goal 1 -->
+          <div style="background:#f8f9fa;border-radius:8px;padding:20px 24px;display:flex;align-items:flex-start;gap:18px;">
+            <div style="flex:0 0 auto;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;">01</div>
+              <p style="font-size:12px;font-weight:700;color:var(--primary);margin:6px 0 0;white-space:nowrap;">Self-Resolution</p>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">TS 가이드 / FAQ 시스템 구축</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">고객 Self-Resolution 경험 향상</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">반복 문의 감소 → TS 업무 효율화</span>
+              </div>
+              <p style="font-size:15px;color:rgb(85,85,85);line-height:1.6;margin:10px 0 0;">TS 직원과 고객사가 스스로 문제를 해결할 수 있는 Self-Resolution Experience를 높여, 반복적인 기술 문의를 줄이고 핵심 업무에 집중할 수 있는 환경을 조성합니다.</p>
+            </div>
+          </div>
+
+          <!-- Goal 2 -->
+          <div style="background:#f8f9fa;border-radius:8px;padding:20px 24px;display:flex;align-items:flex-start;gap:18px;">
+            <div style="flex:0 0 auto;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;">02</div>
+              <p style="font-size:12px;font-weight:700;color:var(--primary);margin:6px 0 0;white-space:nowrap;">Programming</p>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">AOI 프로그래밍 교육 체계 수립</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">기본 기능 활용도 향상</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">고객사 엔지니어 역량 강화</span>
+              </div>
+              <p style="font-size:15px;color:rgb(85,85,85);line-height:1.6;margin:10px 0 0;">Programming 교육을 통해 AOI 기본 기능 활용도를 높이고, 고객사 엔지니어가 독립적으로 장비를 운용할 수 있는 역량을 갖추도록 지원합니다.</p>
+            </div>
+          </div>
+
+          <!-- Goal 3 -->
+          <div style="background:#f8f9fa;border-radius:8px;padding:20px 24px;display:flex;align-items:flex-start;gap:18px;">
+            <div style="flex:0 0 auto;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;">03</div>
+              <p style="font-size:12px;font-weight:700;color:var(--primary);margin:6px 0 0;white-space:nowrap;">UX 개선</p>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">CRM 데이터 기반 UX Pain Point 도출</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">SW 사용성 개선 우선순위 제안</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="color:var(--primary);font-size:15px;">&#10003;</span><span style="font-size:15px;color:rgb(85,85,85);">GUI/UI 이슈 체계적 분류 및 분석</span>
+              </div>
+              <p style="font-size:15px;color:rgb(85,85,85);line-height:1.6;margin:10px 0 0;">7,368건의 CRM 케이스 분석을 통해 도출한 UX Pain Point를 기반으로, SW 사용성 개선 방향과 우선순위를 제시합니다.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom message -->
+      <div style="text-align:center;margin-top:28px;">
+        <span style="color:var(--primary);font-size:21px;font-weight:700;">→</span>
+        <span style="font-size:21px;font-weight:700;color:var(--dark);margin-left:8px;">CRM 데이터 분석과 교육 체계를 통해 <span style="color:var(--primary);">'Self-Resolution'</span>과 <span style="color:var(--primary);">'기술 역량 강화'</span>를 동시에 달성합니다.</span>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="4">
+      <p style="font-size: 14px; font-weight: 700; color: var(--primary); margin: 0px 0px 4px; position: relative; left: 1.52381px; top: 8.38095px;">기획 아이템 1</p>
+      <h2 style="font-size: 36px; color: var(--dark); margin: 0px 0px 20px; font-weight: 700 !important;">Field AI</h2>
+      <p style="font-size: 18px; color: rgb(51, 51, 51); margin: 0px 0px 24px; position: relative; left: 3.80952px; top: 6.09526px; font-weight: 400 !important;">기획 배경 _ 현장 Setup &amp; Troubleshooting의 문제</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;align-items:stretch;justify-content:start;max-width:1040px;">
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">복잡한 현장 환경</p>
+          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; font-size: 15px !important; position: relative; left: 0px; top: 9.90476px;">장비·라인·공장별로 설비 구성과 환경이 달라, 상황에 따라 필요한 설정과 확인 항목이 달라짐</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">상황별 설정 편차</div>
+        </div>
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">분산된 정보와 Context</p>
+          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; font-size: 15px !important; position: relative; left: 0px; top: 9.90476px;">설정값, 장비 상태, 네트워크, 과거 Issue 등 문제 해결에 필요한 정보가 여러 곳에 분산</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">정보 접근 비효율</div>
+        </div>
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">높은 숙련도 의존성</p>
+          <p style="color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; font-size: 15px !important; position: relative; left: 0px; top: 9.90476px;">경험이 부족할수록 설정 변경과 시행착오를 반복하고, 결국 숙련된 Engineer의 경험에 의존</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">경험 의존 구조</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <p style="font-size: 21px !important; font-weight: 400 !important; color: var(--dark); margin: 0px 0px 4px; position: relative; left: 0px; top: 26.6667px;">문제 해결이 시스템이 아닌 Engineer의 경험과 숙련도에 의존하고 있다.</p>
+        <p style="font-size: 21px !important; font-weight: 700; color: var(--primary); margin: 0px; position: relative; left: 0px; top: 37.3334px;">"그렇다면 숙련된 Engineer의 경험을 어떻게 시스템화할 것인가?"</p>
+      </div>
+    </section>
+
+    <section class="img-slide has-dark-background" style="" data-index-h="5">
+      <img src="fieldAI.png" alt="Field AI Concept">
+    </section>
+
+    <section class="img-slide has-dark-background" style="background: var(--r-background-color, #fff) !important;" data-index-h="6">
+      <img src="FIELDAI1.png" alt="KY Assistant - AI 챗봇">
+    </section>
+
+    <section class="img-slide has-dark-background" style="background: var(--r-background-color, #fff) !important;" data-index-h="7">
+      <img src="FIELDAI2.png" alt="KY Assistant - Top 10 이슈 Flowchart">
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="8">
+      <p style="font-size: 14px; font-weight: 700; color: var(--primary); margin: 0px 0px 4px; position: relative; left: 1.52381px; top: 8.38095px;">기획 아이템 2</p>
+      <h2 style="font-size: 36px; color: var(--dark); margin: 0px 0px 20px; font-weight: 700 !important;">Error Message 재설계</h2>
+      <p style="font-size: 18px; color: rgb(51, 51, 51); margin: 0px 0px 24px; position: relative; left: 3.80952px; top: 6.09526px; font-weight: 400 !important;">기획 배경 _ Support Cost Deflection</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;align-items:stretch;justify-content:start;max-width:1040px;">
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">판매 ↑ = 지원비용 ↑</p>
+          <p style="font-size: 15px !important; color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px;">장비 1대가 팔릴 때마다 지원 케이스도 함께 늘어나고, 지원 비용은 장비가 현장에 있는 한 계속 누적</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">매출 비례 비용 증가</div>
+        </div>
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">순이익률 하락의 역설</p>
+          <p style="font-size: 15px !important; color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px;">매출은 납품 시 1회 발생하지만, 지원 비용은 계속 누적. 장비를 많이 팔수록 오히려 순이익률이 하락</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">구조적 수익성 문제</div>
+        </div>
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">자체 해결 기능 부재</p>
+          <p style="font-size: 15px !important; color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px;">해결 방법의 상당수가 사용자도 수행 가능한 조치였으나, 제품 내 해결 안내 기능이 전무</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">UX가 유일한 레버</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <p style="font-size: 21px !important; font-weight: 400 !important; color: var(--dark); margin: 0px 0px 4px; position: relative; left: 0px; top: 26.6667px;">사용자가 스스로 해결할 수 있으면, 장비 1대당 지원 비용이 줄어든다.</p>
+        <p style="font-size: 21px !important; font-weight: 700; color: var(--primary); margin: 0px; position: relative; left: 0px; top: 37.3334px;">"제품 내 Self-Resolution Engine을 어떻게 구축할 것인가?"</p>
+      </div>
+    </section>
+
+    <section class="img-slide has-dark-background" style="background: var(--r-background-color, #fff) !important;" data-index-h="9">
+      <img src="inapp2.png" alt="In-App Guide 2">
+    </section>
+
+    <section class="img-slide has-dark-background" style="background: var(--r-background-color, #fff) !important;" data-index-h="10">
+      <img src="inapp1.png" alt="In-App Guide 1">
+    </section>
+
+    <section class="img-slide has-dark-background" style="background: var(--r-background-color, #fff) !important;" data-index-h="11">
+      <img src="ErrorMessage%20Catalog.png" alt="Error Message Catalog">
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="12">
+      <p style="font-size: 14px; font-weight: 700; color: var(--primary); margin: 0px 0px 4px; position: relative; left: 1.52381px; top: 8.38095px;">기획 아이템 3</p>
+      <h2 style="font-size: 36px; color: var(--dark); margin: 0px 0px 20px; font-weight: 700 !important;">AOI GUI 개선</h2>
+      <p style="font-size: 18px; color: rgb(51, 51, 51); margin: 0px 0px 24px; position: relative; left: 3.80952px; top: 6.09526px; font-weight: 400 !important;">기획 배경 _ 기본 사용성 부족으로 인한 작업 효율 저하</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;align-items:stretch;justify-content:start;max-width:1040px;">
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">기본 조작 기능의 부재</p>
+          <p style="font-size: 15px !important; color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px;">Undo/Redo 등 사용자가 기본적으로 기대하는 기능 미지원. 잘못된 설정을 되돌리기 어려움</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">기능 부재</div>
+        </div>
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">반복 작업과 시행착오</p>
+          <p style="font-size: 15px !important; color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px;">작은 실수에도 설정을 처음부터 다시 수정. 작업 흐름이 끊기고 불필요한 시간 소모</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">효율 저하</div>
+        </div>
+        <div style="background: rgb(248, 249, 250); border-radius: 8px; padding: 28px 30px 0px; text-align: center; display: flex; flex-direction: column; min-height: 200px; overflow: hidden; font-size: 48px !important; width: 312px !important;">
+          <p style="font-size: 17px !important; font-weight: 700; color: rgb(0, 0, 0) !important; margin: 0px 0px 10px;">기본 기대 수준 미충족</p>
+          <p style="font-size: 15px !important; color: rgb(85, 85, 85); line-height: 1.6; margin: 0px 0px auto; position: relative; left: 0px; top: 9.90476px;">기능의 복잡성보다 기본 편의 기능 부족이 더 큰 불편으로 체감. 숙련도와 무관하게 반복 불편</p>
+          <div style="background: rgb(219, 234, 254); color: var(--primary); font-size: 16px !important; font-weight: 700 !important; padding: 12px; border-radius: 0px 0px 8px 8px; margin: 20px -30px 0;">UX 기대치 Gap</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <p style="font-size: 21px !important; font-weight: 400 !important; color: var(--dark); margin: 0px 0px 4px; position: relative; left: 0px; top: 26.6667px;">기본 기능의 부재가 작업의 불편과 비효율로 직결되고 있다.</p>
+        <p style="font-size: 21px !important; font-weight: 700; color: var(--primary); margin: 0px; position: relative; left: 0px; top: 37.3334px;">"기본 조작 경험을 어떻게 보완할 것인가?"</p>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="13">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">1. Apply 버튼 개선</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; width: 1220px !important;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="1apply.png" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; border: 1px solid rgb(224, 224, 224); position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 수정한 내용이 저장되지 않음</b><br>검사 조건을 수정한 후 다른 탭으로 이동하면 수정 내용이 저장되지 않고 사라짐</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>② 탭 이동만으로 작업 내용 유실</b><br>사용자가 다른 작업을 위해 탭을 전환하면 이전에 수정한 내용이 초기화됨</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 8px;"><b>③ 수정 내용 재작업 발생</b><br>작업 내용이 사라지면서 같은 설정을 다시 수정해야 하는 불필요한 재작업 발생</p>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:4px;">
+              <span style="background:#f8f9fa;border:1px solid #ccc;border-radius:4px;padding:3px 8px;">Missing 선택</span>
+              <span style="color:#888;">▶</span>
+              <span style="background:#f8f9fa;border:1px solid #ccc;border-radius:4px;padding:3px 8px;">값 수정</span>
+              <span style="color:#888;">▶</span>
+              <span style="background:#fff;border:1px solid var(--danger);border-radius:4px;padding:3px 8px;color:var(--danger);font-weight:600;">Apply 안 누름</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;">
+              <span style="color:#888;">▶</span>
+              <span style="background:#f8f9fa;border:1px solid #ccc;border-radius:4px;padding:3px 8px;">Pad Overhang 전환</span>
+              <span style="color:#888;">▶</span>
+              <span style="background:#fef2f2;border:1px solid var(--danger);border-radius:4px;padding:3px 8px;color:var(--danger);font-weight:600;">Missing 수정내용 유실!</span>
+            </div>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 변경 사항 자동 저장</b><br>탭 전환 시 수정 내용을 자동 저장하여 데이터 유실 원천 차단</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 미저장 상태 확인 다이얼로그</b><br>미저장 상태에서 탭 전환 시 사용자에게 저장 여부를 확인하는 다이얼로그 제공</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="14">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">2. Undo / Redo 기능 추가</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; width: 1220px !important;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="2undoredo.png" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; border: 1px solid rgb(224, 224, 224); position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① Undo 기능 부재</b><br>편집 작업에 대한 실행 취소(Undo) 기능이 존재하지 않는 구조</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 오조작 시 복구 불가</b><br>복구 경로가 없어 전체 설정을 처음부터 재수행해야 하는 비효율 발생</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① Ctrl+Z / Ctrl+Y 단축키 지원</b><br>모든 편집 작업의 실행 취소 및 재실행을 단축키로 즉시 수행</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 오조작 복구 비용 제로화</b><br>작업 흐름의 연속성을 확보하고 재수행 비용 완전 제거</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="15">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">3. Result 화면 개선</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; width: 1220px !important; position: relative;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="3result.png" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; border: 1px solid rgb(224, 224, 224); position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① Good Result 필터 적용 시 Viewer 결과 미표시</b><br>Good Result 필터 활성화 시 정상(GOOD) 결과가 3D Viewer에 표시되지 않아 결과 확인이 어려움</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 정상 결과 확인 과정 불편</b><br>정상 결과를 확인하기 위해 필터를 해제해야 하는 불필요한 과정 발생</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 필터와 Viewer 표시 영역 분리</b><br>Good Result 필터는 결과 리스트에만 적용하고, 3D Viewer에는 검사 결과를 계속 표시</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 필터 적용 상태에서도 Viewer 결과 확인</b><br>필터를 해제하지 않고도 3D Viewer에서 정상 결과의 위치와 검사 상태를 확인</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="16">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">4. Image Plane 기반 Tolerance 설정 개선</p>
+      <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 32px; align-items: start; width: 1220px !important; position: relative;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="4Imageplane.png" style="max-width: 100%; max-height: 520px; object-fit: contain; position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>① 인지 부하 발생</b><br>Image Plane Popup에서 Gray Value를 기억한 후, Main 화면에서 다시 수동으로 입력해야 함</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 워크플로우 통합</b><br>Image Plane Popup을 띄운 상태에서 Image Plane과 Gray Value를 확인하면서 Tolerance 값을 바로 설정할 수 있도록 개선</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 컨텍스트 전환 제거</b><br>한 화면에서 완결되는 설정 경험 제공으로 인지 부하 해소</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="17">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">5. Pad Overhang Tolerance 설정 시 Percent 계산</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; width: 1220px !important;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="5PERCENT.png" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; border: 1px solid rgb(224, 224, 224); position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 수동 환산 필요</b><br>Tolerance를 %로 설정할 때 실제 Length/Width 값을 사용자가 직접 환산해야 하는 구조</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 계산 오류 리스크</b><br>수동 계산 과정에서 오류 발생 가능성과 불필요한 인지 부하 유발</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 실시간 환산 표시</b><br>% 입력 시 해당하는 실제 Length/Width 값을 실시간으로 자동 환산 표시</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 설정 정확도 향상</b><br>사용자의 수동 계산을 제거하여 오류 리스크 차단 및 정확도 확보</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="18">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">6. AOI-Addon Add Component : Package 생성 방향 가이드 부족</p>
+      <div style="display: grid; grid-template-columns: 7fr 3fr; gap: 32px; align-items: start; width: 1220px !important;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="addcomp1.png" style="max-width: 100%; max-height: 520px; object-fit: contain; position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 생성 방향 가이드 부재</b><br>Package 생성 시 Lead 방향에 대한 시각적 가이드가 없는 구조</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>② 잘못된 방향으로 생성</b><br>올바른 생성 방향을 직관적으로 판단할 수 없어 오류 빈발</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>③ 다량의 재작업 발생</b><br>Package 재생성 및 재작업으로 인한 비용 증가</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 시각적 생성 가이드 제공</b><br>Lead 방향 기반의 올바른 생성 방향을 시각적으로 안내</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 생성 전 방향 Validation</b><br>생성 전 방향 검증을 통해 오류를 사전 차단하고 재작업 비용 최소화</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="19">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">7. AOI-Addon Add Component : Component 리스트 개선</p>
+      <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 32px; align-items: start; width: 1220px !important;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="addcomp2.png" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; border: 1px solid #ccc; position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 리스트 직접 수정 불가</b><br>Component List에서 항목 값의 직접 수정이 불가한 구조</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② Rotation 수정 비효율</b><br>Rotation 변경 시 Viewer에서 패키지를 수동 회전시키며 각도를 조정해야 하는 워크플로우</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 인라인 수정 지원</b><br>Component List 내에서 Component Name, Rotation 값을 직접 수정 가능</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② 단일 화면 편집 완결</b><br>Viewer 전환 없이 리스트 단일 화면에서 편집을 완결하여 작업 효율 향상</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="padding: 40px 60px !important;" data-index-h="20">
+      <p style="font-size:28px;font-weight:700;color:var(--dark);margin:0 0 20px;">8. AOI-Addon Add Component : Component 선택 및 배치 UX 개선</p>
+      <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 32px; align-items: start; width: 1220px !important;">
+        <div style="display:flex;align-items:flex-start;">
+          <img src="addcomp3.png" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 8px; border: 1px solid #ccc; position: relative; left: 0px; top: -20.5714px;">
+        </div>
+        <div>
+          <div style="background: rgb(254, 242, 242); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; border-left: 4px solid var(--danger);">
+            <p style="font-size:18px;font-weight:700;color:var(--danger);margin:0 0 8px;">AS-IS</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 선택 Component 식별 어려움</b><br>Viewer에서 선택된 Component의 시각적 Highlight가 부재하여 위치 파악에 불필요한 시간 소요</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>② Copy &amp; Paste 동작의 비직관성</b><br>Ctrl+V 실행 시 마우스 커서 위치가 아닌 복사 원본 주변에 생성되어 추가 탐색 및 이동 필요</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>③ 불필요한 반복 작업</b><br>복사 → 붙여넣기 → 위치 찾기 → 이동의 비효율적 워크플로우로 작업 효율 저하</p>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:16px 20px;border-left:4px solid var(--success);">
+            <p style="font-size:18px;font-weight:700;color:var(--success);margin:0 0 8px;">TO-BE</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0 0 6px;"><b>① 선택 Component Highlight</b><br>선택 대상을 시각적으로 명확히 표시하여 즉시 인지 가능</p>
+            <p style="font-size:13px;color:#333;line-height:1.6;margin:0;"><b>② Mouse Cursor 기반 Paste</b><br>Ctrl+V 실행 시 현재 커서 위치에 즉시 배치하여 탐색 단계 제거</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="21">
+      <p style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 4px;">기획 아이템 4</p>
+      <h2 style="font-size:36px;color:var(--dark);margin:0 0 20px;font-weight:700 !important;">AOI PRESETTING GUIDE 구축</h2>
+      <p style="font-size:18px;color:#333;margin:0 0 28px;font-weight:400 !important;">기획 배경 _ 3D 복원 작업의 어려움</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;align-items:stretch;max-width:1040px;">
+        <div style="background:#f8f9fa;border-radius:8px;padding:28px 30px 0;text-align:center;display:flex;flex-direction:column;min-height:200px;overflow:hidden;width:312px !important;">
+          <p style="font-size:17px !important;font-weight:700;color:#000 !important;margin:0 0 10px;">파라미터의 높은 복잡성</p>
+          <p style="font-size:15px !important;color:#555;line-height:1.6;margin:0 0 auto;">3D 복원 관련 파라미터가 30개 이상이며, 각 파라미터의 역할·상호작용·부작용을 현장 엔지니어가 파악하기 어려움</p>
+          <div style="background:#dbeafe;color:var(--primary);font-size:16px !important;font-weight:700 !important;padding:12px;border-radius:0 0 8px 8px;margin:20px -30px 0;">파라미터 이해 부족</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:8px;padding:28px 30px 0;text-align:center;display:flex;flex-direction:column;min-height:200px;overflow:hidden;width:312px !important;">
+          <p style="font-size:17px !important;font-weight:700;color:#000 !important;margin:0 0 10px;">증상–해결 연결의 어려움</p>
+          <p style="font-size:15px !important;color:#555;line-height:1.6;margin:0 0 auto;">3D 무너짐, 노이즈 등 증상이 발생해도 어떤 파라미터를 어떻게 조정해야 하는지 판단 기준이 없음</p>
+          <div style="background:#dbeafe;color:var(--primary);font-size:16px !important;font-weight:700 !important;padding:12px;border-radius:0 0 8px 8px;margin:20px -30px 0;">트러블슈팅 가이드 부재</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:8px;padding:28px 30px 0;text-align:center;display:flex;flex-direction:column;min-height:200px;overflow:hidden;width:312px !important;">
+          <p style="font-size:17px !important;font-weight:700;color:#000 !important;margin:0 0 10px;">3D 복원 난이도 증가</p>
+          <p style="font-size:15px !important;color:#555;line-height:1.6;margin:0 0 auto;">이형 부품 증가, 부품 간 간격 축소, 높이 편차 심화 등으로 3D 복원이 어려운 상황이 빈번하게 발생</p>
+          <div style="background:#dbeafe;color:var(--primary);font-size:16px !important;font-weight:700 !important;padding:12px;border-radius:0 0 8px 8px;margin:20px -30px 0;">현장 대응 한계</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <p style="font-size:21px !important;font-weight:400 !important;color:var(--dark);margin:0 0 4px;position:relative;top:26.6667px;">많은 파라미터를 직접 이해하고 조정하지 않아도, 사용자가 안정적으로 3D를 복원할 수 있도록 지원한다.</p>
+        <p style="font-size:21px !important;font-weight:700;color:var(--primary);margin:0;position:relative;top:37.3334px;">"수많은 파라미터 중 무엇을 어떻게 조정해야 하는지 몰라도,<br>사용자가 안정적으로 3D를 복원할 수 있도록 어떻게 지원할 것인가?"</p>
+      </div>
+    </section>
+
+    <section style="padding: 0px !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important; background: rgb(255, 255, 255) !important; width: 100% !important; height: 100% !important;" data-index-h="22">
+      <p style="font-size: 18px; font-weight: 700; color: rgb(0, 0, 0); margin: 40px 0px 10px; letter-spacing: 1px; position: relative; left: 0px; top: 16.7619px;">증상 선택 → 추천 조합 → 적용 → 안정적인 3D 복원</p>
+      <div style="display:flex;gap:24px;align-items:center;">
+        <img src="parmGuide.png" alt="Presetting Guide" style="height:440px;width:auto;object-fit:contain;">
+        <img src="parmGuide2.png" alt="Presetting Guide 2" style="height:440px;width:auto;object-fit:contain;">
+      </div>
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="23">
+      <p style="font-size:14px;font-weight:700;color:var(--primary);margin:0 0 4px;">기획 아이템 5</p>
+      <h2 style="font-size:36px;color:var(--dark);margin:0 0 20px;font-weight:700 !important;">VOICE DESK 구축</h2>
+      <p style="font-size:18px;color:#333;margin:0 0 28px;font-weight:400 !important;">기획 배경 _ UX Voice Collection</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;align-items:stretch;max-width:1040px;">
+        <div style="background:#f8f9fa;border-radius:8px;padding:28px 30px 0;text-align:center;display:flex;flex-direction:column;min-height:200px;overflow:hidden;width:312px !important;">
+          <p style="font-size:17px !important;font-weight:700;color:#000 !important;margin:0 0 10px;">현장 사용자와 UX팀의 거리</p>
+          <p style="font-size:15px !important;color:#555;line-height:1.6;margin:0 0 auto;">장비는 고객 현장에서 사용되기 때문에 UX팀이 실제 사용자의 불편과 개선 요구를 지속적으로 파악하기 어려움</p>
+          <div style="background:#dbeafe;color:var(--primary);font-size:16px !important;font-weight:700 !important;padding:12px;border-radius:0 0 8px 8px;margin:20px -30px 0;">현장 의견 접점 부족</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:8px;padding:28px 30px 0;text-align:center;display:flex;flex-direction:column;min-height:200px;overflow:hidden;width:312px !important;">
+          <p style="font-size:17px !important;font-weight:700;color:#000 !important;margin:0 0 10px;">사용자 의견의 유실</p>
+          <p style="font-size:15px !important;color:#555;line-height:1.6;margin:0 0 auto;">사용 중 발생하는 작은 불편과 아이디어가 정식 채널로 수집되지 않아 개선 기회로 연결되지 못함</p>
+          <div style="background:#dbeafe;color:var(--primary);font-size:16px !important;font-weight:700 !important;padding:12px;border-radius:0 0 8px 8px;margin:20px -30px 0;">개선 기회 누락</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:8px;padding:28px 30px 0;text-align:center;display:flex;flex-direction:column;min-height:200px;overflow:hidden;width:312px !important;">
+          <p style="font-size:17px !important;font-weight:700;color:#000 !important;margin:0 0 10px;">UX 개선 데이터 부족</p>
+          <p style="font-size:15px !important;color:#555;line-height:1.6;margin:0 0 auto;">사용자 의견을 지속적으로 수집·축적하고 분석 가능한 UX 데이터로 전환할 수 있는 채널 필요</p>
+          <div style="background:#dbeafe;color:var(--primary);font-size:16px !important;font-weight:700 !important;padding:12px;border-radius:0 0 8px 8px;margin:20px -30px 0;">UX 데이터 자산화 한계</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;">
+        <p style="font-size:21px !important;font-weight:400 !important;color:var(--dark);margin:0 0 4px;position:relative;top:26.6667px;">사용자의 목소리를 제품 개선의 데이터로 만든다.</p>
+        <p style="font-size:21px !important;font-weight:700;color:var(--primary);margin:0;position:relative;top:37.3334px;">"현장의 Voice를 어떻게 지속적으로 수집하고, UX 개선으로 연결할 것인가?"</p>
+      </div>
+    </section>
+
+    <section style="padding: 0px !important; align-items: center !important; justify-content: center !important; background: rgb(255, 255, 255) !important; width: 100% !important; height: 100% !important;" data-index-h="24">
+      <div style="display:flex;gap:24px;align-items:center;justify-content:center;margin-top:60px;">
+        <img src="VoiceDesk.png" style="height:500px;width:auto;object-fit:contain;">
+        <img src="desk.png" style="height:500px;width:auto;object-fit:contain;">
+      </div>
+    </section>
+
+    <section class="deco-slide" style="" data-index-h="25">
+      <h2 style="font-size:1.4em;color:var(--dark)">GTS 파견 산출물</h2>
+      <p class="small">현장 경험에서 도출한 분석 리포트, 기획서, 프로토타입 — 5개 산출물</p>
+      <div class="output-grid">
+        <div class="output-item">
+          <div class="num green">1</div>
+          <div><div class="name">CRM 케이스 분석 종합 리포트 <span class="built-badge">완성</span></div><div class="desc">UX/기획팀 사용성 개선 우선순위 도출</div></div>
+        </div>
+        <div class="output-item">
+          <div class="num green">2</div>
+          <div><div class="name">Field AI <span class="built-badge">프로토타입</span></div><div class="desc">CRM 13.8만건 AI 검색 답변</div></div>
+        </div>
+        <div class="output-item">
+          <div class="num green">3</div>
+          <div><div class="name">Error Message Catalog + 인앱 트러블슈팅 <span class="built-badge">완성</span></div><div class="desc">에러 메시지 개선 + 단계별 해결 가이드</div></div>
+        </div>
+        <div class="output-item">
+          <div class="num green">4</div>
+          <div><div class="name">프리셋팅 가이드 <span class="built-badge">프로토타입</span></div><div class="desc">증상→추천 조합 자동 도출</div></div>
+        </div>
+        <div class="output-item">
+          <div class="num blue">5</div>
+          <div><div class="name">CBI JOB One-Click Setting</div><div class="desc">8단계 → 1단계 자동화 설계</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="flex-direction: column !important; width: 100% !important; height: 100% !important; justify-content: center !important; align-items: center !important; background: linear-gradient(135deg, rgb(26, 42, 74) 0%, rgb(43, 74, 138) 100%) !important; padding: 0px !important; margin: 0px !important;" data-index-h="26">
+      <h1 style="font-size:60px !important;font-weight:700 !important;color:#fff !important;margin:200px 0 16px;text-align:center !important;">Thank You</h1>
+      <p style="font-size:22px;color:#ccc;font-weight:400;margin:0;text-align:center !important;">감사합니다</p>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: true,
+  width: 1280,
+  height: 720,
+  margin: 0,
+  center: false,
+  transition: 'slide',
+  backgroundTransition: 'fade',
+});
+</script>
+
