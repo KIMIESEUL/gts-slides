@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTS Service Blueprint & Journey Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --border: #e2e8f0;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --blue-bg: #eff6ff;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --green-bg: #ecfdf5;
+    --orange: #ea580c;
+    --orange-light: #ffedd5;
+    --orange-bg: #fff7ed;
+    --purple: #7c3aed;
+    --purple-light: #ede9fe;
+    --purple-bg: #f5f3ff;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --red-bg: #fef2f2;
+    --gray-bg: #f1f5f9;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --teal-bg: #f0fdfa;
+    --yellow: #ca8a04;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.7;
+  }
+
+  /* ===== TOP NAV ===== */
+  .top-nav {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    padding: 0 60px;
+    display: flex;
+    align-items: stretch;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .top-nav-brand {
+    display: flex;
+    align-items: center;
+    padding: 0 24px 0 0;
+    font-size: 15px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: -0.5px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .top-nav-brand span { color: #60a5fa; margin-left: 6px; }
+  .top-nav-btn {
+    padding: 18px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .top-nav-btn:hover { color: rgba(255,255,255,0.8); }
+  .top-nav-btn.active { color: white; border-bottom-color: #60a5fa; background: rgba(255,255,255,0.05); }
+  .top-nav-btn .nav-icon { font-size: 16px; }
+
+  .page-panel { display: none; }
+  .page-panel.active { display: block; }
+
+  /* ===== HEADER (shared) ===== */
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e293b 100%);
+    color: white;
+    padding: 40px 60px;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .header h1 { font-size: 32px; font-weight: 900; margin-bottom: 6px; }
+  .header h1 span { color: #60a5fa; }
+  .header-sub { font-size: 15px; color: rgba(255,255,255,0.6); }
+  .header-meta {
+    display: flex; gap: 32px; margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.5); flex-wrap: wrap;
+  }
+  .header-meta strong { color: rgba(255,255,255,0.8); }
+
+  /* ===== BLUEPRINT STYLES ===== */
+  .tab-nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 56px;
+    z-index: 100;
+  }
+  .tab-btn {
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-3);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: inherit;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active-asis { color: var(--red); border-bottom-color: var(--red); }
+  .tab-btn.active-tobe { color: var(--green); border-bottom-color: var(--green); }
+  .tab-btn.active-compare { color: var(--blue); border-bottom-color: var(--blue); }
+  .tab-btn .tab-badge {
+    font-size: 11px; padding: 2px 10px; border-radius: 100px; font-weight: 700;
+  }
+  .tab-btn .tab-badge.badge-asis { background: var(--red-light); color: var(--red); }
+  .tab-btn .tab-badge.badge-tobe { background: var(--green-light); color: var(--green); }
+  .tab-btn .tab-badge.badge-compare { background: var(--blue-light); color: var(--blue); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .legend {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 16px 60px; display: flex; align-items: center; gap: 24px;
+    font-size: 12px; color: var(--text-2); flex-wrap: wrap;
+  }
+  .legend-title { font-weight: 700; color: var(--text); margin-right: 4px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  .blueprint { padding: 40px; overflow-x: auto; }
+  .bp-grid {
+    display: grid; grid-template-columns: 180px repeat(7, 1fr);
+    min-width: 1200px; gap: 0;
+  }
+  .bp-label {
+    display: flex; align-items: center; padding: 16px 20px;
+    font-size: 13px; font-weight: 700; border-right: 2px solid var(--border); min-height: 120px;
+  }
+  .bp-label .label-en { display: block; font-size: 11px; font-weight: 500; color: var(--text-3); margin-top: 4px; }
+  .bp-line { grid-column: 1 / -1; position: relative; height: 36px; display: flex; align-items: center; }
+  .bp-line::before { content: ''; position: absolute; left: 180px; right: 0; top: 50%; height: 2px; }
+  .bp-line-label {
+    position: absolute; left: 0; width: 180px; text-align: center;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    z-index: 1; padding: 4px 12px; border-radius: 4px;
+  }
+  .bp-line.interaction::before { border-top: 3px solid var(--blue); }
+  .bp-line.interaction .bp-line-label { color: var(--blue); background: var(--blue-light); }
+  .bp-line.visibility::before { border-top: 3px dashed var(--orange); }
+  .bp-line.visibility .bp-line-label { color: var(--orange); background: var(--orange-light); }
+  .bp-line.internal::before { border-top: 3px dotted var(--purple); }
+  .bp-line.internal .bp-line-label { color: var(--purple); background: var(--purple-light); }
+
+  .bp-cell {
+    padding: 12px 10px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    min-height: 120px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .bp-cell:last-child { border-right: none; }
+  .bp-step {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 12px; font-size: 13px; line-height: 1.6; text-align: center;
+    transition: box-shadow 0.2s; position: relative;
+  }
+  .bp-step:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .bp-step .step-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; display: block; }
+  .bp-step .step-detail { font-size: 11px; color: var(--text-2); line-height: 1.5; }
+  .bp-step::after {
+    content: '▸'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+    color: var(--text-3); font-size: 14px; z-index: 2;
+  }
+  .bp-cell:last-child .bp-step::after { display: none; }
+
+  .row-evidence .bp-cell { background: var(--gray-bg); }
+  .row-customer .bp-cell { background: var(--blue-bg); }
+  .row-frontstage .bp-cell { background: var(--green-bg); }
+  .row-backstage .bp-cell { background: var(--orange-bg); }
+  .row-support .bp-cell { background: var(--purple-bg); }
+  .row-evidence .bp-label { background: #e2e8f0; color: #334155; }
+  .row-customer .bp-label { background: var(--blue-light); color: var(--blue); }
+  .row-frontstage .bp-label { background: var(--green-light); color: var(--green); }
+  .row-backstage .bp-label { background: var(--orange-light); color: var(--orange); }
+  .row-support .bp-label { background: var(--purple-light); color: var(--purple); }
+
+  .pain {
+    margin-top: 8px; background: var(--red-bg); border: 1px solid #fecaca; border-radius: 8px;
+    padding: 8px 10px; font-size: 11px; color: var(--red); font-weight: 600; text-align: center; line-height: 1.5;
+  }
+  .pain::before { content: '⚠ '; }
+  .gain {
+    margin-top: 8px; background: var(--green-bg); border: 1px solid #86efac; border-radius: 8px;
+    padding: 8px 10px; font-size: 11px; color: var(--green); font-weight: 600; text-align: center; line-height: 1.5;
+  }
+  .gain::before { content: '✓ '; }
+  .new-tag {
+    display: inline-block; background: var(--green); color: white; font-size: 9px; font-weight: 800;
+    padding: 1px 6px; border-radius: 3px; margin-left: 4px; vertical-align: middle; letter-spacing: 0.5px;
+  }
+  .strategy-tag, .data-tag {
+    display: inline-block; background: rgba(37,99,235,0.1); color: var(--blue);
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-top: 4px;
+  }
+  .time-row {
+    grid-column: 1 / -1; display: grid; grid-template-columns: 180px repeat(7, 1fr);
+    background: #0f172a; border-radius: 0 0 12px 12px;
+  }
+  .time-label { padding: 14px 20px; color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 700; display: flex; align-items: center; }
+  .time-cell {
+    padding: 14px 10px; text-align: center; color: white; font-size: 13px; font-weight: 700;
+    border-left: 1px solid rgba(255,255,255,0.1);
+  }
+  .time-cell .time-val { color: #fbbf24; font-size: 16px; }
+  .time-cell .time-val.improved { color: #34d399; }
+
+  .insight-section { padding: 48px 60px; background: var(--surface); border-top: 1px solid var(--border); }
+  .insight-title { font-size: 22px; font-weight: 800; margin-bottom: 24px; }
+  .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .insight-card { border-radius: 16px; padding: 28px; border: 1px solid var(--border); }
+  .insight-card.red { border-left: 4px solid var(--red); }
+  .insight-card.orange { border-left: 4px solid var(--orange); }
+  .insight-card.blue { border-left: 4px solid var(--blue); }
+  .insight-card.green { border-left: 4px solid var(--green); }
+  .insight-card.teal { border-left: 4px solid var(--teal); }
+  .insight-card.purple { border-left: 4px solid var(--purple); }
+  .insight-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .insight-card p { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+  .insight-num { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+  .insight-card.red .insight-num { color: var(--red); }
+  .insight-card.orange .insight-num { color: var(--orange); }
+  .insight-card.blue .insight-num { color: var(--blue); }
+  .insight-card.green .insight-num { color: var(--green); }
+  .insight-card.teal .insight-num { color: var(--teal); }
+  .insight-card.purple .insight-num { color: var(--purple); }
+
+  .compare-section { padding: 48px 60px; }
+  .compare-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .compare-sub { font-size: 14px; color: var(--text-2); margin-bottom: 32px; }
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 40px; }
+  .compare-card { border-radius: 16px; padding: 28px; border: 1px solid var(--border); background: var(--surface); }
+  .compare-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .compare-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row .metric { color: var(--text-2); }
+  .compare-row .val-asis { color: var(--red); font-weight: 700; }
+  .compare-row .val-tobe { color: var(--green); font-weight: 700; }
+  .compare-row .arrow { color: var(--text-3); margin: 0 8px; }
+
+  /* ===== JOURNEY MAP STYLES ===== */
+  .persona-section {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 32px 60px; display: flex; gap: 40px; flex-wrap: wrap;
+  }
+  .persona-card {
+    flex: 1; min-width: 280px; padding: 24px; border-radius: 16px;
+    border: 1px solid var(--border); background: var(--bg);
+  }
+  .persona-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 12px; }
+  .persona-card .persona-avatar {
+    width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 12px;
+  }
+  .persona-card .persona-info { font-size: 13px; color: var(--text-2); line-height: 1.8; }
+  .persona-card .persona-info strong { color: var(--text); }
+
+  .journey-section { padding: 40px; overflow-x: auto; }
+  .journey-grid {
+    display: grid; grid-template-columns: 160px repeat(6, 1fr); min-width: 1200px; gap: 0;
+  }
+  .stage-header {
+    grid-column: 1 / -1; display: grid; grid-template-columns: 160px repeat(6, 1fr);
+    background: #0f172a; border-radius: 12px 12px 0 0;
+  }
+  .stage-label-corner { padding: 16px 20px; color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 700; }
+  .stage-label { padding: 16px 12px; text-align: center; border-left: 1px solid rgba(255,255,255,0.1); }
+  .stage-num { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 700; }
+  .stage-name { font-size: 14px; color: white; font-weight: 700; margin-top: 2px; }
+  .stage-time { font-size: 11px; color: #fbbf24; margin-top: 4px; font-weight: 600; }
+
+  .jm-label {
+    display: flex; align-items: center; padding: 16px 16px;
+    font-size: 12px; font-weight: 700; border-right: 2px solid var(--border); border-bottom: 1px solid var(--border); line-height: 1.4;
+  }
+  .jm-cell {
+    padding: 14px 10px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    font-size: 12px; line-height: 1.6; min-height: 80px;
+  }
+  .jm-cell:last-child { border-right: none; }
+  .jm-cell ul { padding-left: 14px; margin: 0; }
+  .jm-cell ul li { margin-bottom: 2px; color: var(--text-2); }
+
+  .row-action .jm-label { background: var(--blue-light); color: var(--blue); }
+  .row-action .jm-cell { background: #f0f7ff; }
+  .row-touch .jm-label { background: var(--purple-light); color: var(--purple); }
+  .row-touch .jm-cell { background: #faf8ff; }
+  .row-think .jm-label { background: #fef3c7; color: #92400e; }
+  .row-think .jm-cell { background: #fffbeb; }
+  .row-emotion .jm-label { background: var(--red-light); color: var(--red); }
+  .row-emotion .jm-cell { background: var(--bg); }
+  .row-pain .jm-label { background: var(--red-light); color: var(--red); }
+  .row-pain .jm-cell { background: var(--red-bg); }
+  .row-opp .jm-label { background: var(--green-light); color: var(--green); }
+  .row-opp .jm-cell { background: var(--green-bg); }
+
+  .emotion-bad { color: var(--red); font-weight: 600; }
+  .emotion-neutral { color: var(--yellow); font-weight: 600; }
+  .emotion-good { color: var(--green); font-weight: 600; }
+  .pain-item {
+    background: white; border: 1px solid #fecaca; border-radius: 8px;
+    padding: 8px 10px; font-size: 11px; color: var(--red); font-weight: 600; margin-bottom: 6px; line-height: 1.5;
+  }
+  .pain-item::before { content: '⚠ '; }
+  .opp-item {
+    background: white; border: 1px solid #86efac; border-radius: 8px;
+    padding: 8px 10px; font-size: 11px; color: #065f46; font-weight: 600; margin-bottom: 6px; line-height: 1.5;
+  }
+  .opp-item::before { content: '✦ '; color: var(--green); }
+  .strategy-ref {
+    display: inline-block; background: rgba(37,99,235,0.1); color: var(--blue);
+    font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px; margin-left: 2px;
+  }
+  .data-ref { display: inline-block; font-size: 10px; color: var(--text-3); font-weight: 600; }
+
+  .curve-section { padding: 40px 60px; background: var(--surface); border-top: 1px solid var(--border); }
+  .curve-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+  .curve-sub { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
+  .curve-container { position: relative; width: 100%; max-width: 1100px; margin: 0 auto; }
+  .curve-svg { width: 100%; height: auto; }
+
+  .mot-section { padding: 48px 60px; background: var(--bg); }
+  .mot-title { font-size: 20px; font-weight: 800; margin-bottom: 24px; }
+  .mot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .mot-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; position: relative; overflow: hidden;
+  }
+  .mot-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .mot-card.critical::before { background: var(--red); }
+  .mot-card.important::before { background: var(--orange); }
+  .mot-card.positive::before { background: var(--green); }
+  .mot-card .mot-stage { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .mot-card.critical .mot-stage { color: var(--red); }
+  .mot-card.important .mot-stage { color: var(--orange); }
+  .mot-card.positive .mot-stage { color: var(--green); }
+  .mot-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .mot-card p { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+  .mot-card .mot-data { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+  .mot-card.critical .mot-data { color: var(--red); }
+  .mot-card.important .mot-data { color: var(--orange); }
+  .mot-card.positive .mot-data { color: var(--green); }
+  .mot-compare {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px;
+  }
+  .mot-asis { color: var(--red); font-weight: 700; text-align: right; }
+  .mot-arrow { color: var(--text-3); }
+  .mot-tobe { color: var(--green); font-weight: 700; }
+
+  .footer {
+    padding: 32px 60px; background: #0f172a; color: rgba(255,255,255,0.5); font-size: 12px; text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .top-nav { padding: 0 20px; }
+    .header, .legend, .insight-section, .compare-section, .mot-section, .curve-section, .footer { padding-left: 20px; padding-right: 20px; }
+    .tab-nav { padding: 0 20px; }
+    .insight-grid, .mot-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .persona-section { flex-direction: column; padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<div class="top-nav">
+  <div class="top-nav-brand">GTS<span>UX</span></div>
+  <button class="top-nav-btn active" onclick="switchPage('blueprint')">
+    <span class="nav-icon">📋</span> Service Blueprint
+  </button>
+  <button class="top-nav-btn" onclick="switchPage('journey')">
+    <span class="nav-icon">🗺</span> Journey Map
+  </button>
+</div>
+
+<!-- ==================== PAGE 1: SERVICE BLUEPRINT ==================== -->
+<div class="page-panel active" id="page-blueprint">
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Service Blueprint &middot; As-Is / To-Be</div>
+  <h1>GTS <span>기술지원 프로세스</span> Service Blueprint</h1>
+  <div class="header-sub">고객 이슈 발생부터 해결까지 — 현재 프로세스와 개선 프로세스 비교</div>
+  <div class="header-meta">
+    <span><strong>데이터</strong>&ensp;CRM 6,769건 + 서비스 리포트 3,750건</span>
+    <span><strong>기간</strong>&ensp;2024.07 ~ 2026.07</span>
+    <span><strong>작성</strong>&ensp;2026.07</span>
+  </div>
+</div>
+
+<!-- BLUEPRINT TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active-asis" id="btn-asis" onclick="switchTab('asis')">As-Is <span class="tab-badge badge-asis">현재</span></button>
+  <button class="tab-btn" id="btn-tobe" onclick="switchTab('tobe')">To-Be <span class="tab-badge badge-tobe">개선</span></button>
+  <button class="tab-btn" id="btn-compare" onclick="switchTab('compare')">비교 <span class="tab-badge badge-compare">As-Is vs To-Be</span></button>
+</div>
+
+<!-- AS-IS TAB -->
+<div class="tab-panel active" id="panel-asis">
+<div class="legend">
+  <span class="legend-title">범례:</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#dbeafe; border:1px solid #93c5fd;"></div> 고객/지사 행동</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d1fae5; border:1px solid #6ee7b7;"></div> Frontstage</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffedd5; border:1px solid #fdba74;"></div> Backstage</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ede9fe; border:1px solid #c4b5fd;"></div> Support 프로세스</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fee2e2; border:1px solid #fca5a5;"></div> Pain Point</div>
+</div>
+<div class="blueprint"><div class="bp-grid">
+  <div class="row-evidence" style="display:contents;">
+    <div class="bp-label">물리적 증거<span class="label-en">Physical Evidence</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">제품 GUI 화면</span><span class="step-detail">에러 팝업,<br>알림 메시지</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Help Desk 포털</span><span class="step-detail">help.kohyoung.com<br>Freshdesk UI</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">티켓 접수 확인 메일</span><span class="step-detail">자동 발송 이메일<br>티켓 번호 부여</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">원격 접속 화면</span><span class="step-detail">TeamViewer 등<br>원격 데스크톱</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">CRM 상태 업데이트</span><span class="step-detail">티켓 상태 변경<br>이메일 알림</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 안내 메일</span><span class="step-detail">해결 방법 회신<br>SW 패치 링크</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">서비스 리포트</span><span class="step-detail">PDF 보고서<br>(증상/조치/결과)</span></div></div>
+  </div>
+  <div class="bp-line interaction"><div class="bp-line-label">상호작용선 Line of Interaction</div></div>
+  <div class="row-customer" style="display:contents;">
+    <div class="bp-label">고객/지사 행동<span class="label-en">Customer Actions</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">이슈 발생 인지</span><span class="step-detail">GUI 에러, 검사 불량,<br>장비 멈춤, 성능 저하</span><span class="data-tag">월 365건 발생</span></div><div class="pain">에러 메시지에 조치 안내 없음 — 자체 해결 시도 불가</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Help Desk 티켓 등록</span><span class="step-detail">증상 설명 작성<br>카테고리 선택<br>첨부파일 업로드</span></div><div class="pain">카테고리 사용률 0% — 대부분 미분류로 등록</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">접수 확인 대기</span><span class="step-detail">접수 확인 메일 수신<br>"처리 중" 상태 확인</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">추가 정보 제공</span><span class="step-detail">로그 파일 전송<br>스크린샷 추가<br>원격 접속 허용</span></div><div class="pain">필요 정보가 뭔지 몰라서 핑퐁 발생</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 대기</span><span class="step-detail">진행 상황 확인 시도<br>상태 업데이트 대기</span><span class="data-tag">평균 116일 소요</span></div><div class="pain">28.5%가 "모니터링 중"으로 장기 방치</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 방법 적용</span><span class="step-detail">SW 업데이트 설치<br>파라미터 변경<br>캘리브레이션 재수행</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">결과 확인 / 재발</span><span class="step-detail">문제 해결 확인<br>동일 문제 재발 시<br>다시 1단계로</span><span class="data-tag">28% 재발</span></div><div class="pain">동일 이슈 반복 — Huawei 77회, Flex 43회</div></div>
+  </div>
+  <div class="bp-line visibility"><div class="bp-line-label">가시선 Line of Visibility</div></div>
+  <div class="row-frontstage" style="display:contents;">
+    <div class="bp-label">전면 활동<span class="label-en">Frontstage</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">제품 GUI 에러 표시</span><span class="step-detail">"Error occurred"<br>코드/원인 미제공</span></div><div class="pain">자체 해결률 0% — 가이드 기능 전무</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Freshdesk 포털 제공</span><span class="step-detail">티켓 양식 노출<br>Knowledge Base<br>(콘텐츠 미확인)</span></div><div class="pain">양식 필드 구조가 이슈 분류와 불일치</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">자동 접수 확인 메일</span><span class="step-detail">Freshdesk 자동 발송<br>티켓 번호 안내</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">GTS 엔지니어 응대</span><span class="step-detail">추가 정보 요청<br>원격 접속 세션</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">진행 상황 업데이트</span><span class="step-detail">CRM 상태 변경<br>메일/댓글 알림</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 방법 전달</span><span class="step-detail">메일 회신<br>SW 패치 공유<br>가이드 문서 전송</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">종결 확인 요청</span><span class="step-detail">"해결되셨나요?"<br>티켓 종결 요청</span></div></div>
+  </div>
+  <div class="bp-line internal"><div class="bp-line-label">내부 상호작용선 Line of Internal Interaction</div></div>
+  <div class="row-backstage" style="display:contents;">
+    <div class="bp-label">후면 활동<span class="label-en">Backstage</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">—</span><span class="step-detail">(제품 내 진단 로직 없음)</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Help Desk → CRM 연동</span><span class="step-detail">Freshdesk 티켓 →<br>Dynamics 365<br>케이스 자동 생성</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">케이스 분류 및 배정</span><span class="step-detail">지역/제품별 담당자 배정<br>우선순위 판단</span></div><div class="pain">IssueCategory 사용률 0% — 수동 판단에 의존</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">기술 분석</span><span class="step-detail">로그 분석<br>재현 시도<br>과거 사례 검색</span><span class="data-tag">18.2% 에스컬레이션</span></div><div class="pain">과거 사례 검색 체계 없음 — 개인 기억에 의존</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">R&D 에스컬레이션</span><span class="step-detail">본사 연구소 전달<br>버그 리포트 작성<br>패치 요청</span></div><div class="pain">에스컬레이션 후 피드백 루프 단절</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 방법 작성</span><span class="step-detail">SW 패치 준비<br>가이드 문서 작성<br>파라미터 조정 안내</span><span class="data-tag">45.7% SW 업데이트</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">서비스 리포트 작성</span><span class="step-detail">증상/원인/조치 기록<br>CRM에 첨부</span><span class="data-tag">3,750건 축적</span></div><div class="pain">리포트 품질 편차 큼 — 표준 양식 없음</div></div>
+  </div>
+  <div class="row-support" style="display:contents;">
+    <div class="bp-label">지원 프로세스<span class="label-en">Support Processes</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">제품 GUI 소프트웨어</span><span class="step-detail">AOI / SPI / DPI GUI<br>에러 핸들링 모듈</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Freshdesk</span><span class="step-detail">help.kohyoung.com<br>티켓 관리 / KB</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Dynamics 365 CRM</span><span class="step-detail">케이스 관리<br>고객 계정 관리</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">원격 접속 도구</span><span class="step-detail">TeamViewer<br>원격 데스크톱</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">내부 커뮤니케이션</span><span class="step-detail">이메일 / 메신저<br>내부 Wiki (미확인)</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">SW 빌드 시스템</span><span class="step-detail">Bitbucket / Jenkins<br>패치 빌드 파이프라인</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">CRM 리포트 저장소</span><span class="step-detail">서비스 리포트 DB<br>(검색 기능 미지원)</span></div></div>
+  </div>
+  <div class="time-row">
+    <div class="time-label">소요 시간</div>
+    <div class="time-cell"><div class="time-val">즉시</div>이슈 인지</div>
+    <div class="time-cell"><div class="time-val">~1일</div>티켓 등록</div>
+    <div class="time-cell"><div class="time-val">1~3일</div>배정 완료</div>
+    <div class="time-cell"><div class="time-val">3~14일</div>분석 진행</div>
+    <div class="time-cell"><div class="time-val">14~90일</div>대기 / 에스컬레이션</div>
+    <div class="time-cell"><div class="time-val">~146일</div>해결 (GUI/UI 평균)</div>
+    <div class="time-cell"><div class="time-val">28%</div>재발 → 1단계 복귀</div>
+  </div>
+</div></div>
+<div class="insight-section">
+  <div class="insight-title">As-Is 핵심 Failure Point</div>
+  <div class="insight-grid">
+    <div class="insight-card red"><div class="insight-num">0%</div><h4>Self-Resolution 부재</h4><p>이슈 발생 → 즉시 Help Desk 등록만 가능. 제품 안에서 자체 진단/해결을 시도할 수 있는 경로가 전혀 없음.</p></div>
+    <div class="insight-card orange"><div class="insight-num">3곳</div><h4>정보 단절 구간</h4><p><strong>1)</strong> 고객→Help Desk: 필요 정보 가이드 없음<br><strong>2)</strong> GTS→과거 사례: 검색 체계 없음<br><strong>3)</strong> GTS→R&D: 피드백 루프 단절</p></div>
+    <div class="insight-card blue"><div class="insight-num">28%</div><h4>순환 루프</h4><p>해결 후 동일 이슈 재발 → 전체 프로세스 처음부터 반복. 해결 지식이 다음 케이스에 재활용되지 않음.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- TO-BE TAB -->
+<div class="tab-panel" id="panel-tobe">
+<div class="legend">
+  <span class="legend-title">범례:</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#dbeafe; border:1px solid #93c5fd;"></div> 고객/지사 행동</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d1fae5; border:1px solid #6ee7b7;"></div> Frontstage</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffedd5; border:1px solid #fdba74;"></div> Backstage</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ede9fe; border:1px solid #c4b5fd;"></div> Support 프로세스</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d1fae5; border:1px solid #34d399;"></div> 개선 포인트</div>
+  <div class="legend-item"><span class="new-tag">NEW</span> 신규 추가 항목</div>
+</div>
+<div class="blueprint"><div class="bp-grid">
+  <div class="row-evidence" style="display:contents;">
+    <div class="bp-label">물리적 증거<span class="label-en">Physical Evidence</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">제품 GUI 화면 <span class="new-tag">개선</span></span><span class="step-detail">에러 코드 + 원인 설명<br>3단계 조치 가이드<br>심각도 시각 구분</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">In-App 가이드 <span class="new-tag">NEW</span></span><span class="step-detail">에러별 트러블슈팅 위저드<br>FAQ / 동영상 가이드<br>유사 사례 자동 추천</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Smart 티켓 양식 <span class="new-tag">개선</span></span><span class="step-detail">에러 코드 자동 입력<br>로그/스크린샷 자동 첨부<br>카테고리 자동 분류</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">실시간 진행 대시보드 <span class="new-tag">NEW</span></span><span class="step-detail">처리 단계 시각화<br>예상 소요 시간 표시<br>담당자 연락처</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">자동 상태 알림</span><span class="step-detail">단계 변경 시 자동 알림<br>SLA 타이머 표시<br>에스컬레이션 알림</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 가이드 + 영상 <span class="new-tag">개선</span></span><span class="step-detail">단계별 스크린샷 가이드<br>동영상 튜토리얼 링크<br>원클릭 패치 적용</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Knowledge Article <span class="new-tag">NEW</span></span><span class="step-detail">해결 사례 → KB 자동 발행<br>고객 공개용 문서 생성<br>검색 가능한 해결 DB</span></div></div>
+  </div>
+  <div class="bp-line interaction"><div class="bp-line-label">상호작용선 Line of Interaction</div></div>
+  <div class="row-customer" style="display:contents;">
+    <div class="bp-label">고객/지사 행동<span class="label-en">Customer Actions</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">이슈 발생 + 자체 진단</span><span class="step-detail">에러 메시지 확인<br>3단계 조치 안내 따라<br>자체 해결 시도</span><span class="strategy-tag">전략1: Self-Resolution</span></div><div class="gain">에러 메시지가 조치를 안내 → 자체 해결률 0%→40%</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">In-App 가이드 검색 <span class="new-tag">NEW</span></span><span class="step-detail">에러 코드로 가이드 검색<br>유사 사례 확인<br>FAQ 참조</span><span class="strategy-tag">전략1: Self-Resolution</span></div><div class="gain">Help Desk 등록 전 자체 해결 경로 확보</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Smart 티켓 자동 등록</span><span class="step-detail">에러 코드 자동 입력<br>로그 자동 첨부<br>카테고리 자동 분류</span></div><div class="gain">필요 정보 자동 수집 → 핑퐁 제거</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">진행 상황 실시간 확인 <span class="new-tag">개선</span></span><span class="step-detail">대시보드에서 현황 확인<br>예상 해결일 표시<br>추가 정보 요청 시 알림</span></div><div class="gain">능동적 상태 확인 → 불안감 해소</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">가이드 기반 해결 적용</span><span class="step-detail">단계별 스크린샷 가이드<br>동영상 따라하기<br>원클릭 패치 적용</span></div><div class="gain">셀프 적용 가능한 가이드 → 지사 의존도 감소</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결 확인 + 피드백</span><span class="step-detail">자동 만족도 조사<br>해결 방법 유용성 평가<br>추가 문의 연결</span></div><div class="gain">고객 피드백 데이터 축적 → 지속 개선</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">예방 가이드 수신 <span class="new-tag">NEW</span></span><span class="step-detail">유사 이슈 예방 팁<br>정기 점검 가이드<br>SW 업데이트 알림</span><span class="strategy-tag">전략3: VIP 반복 제거</span></div><div class="gain">재발률 28%→10% 목표 — 사전 예방 체계</div></div>
+  </div>
+  <div class="bp-line visibility"><div class="bp-line-label">가시선 Line of Visibility</div></div>
+  <div class="row-frontstage" style="display:contents;">
+    <div class="bp-label">전면 활동<span class="label-en">Frontstage</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Error Message Catalog <span class="new-tag">개선</span></span><span class="step-detail">모듈별 에러 코드 체계<br>원인 설명 + 3단계 조치<br>심각도별 시각 구분</span></div><div class="gain">15개 에러 유형 표준화 → 자체 해결 경로 제공</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Contextual Help <span class="new-tag">NEW</span></span><span class="step-detail">에러 상황별 가이드 자동 표시<br>과거 해결 사례 매칭<br>동영상 튜토리얼</span></div><div class="gain">3,750건 서비스 리포트 → 가이드 자동 생성</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Smart 접수 + 자동 분류 <span class="new-tag">개선</span></span><span class="step-detail">GUI에서 원클릭 접수<br>에러 코드 → 카테고리 매핑<br>로그 자동 첨부</span></div><div class="gain">IssueCategory 사용률 0%→95% 자동화</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">실시간 현황 포털 <span class="new-tag">NEW</span></span><span class="step-detail">티켓 진행 단계 시각화<br>SLA 타이머<br>담당자 프로필</span></div><div class="gain">"모니터링 중" 28.5% → 투명한 진행 상태</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">자동 상태 푸시 알림</span><span class="step-detail">단계 변경 시 자동 알림<br>에스컬레이션 알림<br>예상 해결일 갱신</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">구조화된 해결 가이드 <span class="new-tag">개선</span></span><span class="step-detail">Before/After 스크린샷<br>Step-by-step 가이드<br>관련 KB 문서 링크</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">사전 예방 알림 <span class="new-tag">NEW</span></span><span class="step-detail">유사 이슈 패턴 감지 시<br>예방 가이드 자동 발송<br>정기 점검 리마인더</span></div><div class="gain">VIP 8사 반복 패턴 → 사전 차단</div></div>
+  </div>
+  <div class="bp-line internal"><div class="bp-line-label">내부 상호작용선 Line of Internal Interaction</div></div>
+  <div class="row-backstage" style="display:contents;">
+    <div class="bp-label">후면 활동<span class="label-en">Backstage</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">In-App 진단 엔진 <span class="new-tag">NEW</span></span><span class="step-detail">에러 자동 분류<br>메모리/디스크 모니터링<br>성능 저하 사전 감지</span></div><div class="gain">제품 내 진단 로직 → Help Desk 유입량 감소</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Knowledge Base 엔진 <span class="new-tag">NEW</span></span><span class="step-detail">3,750건 리포트 → KB 변환<br>에러 코드별 해결 매핑<br>유사도 기반 추천</span><span class="strategy-tag">전략5: Knowledge-to-Product</span></div><div class="gain">개인 기억 의존 → 검색 가능한 해결 DB</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">AI 자동 분류 + 라우팅 <span class="new-tag">NEW</span></span><span class="step-detail">에러 코드 → 카테고리 매핑<br>심각도 자동 판정<br>담당자 자동 배정</span></div><div class="gain">수동 판단 → 자동 분류 + 우선순위 배정</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">유사 사례 자동 매칭</span><span class="step-detail">과거 해결 사례 자동 추천<br>지역별 패턴 분석<br>해결률 높은 방법 우선 표시</span><span class="strategy-tag">전략4: 지역 자립</span></div><div class="gain">사례 검색 시간 단축 → 에스컬레이션 18%→8%</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">R&D 피드백 루프 <span class="new-tag">개선</span></span><span class="step-detail">에스컬레이션 자동 추적<br>패치 상태 실시간 연동<br>R&D→GTS 피드백 채널</span></div><div class="gain">에스컬레이션 후 단절 → 양방향 피드백</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">해결→KB 자동 발행</span><span class="step-detail">서비스 리포트 → KB 변환<br>검증 후 자동 발행<br>고객 공개용 문서 생성</span><span class="strategy-tag">전략5: Knowledge-to-Product</span></div><div class="gain">해결 지식이 자동으로 다음 케이스에 재활용</div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">반복 패턴 분석 엔진 <span class="new-tag">NEW</span></span><span class="step-detail">고객별 반복 이슈 감지<br>근본 원인 패턴 분석<br>예방 액션 자동 트리거</span><span class="strategy-tag">전략3: VIP 반복 제거</span></div><div class="gain">28% 재발 → 패턴 기반 사전 예방</div></div>
+  </div>
+  <div class="row-support" style="display:contents;">
+    <div class="bp-label">지원 프로세스<span class="label-en">Support Processes</span></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">제품 GUI + 진단 모듈 <span class="new-tag">개선</span></span><span class="step-detail">AOI / SPI / DPI GUI<br>Error Catalog 내장<br>자가 진단 모듈</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Knowledge Base <span class="new-tag">NEW</span></span><span class="step-detail">RAG 기반 검색 엔진<br>에러 코드별 해결 DB<br>다국어 지원</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Freshdesk + CRM 통합</span><span class="step-detail">Smart 양식 + 자동 분류<br>SLA 관리 자동화<br>우선순위 자동 배정</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">고객 포털 <span class="new-tag">NEW</span></span><span class="step-detail">실시간 현황 대시보드<br>과거 이력 조회<br>가이드 문서 접근</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">분석 대시보드 <span class="new-tag">NEW</span></span><span class="step-detail">지역별/제품별 이슈 트렌드<br>SLA 달성률 모니터링<br>반복 이슈 패턴 알림</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">SW 빌드 + 자동 배포</span><span class="step-detail">Bitbucket / Jenkins<br>패치 자동 배포<br>원클릭 업데이트</span></div></div>
+    <div class="bp-cell"><div class="bp-step"><span class="step-title">Knowledge Loop 엔진 <span class="new-tag">NEW</span></span><span class="step-detail">해결→KB→제품 반영<br>지식 품질 검증<br>제품 개선 피드백</span></div></div>
+  </div>
+  <div class="time-row">
+    <div class="time-label">소요 시간</div>
+    <div class="time-cell"><div class="time-val improved">즉시</div>자체 진단 시도</div>
+    <div class="time-cell"><div class="time-val improved">~40%</div>여기서 자체 해결</div>
+    <div class="time-cell"><div class="time-val improved">자동</div>Smart 접수+분류</div>
+    <div class="time-cell"><div class="time-val improved">1~3일</div>유사 사례 자동 매칭</div>
+    <div class="time-cell"><div class="time-val improved">3~14일</div>SLA 기반 추적</div>
+    <div class="time-cell"><div class="time-val improved">~30일</div>목표 해결일 (80%↓)</div>
+    <div class="time-cell"><div class="time-val improved">10%</div>재발률 목표 (64%↓)</div>
+  </div>
+</div></div>
+<div class="insight-section">
+  <div class="insight-title">To-Be 핵심 개선 포인트 — 5대 전략 매핑</div>
+  <div class="insight-grid">
+    <div class="insight-card green"><div class="insight-num">0%→40%</div><h4>전략1: Self-Resolution Engine</h4><p>Error Message Catalog + In-App 가이드 + 트러블슈팅 위저드로 Help Desk 등록 전 자체 해결 경로 확보. 월 365건 중 ~146건 자체 해결 목표.</p></div>
+    <div class="insight-card teal"><div class="insight-num">116→30일</div><h4>전략2: Onboarding + 전략4: 지역 자립</h4><p>Smart 티켓 자동 분류 + 유사 사례 자동 매칭으로 분석 시간 단축. 지역별 자체 해결 역량 강화 → 에스컬레이션 18%→8%.</p></div>
+    <div class="insight-card purple"><div class="insight-num">28%→10%</div><h4>전략3: VIP 반복 제거 + 전략5: Knowledge Loop</h4><p>반복 패턴 분석 → 사전 예방 알림. 해결 지식의 KB 자동 발행 → 제품 반영. 지식이 순환하는 구조로 전환.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- COMPARE TAB -->
+<div class="tab-panel" id="panel-compare">
+<div class="compare-section">
+  <div class="compare-title">As-Is vs To-Be 핵심 지표 비교</div>
+  <div class="compare-sub">CRM 데이터 기반 현재 수치 → 개선 목표치 (벤치마크 기반)</div>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>⏱ 시간 지표</h4>
+      <div class="compare-row"><span class="metric">평균 해결 시간</span><span><span class="val-asis">116일</span> <span class="arrow">→</span> <span class="val-tobe">30일</span></span></div>
+      <div class="compare-row"><span class="metric">GUI/UI 해결 시간</span><span><span class="val-asis">146일</span> <span class="arrow">→</span> <span class="val-tobe">35일</span></span></div>
+      <div class="compare-row"><span class="metric">티켓 분류 시간</span><span><span class="val-asis">수동 1~3일</span> <span class="arrow">→</span> <span class="val-tobe">자동 즉시</span></span></div>
+      <div class="compare-row"><span class="metric">유사 사례 검색</span><span><span class="val-asis">개인 기억</span> <span class="arrow">→</span> <span class="val-tobe">자동 5초</span></span></div>
+    </div>
+    <div class="compare-card">
+      <h4>📊 효율 지표</h4>
+      <div class="compare-row"><span class="metric">자체 해결률</span><span><span class="val-asis">0%</span> <span class="arrow">→</span> <span class="val-tobe">40%</span></span></div>
+      <div class="compare-row"><span class="metric">재발률</span><span><span class="val-asis">28%</span> <span class="arrow">→</span> <span class="val-tobe">10%</span></span></div>
+      <div class="compare-row"><span class="metric">에스컬레이션률</span><span><span class="val-asis">18.2%</span> <span class="arrow">→</span> <span class="val-tobe">8%</span></span></div>
+      <div class="compare-row"><span class="metric">"모니터링 중" 방치</span><span><span class="val-asis">28.5%</span> <span class="arrow">→</span> <span class="val-tobe">5%</span></span></div>
+    </div>
+    <div class="compare-card">
+      <h4>🏗 시스템 지표</h4>
+      <div class="compare-row"><span class="metric">IssueCategory 사용률</span><span><span class="val-asis">0%</span> <span class="arrow">→</span> <span class="val-tobe">95%</span></span></div>
+      <div class="compare-row"><span class="metric">Knowledge Base 검색</span><span><span class="val-asis">없음</span> <span class="arrow">→</span> <span class="val-tobe">3,750건 DB</span></span></div>
+      <div class="compare-row"><span class="metric">에러 메시지 표준화</span><span><span class="val-asis">미표준</span> <span class="arrow">→</span> <span class="val-tobe">15유형 체계화</span></span></div>
+      <div class="compare-row"><span class="metric">해결→KB 자동 발행</span><span><span class="val-asis">없음</span> <span class="arrow">→</span> <span class="val-tobe">자동 변환</span></span></div>
+    </div>
+    <div class="compare-card">
+      <h4>💰 비용 영향 (추정)</h4>
+      <div class="compare-row"><span class="metric">Help Desk 유입량</span><span><span class="val-asis">월 365건</span> <span class="arrow">→</span> <span class="val-tobe">월 ~219건</span></span></div>
+      <div class="compare-row"><span class="metric">재발로 인한 중복 건수</span><span><span class="val-asis">월 ~102건</span> <span class="arrow">→</span> <span class="val-tobe">월 ~22건</span></span></div>
+      <div class="compare-row"><span class="metric">엔지니어 투입 시간</span><span><span class="val-asis">기준</span> <span class="arrow">→</span> <span class="val-tobe">~45% 절감</span></span></div>
+      <div class="compare-row"><span class="metric">장비 대비 지원 부담</span><span><span class="val-asis">선형 증가</span> <span class="arrow">→</span> <span class="val-tobe">Sub-linear</span></span></div>
+    </div>
+  </div>
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:32px; margin-bottom:32px;">
+    <h4 style="font-size:16px; font-weight:800; margin-bottom:24px;">프로세스 흐름 비교</h4>
+    <div style="margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="background:var(--red-light); color:var(--red); padding:4px 12px; border-radius:6px; font-size:12px; font-weight:700;">As-Is</span>
+        <span style="font-size:13px; color:var(--text-2);">모든 이슈가 Help Desk를 거쳐야 함 (7단계, 116일)</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); flex-wrap:wrap;">
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca;">이슈 발생</span><span>→</span>
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca;">Help Desk 등록</span><span>→</span>
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca;">배정 대기</span><span>→</span>
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca;">정보 핑퐁</span><span>→</span>
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca;">분석/에스컬</span><span>→</span>
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca;">해결</span><span>→</span>
+        <span style="background:var(--red-bg); padding:6px 12px; border-radius:6px; border:1px solid #fecaca; color:var(--red); font-weight:700;">28% 재발 ↩</span>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="background:var(--green-light); color:var(--green); padding:4px 12px; border-radius:6px; font-size:12px; font-weight:700;">To-Be</span>
+        <span style="font-size:13px; color:var(--text-2);">40%는 2단계에서 자체 해결, 나머지도 자동 분류로 빠른 해결</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-2); flex-wrap:wrap;">
+        <span style="background:var(--green-bg); padding:6px 12px; border-radius:6px; border:1px solid #86efac;">이슈 + 자체 진단</span><span>→</span>
+        <span style="background:var(--green-bg); padding:6px 12px; border-radius:6px; border:1px solid #86efac;">In-App 가이드</span><span>→</span>
+        <span style="background:var(--green-bg); padding:6px 12px; border-radius:6px; border:1px solid #34d399; color:var(--green); font-weight:700;">40% 자체 해결 ✓</span>
+        <span>&ensp;|&ensp;</span>
+        <span style="background:var(--blue-bg); padding:6px 12px; border-radius:6px; border:1px solid #93c5fd;">Smart 티켓 자동</span><span>→</span>
+        <span style="background:var(--blue-bg); padding:6px 12px; border-radius:6px; border:1px solid #93c5fd;">AI 매칭</span><span>→</span>
+        <span style="background:var(--blue-bg); padding:6px 12px; border-radius:6px; border:1px solid #93c5fd;">해결 + KB 발행</span><span>→</span>
+        <span style="background:var(--green-bg); padding:6px 12px; border-radius:6px; border:1px solid #34d399; color:var(--green); font-weight:700;">예방 알림</span>
+      </div>
+    </div>
+  </div>
+  <div style="background:#0f172a; border-radius:16px; padding:32px; color:white;">
+    <h4 style="font-size:16px; font-weight:800; margin-bottom:20px; color:#60a5fa;">Blueprint 변화 ↔ 5대 UX 수익 전략 매핑</h4>
+    <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:16px;">
+      <div style="border-left:3px solid #34d399; padding-left:12px;"><div style="font-size:11px; color:#34d399; font-weight:700;">전략 1</div><div style="font-size:13px; font-weight:700; margin:4px 0;">Self-Resolution</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Error Catalog + In-App 가이드 → 고객 자체 해결 경로 신설</div></div>
+      <div style="border-left:3px solid #60a5fa; padding-left:12px;"><div style="font-size:11px; color:#60a5fa; font-weight:700;">전략 2</div><div style="font-size:13px; font-weight:700; margin:4px 0;">Onboarding 자동화</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">Smart 티켓 양식 + 자동 분류 → 온보딩/접수 단계 자동화</div></div>
+      <div style="border-left:3px solid #fbbf24; padding-left:12px;"><div style="font-size:11px; color:#fbbf24; font-weight:700;">전략 3</div><div style="font-size:13px; font-weight:700; margin:4px 0;">VIP 반복 제거</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">반복 패턴 분석 + 예방 알림 → 재발 방지 루프 신설</div></div>
+      <div style="border-left:3px solid #f472b6; padding-left:12px;"><div style="font-size:11px; color:#f472b6; font-weight:700;">전략 4</div><div style="font-size:13px; font-weight:700; margin:4px 0;">지역 자립</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">유사 사례 자동 매칭 → 지사가 자체 해결 → 에스컬 감소</div></div>
+      <div style="border-left:3px solid #a78bfa; padding-left:12px;"><div style="font-size:11px; color:#a78bfa; font-weight:700;">전략 5</div><div style="font-size:13px; font-weight:700; margin:4px 0;">Knowledge Loop</div><div style="font-size:11px; color:rgba(255,255,255,0.5);">해결→KB 자동 발행→제품 반영 → 지식 순환 구조</div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ==================== PAGE 2: JOURNEY MAP ==================== -->
+<div class="page-panel" id="page-journey">
+<!-- HEADER -->
+<div class="header" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #064e3b 100%);">
+  <div class="header-badge">Customer Journey Map &middot; Dual (As-Is / To-Be)</div>
+  <h1>고객 <span>기술지원 여정</span> Journey Map</h1>
+  <div class="header-sub">장비 이슈 발생 → 해결까지, 고객이 경험하는 감정·행동·접점의 As-Is / To-Be 비교</div>
+  <div class="header-meta">
+    <span><strong>페르소나</strong>&ensp;해외 지사 Field Engineer</span>
+    <span><strong>데이터</strong>&ensp;CRM 6,769건 + 서비스 리포트 3,750건</span>
+    <span><strong>작성</strong>&ensp;2026.07</span>
+  </div>
+</div>
+
+<!-- PERSONA -->
+<div class="persona-section">
+  <div class="persona-card">
+    <div class="persona-avatar" style="background:#dbeafe; color:#2563eb;">🧑‍🔧</div>
+    <h3>Primary Persona — 지사 Field Engineer</h3>
+    <div class="persona-info">
+      <strong>역할:</strong> 해외 지사 기술지원 담당 (미주/유럽/중국/동남아)<br>
+      <strong>목표:</strong> 고객사 장비 문제를 빠르게 해결하여 생산 라인 중단 최소화<br>
+      <strong>좌절:</strong> "에러가 떴는데, 뭘 해봐야 하는지 모르겠어. 본사에 물어봐야 하나?"<br>
+      <strong>맥락:</strong> 현장에서 즉시 대응해야 하지만, 본사 GTS 지원 없이는 해결 어려움
+    </div>
+  </div>
+  <div class="persona-card">
+    <div class="persona-avatar" style="background:#ffedd5; color:#ea580c;">👤</div>
+    <h3>Secondary Persona — 고객사 Equipment Owner</h3>
+    <div class="persona-info">
+      <strong>역할:</strong> 고객사 생산팀 장비 담당자 (Huawei, Samsung, Flex 등)<br>
+      <strong>목표:</strong> 장비 가동률 유지, 검사 정확도 확보<br>
+      <strong>좌절:</strong> "또 같은 문제인데, 매번 처음부터 티켓을 내야 해?"<br>
+      <strong>맥락:</strong> 생산 라인 정지 시 분당 수백만 원 손실 → 빠른 해결이 최우선
+    </div>
+  </div>
+</div>
+
+<!-- AS-IS JOURNEY -->
+<div class="journey-section">
+  <div style="margin-bottom: 16px;">
+    <span style="background:var(--red); color:white; padding:6px 16px; border-radius:8px; font-size:13px; font-weight:700;">As-Is Journey</span>
+    <span style="font-size:13px; color:var(--text-2); margin-left:12px;">현재 고객이 경험하는 기술지원 여정</span>
+  </div>
+  <div class="journey-grid">
+    <div class="stage-header">
+      <div class="stage-label-corner">단계</div>
+      <div class="stage-label"><div class="stage-num">STAGE 1</div><div class="stage-name">이슈 발생</div><div class="stage-time">즉시</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 2</div><div class="stage-name">자체 해결 시도</div><div class="stage-time">~수시간</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 3</div><div class="stage-name">도움 요청</div><div class="stage-time">~1일</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 4</div><div class="stage-name">대기</div><div class="stage-time">3~90일</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 5</div><div class="stage-name">해결</div><div class="stage-time">~146일</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 6</div><div class="stage-name">사후</div><div class="stage-time">이후</div></div>
+    </div>
+    <div class="row-action" style="display:contents;">
+      <div class="jm-label">행동<br><span style="font-size:10px; color:var(--text-3);">Doing</span></div>
+      <div class="jm-cell"><ul><li>GUI에서 에러 팝업 확인</li><li>장비 상태 육안 점검</li><li>에러 메시지 스크린샷</li></ul></div>
+      <div class="jm-cell"><ul><li>GUI 재시작 시도</li><li>PC 재부팅</li><li>과거 경험에 의존</li><li>동료에게 문의</li></ul></div>
+      <div class="jm-cell"><ul><li>Help Desk 접속</li><li>티켓 양식 작성</li><li>증상 텍스트 작성</li><li>파일 첨부 시도</li></ul></div>
+      <div class="jm-cell"><ul><li>이메일 확인 반복</li><li>CRM 상태 새로고침</li><li>추가 정보 요청 대응</li><li>로그 파일 수동 전송</li></ul></div>
+      <div class="jm-cell"><ul><li>해결 방법 메일 수신</li><li>SW 패치 수동 설치</li><li>파라미터 변경 적용</li><li>KY Cal 재수행</li></ul></div>
+      <div class="jm-cell"><ul><li>정상 작동 확인</li><li>같은 문제 재발 시 처음부터 반복</li><li>서비스 리포트 수신</li></ul></div>
+    </div>
+    <div class="row-touch" style="display:contents;">
+      <div class="jm-label">접점<br><span style="font-size:10px; color:var(--text-3);">Touchpoint</span></div>
+      <div class="jm-cell"><ul><li>제품 GUI 에러 팝업</li><li>Windows 오류 대화상자</li></ul></div>
+      <div class="jm-cell"><ul><li>(접점 없음)</li><li>개인 기억 / 동료</li></ul></div>
+      <div class="jm-cell"><ul><li>help.kohyoung.com</li><li>Freshdesk 티켓 양식</li><li>이메일</li></ul></div>
+      <div class="jm-cell"><ul><li>이메일 알림</li><li>CRM 상태 페이지</li><li>TeamViewer 원격</li></ul></div>
+      <div class="jm-cell"><ul><li>이메일 (해결 방법)</li><li>SW 패치 파일</li><li>전화/메신저</li></ul></div>
+      <div class="jm-cell"><ul><li>서비스 리포트 PDF</li><li>만족도 조사 (없음)</li></ul></div>
+    </div>
+    <div class="row-think" style="display:contents;">
+      <div class="jm-label">생각<br><span style="font-size:10px; color:var(--text-3);">Thinking</span></div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"에러가 떴는데, 이게 심각한 건가? 생산 라인 세워야 하나?"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"뭘 해봐야 하지? 매뉴얼에도 없는데... 재시작이나 해보자"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"카테고리를 뭘로 선택해야 하지? 로그 파일은 어디 있지?"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"얼마나 더 기다려야 하는 거야? 진행이 되고 있긴 한 건가?"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"이걸 내가 직접 해도 되는 건가? 잘못하면 더 문제 되는 거 아냐?"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"또 같은 문제네... 근본적으로 해결된 게 아니었구나"</div>
+    </div>
+    <div class="row-emotion" style="display:contents;">
+      <div class="jm-label">감정<br><span style="font-size:10px; color:var(--text-3);">Feeling</span></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😰</div><div class="emotion-bad" style="font-size:12px;">불안 · 긴장</div><div class="data-ref">생산 중단 압박</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😤</div><div class="emotion-bad" style="font-size:12px;">답답 · 무력감</div><div class="data-ref">가이드 없음</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😩</div><div class="emotion-bad" style="font-size:12px;">번거로움 · 혼란</div><div class="data-ref">카테고리 0%</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😡</div><div class="emotion-bad" style="font-size:12px;">분노 · 포기</div><div class="data-ref">116일 대기</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😐</div><div class="emotion-neutral" style="font-size:12px;">불안한 안도</div><div class="data-ref">자신감 부족</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😞</div><div class="emotion-bad" style="font-size:12px;">실망 · 피로</div><div class="data-ref">28% 재발</div></div>
+    </div>
+    <div class="row-pain" style="display:contents;">
+      <div class="jm-label">Pain Point</div>
+      <div class="jm-cell"><div class="pain-item">"Error occurred" — 원인/조치 안내 전무</div><div class="pain-item">심각도 구분 없음 → 모든 에러가 동일하게 보임</div></div>
+      <div class="jm-cell"><div class="pain-item">자체 해결률 0% — 가이드/KB 전무</div><div class="pain-item">매뉴얼에 트러블슈팅 없음</div></div>
+      <div class="jm-cell"><div class="pain-item">IssueCategory 0% — 양식이 이슈와 불일치</div><div class="pain-item">로그 파일 위치/수집 방법 모름</div></div>
+      <div class="jm-cell"><div class="pain-item">28.5% "모니터링 중" 장기 방치</div><div class="pain-item">진행 상황 투명성 없음</div><div class="pain-item">정보 핑퐁 — 추가 요청 반복</div></div>
+      <div class="jm-cell"><div class="pain-item">해결 가이드 품질 편차</div><div class="pain-item">적용 시 자신감 부족</div></div>
+      <div class="jm-cell"><div class="pain-item">28% 재발 → 전체 여정 반복</div><div class="pain-item">해결 지식 재활용 안 됨</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EMOTION CURVE -->
+<div class="curve-section">
+  <div class="curve-title">감정 곡선 비교 — As-Is vs To-Be</div>
+  <div class="curve-sub">각 단계에서 고객이 느끼는 만족도를 -5(최악) ~ +5(최상)로 수치화</div>
+  <div class="curve-container">
+    <svg class="curve-svg" viewBox="0 0 1100 420" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fee2e2" stop-opacity="0.5"/><stop offset="100%" stop-color="#fee2e2" stop-opacity="0"/></linearGradient>
+        <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d1fae5" stop-opacity="0"/><stop offset="100%" stop-color="#d1fae5" stop-opacity="0.5"/></linearGradient>
+      </defs>
+      <rect x="100" y="30" width="950" height="170" fill="url(#greenGrad)" rx="4"/>
+      <rect x="100" y="200" width="950" height="170" fill="url(#redGrad)" rx="4"/>
+      <line x1="100" y1="30" x2="1050" y2="30" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="100" y1="115" x2="1050" y2="115" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="100" y1="200" x2="1050" y2="200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="100" y1="285" x2="1050" y2="285" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="100" y1="370" x2="1050" y2="370" stroke="#e2e8f0" stroke-width="0.5"/>
+      <text x="90" y="35" text-anchor="end" font-size="11" fill="#94a3b8" font-weight="600">+5</text>
+      <text x="90" y="120" text-anchor="end" font-size="11" fill="#94a3b8" font-weight="600">+2.5</text>
+      <text x="90" y="205" text-anchor="end" font-size="11" fill="#94a3b8" font-weight="700">0</text>
+      <text x="90" y="290" text-anchor="end" font-size="11" fill="#94a3b8" font-weight="600">-2.5</text>
+      <text x="90" y="375" text-anchor="end" font-size="11" fill="#94a3b8" font-weight="600">-5</text>
+      <text x="55" y="200" text-anchor="middle" font-size="10" fill="#059669" font-weight="700" transform="rotate(-90,55,140)">만족</text>
+      <text x="55" y="200" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="700" transform="rotate(-90,55,290)">불만</text>
+      <line x1="258" y1="20" x2="258" y2="390" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="417" y1="20" x2="417" y2="390" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="575" y1="20" x2="575" y2="390" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="733" y1="20" x2="733" y2="390" stroke="#e2e8f0" stroke-width="0.5"/>
+      <line x1="892" y1="20" x2="892" y2="390" stroke="#e2e8f0" stroke-width="0.5"/>
+      <text x="179" y="408" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">이슈 발생</text>
+      <text x="337" y="408" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">자체 해결</text>
+      <text x="496" y="408" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">도움 요청</text>
+      <text x="654" y="408" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">대기</text>
+      <text x="812" y="408" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">해결</text>
+      <text x="971" y="408" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">사후</text>
+      <!-- AS-IS CURVE -->
+      <polyline points="179,268 337,302 496,285 654,353 812,234 971,285" fill="none" stroke="#dc2626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <polygon points="179,268 337,302 496,285 654,353 812,234 971,285 971,200 179,200" fill="#dc2626" fill-opacity="0.07"/>
+      <circle cx="179" cy="268" r="6" fill="#dc2626" stroke="white" stroke-width="2"/>
+      <circle cx="337" cy="302" r="6" fill="#dc2626" stroke="white" stroke-width="2"/>
+      <circle cx="496" cy="285" r="6" fill="#dc2626" stroke="white" stroke-width="2"/>
+      <circle cx="654" cy="353" r="8" fill="#dc2626" stroke="white" stroke-width="2"/>
+      <circle cx="812" cy="234" r="6" fill="#dc2626" stroke="white" stroke-width="2"/>
+      <circle cx="971" cy="285" r="6" fill="#dc2626" stroke="white" stroke-width="2"/>
+      <text x="179" y="258" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">-2.0</text>
+      <text x="337" y="322" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">-3.0</text>
+      <text x="496" y="275" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">-2.5</text>
+      <text x="654" y="373" text-anchor="middle" font-size="13" fill="#dc2626" font-weight="900">-4.5</text>
+      <text x="812" y="224" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">-1.0</text>
+      <text x="971" y="275" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="700">-2.5</text>
+      <!-- TO-BE CURVE -->
+      <polyline points="179,217 337,132 496,166 654,217 812,98 971,81" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <polygon points="179,217 337,132 496,166 654,217 812,98 971,81 971,200 179,200" fill="#059669" fill-opacity="0.07"/>
+      <circle cx="179" cy="217" r="6" fill="#059669" stroke="white" stroke-width="2"/>
+      <circle cx="337" cy="132" r="6" fill="#059669" stroke="white" stroke-width="2"/>
+      <circle cx="496" cy="166" r="6" fill="#059669" stroke="white" stroke-width="2"/>
+      <circle cx="654" cy="217" r="6" fill="#059669" stroke="white" stroke-width="2"/>
+      <circle cx="812" cy="98" r="6" fill="#059669" stroke="white" stroke-width="2"/>
+      <circle cx="971" cy="81" r="8" fill="#059669" stroke="white" stroke-width="2"/>
+      <text x="179" y="240" text-anchor="middle" font-size="11" fill="#059669" font-weight="700">-0.5</text>
+      <text x="337" y="122" text-anchor="middle" font-size="11" fill="#059669" font-weight="700">+2.0</text>
+      <text x="496" y="156" text-anchor="middle" font-size="11" fill="#059669" font-weight="700">+1.0</text>
+      <text x="654" y="240" text-anchor="middle" font-size="11" fill="#059669" font-weight="700">-0.5</text>
+      <text x="812" y="88" text-anchor="middle" font-size="11" fill="#059669" font-weight="700">+3.0</text>
+      <text x="971" y="71" text-anchor="middle" font-size="13" fill="#059669" font-weight="900">+3.5</text>
+      <!-- GAP ANNOTATIONS -->
+      <line x1="670" y1="353" x2="670" y2="217" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,4"/>
+      <rect x="674" y="270" width="56" height="24" rx="4" fill="#7c3aed"/>
+      <text x="702" y="286" text-anchor="middle" font-size="11" fill="white" font-weight="700">+4.0↑</text>
+      <line x1="353" y1="302" x2="353" y2="132" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,4"/>
+      <rect x="357" y="203" width="56" height="24" rx="4" fill="#7c3aed"/>
+      <text x="385" y="219" text-anchor="middle" font-size="11" fill="white" font-weight="700">+5.0↑</text>
+      <line x1="987" y1="285" x2="987" y2="81" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,4"/>
+      <rect x="991" y="168" width="56" height="24" rx="4" fill="#7c3aed"/>
+      <text x="1019" y="184" text-anchor="middle" font-size="11" fill="white" font-weight="700">+6.0↑</text>
+      <!-- LEGEND -->
+      <line x1="110" y1="16" x2="140" y2="16" stroke="#dc2626" stroke-width="3"/>
+      <circle cx="125" cy="16" r="4" fill="#dc2626"/>
+      <text x="148" y="20" font-size="12" fill="#dc2626" font-weight="700">As-Is</text>
+      <line x1="210" y1="16" x2="240" y2="16" stroke="#059669" stroke-width="3"/>
+      <circle cx="225" cy="16" r="4" fill="#059669"/>
+      <text x="248" y="20" font-size="12" fill="#059669" font-weight="700">To-Be</text>
+      <line x1="320" y1="16" x2="350" y2="16" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,4"/>
+      <text x="358" y="20" font-size="12" fill="#7c3aed" font-weight="700">개선 폭</text>
+    </svg>
+  </div>
+</div>
+
+<!-- TO-BE JOURNEY -->
+<div class="journey-section" style="background:#f0fdf4;">
+  <div style="margin-bottom: 16px;">
+    <span style="background:var(--green); color:white; padding:6px 16px; border-radius:8px; font-size:13px; font-weight:700;">To-Be Journey</span>
+    <span style="font-size:13px; color:var(--text-2); margin-left:12px;">개선 후 고객이 경험하는 기술지원 여정</span>
+  </div>
+  <div class="journey-grid">
+    <div class="stage-header" style="background:#064e3b;">
+      <div class="stage-label-corner">단계</div>
+      <div class="stage-label"><div class="stage-num">STAGE 1</div><div class="stage-name">이슈 발생 + 자체 진단</div><div class="stage-time">즉시</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 2</div><div class="stage-name">가이드 기반 자체 해결</div><div class="stage-time" style="color:#34d399;">~40% 여기서 해결</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 3</div><div class="stage-name">Smart 티켓 접수</div><div class="stage-time">자동 · 즉시</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 4</div><div class="stage-name">투명한 처리</div><div class="stage-time">1~14일</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 5</div><div class="stage-name">구조화된 해결</div><div class="stage-time" style="color:#34d399;">~30일 (80%↓)</div></div>
+      <div class="stage-label"><div class="stage-num">STAGE 6</div><div class="stage-name">예방 + 학습</div><div class="stage-time" style="color:#34d399;">재발 10%↓</div></div>
+    </div>
+    <div class="row-action" style="display:contents;">
+      <div class="jm-label">행동<br><span style="font-size:10px; color:var(--text-3);">Doing</span></div>
+      <div class="jm-cell"><ul><li>에러 코드 + 원인 확인</li><li>심각도 시각 확인</li><li>3단계 조치 1단계 실행</li></ul></div>
+      <div class="jm-cell"><ul><li>In-App 가이드 검색</li><li>유사 사례 확인</li><li>동영상 튜토리얼 시청</li><li>자체 해결 완료 ✓</li></ul></div>
+      <div class="jm-cell"><ul><li>GUI에서 [Help Desk 접수] 클릭</li><li>에러 코드 자동 입력</li><li>로그 자동 첨부</li></ul></div>
+      <div class="jm-cell"><ul><li>실시간 대시보드 확인</li><li>예상 해결일 확인</li><li>추가 정보 한 번에 제공</li></ul></div>
+      <div class="jm-cell"><ul><li>Step-by-step 가이드 수신</li><li>동영상 따라 적용</li><li>원클릭 패치 설치</li></ul></div>
+      <div class="jm-cell"><ul><li>만족도 피드백 제출</li><li>예방 가이드 수신</li><li>정기 점검 리마인더</li></ul></div>
+    </div>
+    <div class="row-touch" style="display:contents;">
+      <div class="jm-label">접점<br><span style="font-size:10px; color:var(--text-3);">Touchpoint</span></div>
+      <div class="jm-cell"><ul><li>개선된 에러 메시지</li><li>Error Message Catalog</li><li>심각도 색상 구분</li></ul></div>
+      <div class="jm-cell"><ul><li>In-App 트러블슈팅</li><li>Knowledge Base</li><li>동영상 가이드</li><li>유사 사례 추천</li></ul></div>
+      <div class="jm-cell"><ul><li>GUI 내장 접수 버튼</li><li>Smart 티켓 양식</li><li>자동 분류 엔진</li></ul></div>
+      <div class="jm-cell"><ul><li>실시간 진행 대시보드</li><li>SLA 타이머</li><li>자동 상태 알림</li></ul></div>
+      <div class="jm-cell"><ul><li>구조화된 가이드 문서</li><li>동영상 튜토리얼</li><li>원클릭 패치 도구</li></ul></div>
+      <div class="jm-cell"><ul><li>만족도 조사</li><li>예방 알림 시스템</li><li>KB 자동 발행</li></ul></div>
+    </div>
+    <div class="row-think" style="display:contents;">
+      <div class="jm-label">생각<br><span style="font-size:10px; color:var(--text-3);">Thinking</span></div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"아, Glass 오염일 수 있구나. 일단 클리닝부터 해보자"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"동영상대로 따라하니까 됐네! 티켓 안 내도 되겠다"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"버튼 하나로 접수 끝. 로그도 알아서 붙네"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"3단계째구나. 예상 해결일이 보이니까 기다릴 만하네"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"가이드가 구체적이라 자신 있게 적용할 수 있겠다"</div>
+      <div class="jm-cell" style="font-style:italic; color:var(--text-2);">"예방 팁까지 알려주네. 다음엔 이런 문제 안 생기겠다"</div>
+    </div>
+    <div class="row-emotion" style="display:contents;">
+      <div class="jm-label">감정<br><span style="font-size:10px; color:var(--text-3);">Feeling</span></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😟</div><div class="emotion-neutral" style="font-size:12px;">긴장 → 안심</div><div class="data-ref">원인 파악 가능</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😊</div><div class="emotion-good" style="font-size:12px;">자신감 · 성취</div><div class="data-ref">스스로 해결!</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>🙂</div><div class="emotion-good" style="font-size:12px;">편리 · 신뢰</div><div class="data-ref">원클릭 접수</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😐</div><div class="emotion-neutral" style="font-size:12px;">수용 · 이해</div><div class="data-ref">진행 투명</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>😄</div><div class="emotion-good" style="font-size:12px;">만족 · 안도</div><div class="data-ref">명확한 가이드</div></div>
+      <div class="jm-cell" style="text-align:center; font-size:20px;"><div>🤩</div><div class="emotion-good" style="font-size:12px;">신뢰 · 충성</div><div class="data-ref">예방까지 케어</div></div>
+    </div>
+    <div class="row-opp" style="display:contents;">
+      <div class="jm-label">개선 포인트<br><span style="font-size:10px; color:var(--text-3);">Improvement</span></div>
+      <div class="jm-cell"><div class="opp-item">Error Catalog 15유형 표준화 <span class="strategy-ref">전략1</span></div><div class="opp-item">심각도별 시각 구분 (Critical/Warning/Info)</div></div>
+      <div class="jm-cell"><div class="opp-item">In-App 트러블슈팅 + KB <span class="strategy-ref">전략1</span></div><div class="opp-item">3,750건 리포트 → 가이드 자동 생성 <span class="strategy-ref">전략5</span></div></div>
+      <div class="jm-cell"><div class="opp-item">GUI 원클릭 접수 + 로그 자동 첨부 <span class="strategy-ref">전략2</span></div><div class="opp-item">에러코드 → 카테고리 자동 매핑</div></div>
+      <div class="jm-cell"><div class="opp-item">실시간 대시보드 + SLA 타이머</div><div class="opp-item">유사 사례 자동 매칭 <span class="strategy-ref">전략4</span></div></div>
+      <div class="jm-cell"><div class="opp-item">구조화된 Step-by-step 가이드</div><div class="opp-item">원클릭 패치 + 동영상 튜토리얼</div></div>
+      <div class="jm-cell"><div class="opp-item">반복 패턴 → 사전 예방 알림 <span class="strategy-ref">전략3</span></div><div class="opp-item">해결→KB 자동 발행 루프 <span class="strategy-ref">전략5</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MOMENT OF TRUTH -->
+<div class="mot-section">
+  <div class="mot-title">Moment of Truth — 결정적 순간</div>
+  <div class="mot-grid">
+    <div class="mot-card critical">
+      <div class="mot-stage">MOT #1 · Stage 1 → 2</div>
+      <div class="mot-data">자체 해결 가능 여부</div>
+      <h4>"에러가 떴을 때, 내가 뭘 할 수 있는가?"</h4>
+      <p>에러 발생 직후, 고객이 자체 조치를 시도할 수 있는지 결정하는 순간. 현재는 가이드가 전혀 없어서 100% Help Desk 의존.</p>
+      <div class="mot-compare">
+        <span class="mot-asis">As-Is: 자체 해결 0%</span>
+        <span class="mot-arrow">→</span>
+        <span class="mot-tobe">To-Be: 자체 해결 40%</span>
+      </div>
+    </div>
+    <div class="mot-card important">
+      <div class="mot-stage">MOT #2 · Stage 4</div>
+      <div class="mot-data">대기 중 투명성</div>
+      <h4>"내 이슈가 처리되고 있긴 한 건가?"</h4>
+      <p>장기 대기 중 진행 상황이 보이지 않으면 고객 신뢰가 급격히 하락. 28.5%가 "모니터링 중"으로 방치되는 현재 구조가 최악의 경험.</p>
+      <div class="mot-compare">
+        <span class="mot-asis">As-Is: 감정 -4.5</span>
+        <span class="mot-arrow">→</span>
+        <span class="mot-tobe">To-Be: 감정 -0.5</span>
+      </div>
+    </div>
+    <div class="mot-card positive">
+      <div class="mot-stage">MOT #3 · Stage 6</div>
+      <div class="mot-data">재발 방지 경험</div>
+      <h4>"이 문제는 이제 다시 안 생기겠지?"</h4>
+      <p>해결 후 예방 가이드를 받으면 고객은 "이 회사가 나를 케어한다"고 느끼며 충성도 상승. 현재는 재발 시 처음부터 반복하는 좌절감.</p>
+      <div class="mot-compare">
+        <span class="mot-asis">As-Is: 28% 재발</span>
+        <span class="mot-arrow">→</span>
+        <span class="mot-tobe">To-Be: 10% 재발</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>GTS Support UX 최적화 프로젝트</strong> &mdash; Service Blueprint &amp; Customer Journey Map &middot; 2026.07<br>
+  Data: Dynamics 365 CRM 6,769건 + Service Report 3,750건 (2024.07 ~ 2026.07)
+</div>
+
+<script>
+function switchPage(page) {
+  document.querySelectorAll('.page-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.top-nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('page-' + page).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('#page-blueprint .tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('#page-blueprint .tab-btn').forEach(function(b) {
+    b.classList.remove('active-asis', 'active-tobe', 'active-compare');
+  });
+  document.getElementById('panel-' + tab).classList.add('active');
+  var btn = document.getElementById('btn-' + tab);
+  if (tab === 'asis') btn.classList.add('active-asis');
+  else if (tab === 'tobe') btn.classList.add('active-tobe');
+  else btn.classList.add('active-compare');
+}
+</script>
+
+</body>
+</html>
