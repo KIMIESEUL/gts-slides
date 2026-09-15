@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>KohYoung AOI — In-App Troubleshooting Guide Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI','Noto Sans KR',Tahoma,sans-serif;
+    background:#1e1e1e;
+    display:flex;
+    justify-content:center;
+    padding-top:10px;
+  }
+
+  /* 원본 이미지 크기 고정 */
+  .gui{
+    position:relative;
+    width:1282px;
+    height:1025px;
+    flex-shrink:0;
+  }
+  .gui img{
+    display:block;
+    width:1282px;
+    height:1025px;
+  }
+
+  /* Prototype Label */
+  .proto{
+    position:absolute;top:58px;left:8px;
+    background:rgba(37,99,235,.92);color:#fff;
+    padding:4px 10px;font-size:10px;font-weight:700;
+    border-radius:3px;box-shadow:0 2px 8px rgba(0,0,0,.3);
+    pointer-events:none;z-index:20;
+  }
+  .proto small{font-size:8px;font-weight:400;opacity:.8;display:block;margin-top:1px;}
+
+  /* Error Toast */
+  .toast{
+    position:absolute;top:98px;left:50px;
+    background:rgba(220,38,38,.94);color:#fff;
+    padding:5px 14px;border-radius:4px;
+    font-size:11px;font-weight:700;
+    box-shadow:0 3px 12px rgba(0,0,0,.4);
+    display:flex;align-items:center;gap:10px;
+    z-index:20;animation:fadeIn .4s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .toast-btn{
+    padding:3px 10px;background:rgba(255,255,255,.2);
+    border:1px solid rgba(255,255,255,.3);border-radius:3px;
+    color:#fff;font-size:10px;font-weight:700;
+    cursor:pointer;font-family:inherit;
+  }
+  .toast-btn:hover{background:rgba(255,255,255,.35)}
+
+  /* WinForms Error Popup — centered overlay */
+  .err-overlay{
+    position:absolute;inset:0;z-index:25;
+    background:rgba(0,0,0,.25);
+    display:flex;align-items:center;justify-content:center;
+    animation:popIn .3s ease;
+  }
+  @keyframes popIn{from{opacity:0}to{opacity:1}}
+  .err-pop{
+    width:440px;
+    background:#f0f0f0;
+    border:1px solid #707070;
+    box-shadow:0 4px 16px rgba(0,0,0,.35);
+    font-family:'Segoe UI',Tahoma,sans-serif;
+    font-size:14px;color:#1e1e1e;
+  }
+  .ep-titlebar{
+    display:flex;align-items:center;height:32px;
+    background:#fff;border-bottom:1px solid #d6d6d6;
+    padding:0 2px 0 10px;user-select:none;
+  }
+  .ep-titlebar-ic{width:16px;height:16px;margin-right:7px;display:flex;align-items:center;justify-content:center}
+  .ep-titlebar-ic svg{width:16px;height:16px}
+  .ep-titlebar-txt{flex:1;font-size:13px;color:#1e1e1e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ep-titlebar-btns{display:flex;height:100%}
+  .ep-titlebar-btns button{
+    width:44px;height:100%;border:none;background:transparent;
+    font-family:'Segoe MDL2 Assets','Segoe UI Symbol',sans-serif;
+    font-size:11px;color:#1e1e1e;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ep-titlebar-btns button:hover{background:#e5e5e5}
+  .ep-titlebar-btns button.ep-close:hover{background:#e81123;color:#fff}
+  .ep-body{padding:18px 20px 14px;display:flex;gap:14px}
+  .ep-warn{flex-shrink:0;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
+  .ep-warn svg{width:36px;height:36px}
+  .ep-content{flex:1}
+  .ep-sv{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border:1px solid #d03b3b;color:#d03b3b;margin-bottom:6px}
+  .ep-tt{font-size:16px;font-weight:600;color:#1e1e1e;margin:0 0 6px}
+  .ep-ds{font-size:13px;color:#444;line-height:1.55;margin:0 0 10px}
+  .ep-steps{list-style:none;padding:0;margin:0;border-top:1px solid #d6d6d6;padding-top:9px}
+  .ep-st{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;font-size:13px;color:#1e1e1e;line-height:1.45}
+  .ep-sn{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:#0078d4;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .ep-footer{display:flex;justify-content:flex-end;gap:6px;padding:8px 20px 14px;border-top:1px solid #d6d6d6;background:#f0f0f0}
+  .ep-b{
+    font-family:'Segoe UI',Tahoma,sans-serif;font-size:13px;
+    padding:6px 20px;min-width:90px;
+    border:1px solid #ababab;background:#e1e1e1;color:#1e1e1e;
+    cursor:pointer;text-align:center;
+  }
+  .ep-b:hover{background:#d0d0d0;border-color:#999}
+  .ep-b:active{background:#c0c0c0}
+  .ep-b.p{background:#0078d4;border-color:#0078d4;color:#fff}
+  .ep-b.p:hover{background:#006cbd;border-color:#006cbd}
+  .ep-b.p:active{background:#005a9e}
+
+  /* Guide Trigger */
+  .gtrig{
+    position:absolute;top:870px;left:1230px;
+    width:34px;height:34px;
+    background:linear-gradient(180deg,#f87171,#dc2626);
+    border:2px solid #b91c1c;border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;color:#fff;cursor:pointer;z-index:20;
+    box-shadow:0 2px 10px rgba(220,38,38,.4);
+    animation:gPulse 2s infinite;
+  }
+  @keyframes gPulse{0%,100%{box-shadow:0 2px 8px rgba(220,38,38,.4)}50%{box-shadow:0 2px 16px rgba(220,38,38,.9)}}
+  .gtrig .nb{position:absolute;top:-5px;right:-5px;background:#fbbf24;color:#78350f;font-size:7px;font-weight:900;padding:0 3px;border-radius:2px}
+
+  /* Guide Panel */
+  .gpanel{
+    position:absolute;top:55px;left:855px;
+    width:400px;bottom:30px;
+    background:#f1f3f5;border:2px solid #868e96;border-radius:2px;
+    display:flex;flex-direction:column;z-index:30;
+    box-shadow:-3px 0 20px rgba(0,0,0,.4);
+    transition:transform .3s ease,opacity .3s ease;overflow:hidden;
+  }
+  .gpanel.hid{transform:translateX(460px);opacity:0;pointer-events:none}
+
+  .gp-tb{height:32px;background:linear-gradient(180deg,#339af0,#1c7ed6);display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #1864ab;flex-shrink:0}
+  .gp-tb span{font-size:14px;color:#fff;font-weight:700;flex:1}
+  .gp-tb .bd{background:#fcc419;color:#744210;font-size:9px;font-weight:800;padding:2px 6px;border-radius:2px;margin-left:4px}
+  .gp-x{width:22px;height:22px;background:linear-gradient(180deg,#ff8787,#e03131);border:1px solid #c92a2a;border-radius:2px;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
+
+  .gp-sr{padding:8px 10px;background:linear-gradient(180deg,#e9ecef,#dee2e6);border-bottom:1px solid #adb5bd;position:relative}
+  .gp-sr input{width:100%;padding:7px 10px 7px 28px;border:1px solid #adb5bd;border-radius:2px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+  .gp-sr input:focus{border-color:#339af0}
+  .gp-sr .si{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:14px;color:#adb5bd}
+
+  .gp-tabs{display:flex;background:linear-gradient(180deg,#ced4da,#adb5bd);border-bottom:1px solid #868e96;flex-shrink:0}
+  .gp-t{flex:1;padding:7px 2px;font-size:13px;font-weight:600;color:#495057;text-align:center;border:none;background:linear-gradient(180deg,#dee2e6,#ced4da);border-right:1px solid #adb5bd;cursor:pointer;font-family:inherit}
+  .gp-t:last-child{border-right:none}
+  .gp-t:hover{background:linear-gradient(180deg,#f1f3f5,#dee2e6)}
+  .gp-t.on{background:linear-gradient(180deg,#fff,#f8f9fa);color:#1c7ed6;font-weight:700;border-bottom:2px solid #339af0}
+
+  .gp-body{flex:1;overflow-y:auto;background:#f1f3f5}
+  .gv{display:none}.gv.on{display:block}
+
+  /* Alert */
+  .ab{margin:8px 10px;padding:10px 12px;background:#fff5f5;border:1px solid #fca5a5;border-left:4px solid #ef4444;border-radius:2px}
+  .ab .r1{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+  .ab .ic{width:20px;height:20px;background:#ef4444;color:#fff;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+  .ab .cd{font-family:Consolas,monospace;font-size:13px;font-weight:700;color:#dc2626}
+  .ab .sv{margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px;background:#fee2e2;color:#b91c1c}
+  .ab .tt{font-size:14px;font-weight:700;color:#111;margin-bottom:3px}
+  .ab .dd{font-size:12px;color:#6b7280}
+  .ab .ar{margin-top:6px;display:flex;align-items:center;gap:6px;font-size:12px}
+  .arb{flex:1;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+  .arf{height:100%;background:#22c55e;border-radius:3px}
+  .arp{color:#16a34a;font-weight:700;font-size:13px}
+
+  /* Wizard */
+  .wh{padding:7px 12px;font-size:13px;font-weight:700;color:#374151;background:linear-gradient(180deg,#e5e7eb,#d1d5db);border-top:1px solid #d1d5db;border-bottom:1px solid #d1d5db}
+  .w{margin:5px 10px;border:1px solid #d1d5db;border-radius:2px;background:#fff;overflow:hidden}
+  .w.d{border-color:#22c55e}.w.c{border-color:#3b82f6;border-width:2px}
+  .w-h{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;background:linear-gradient(180deg,#f9fafb,#f3f4f6)}
+  .w.d .w-h{background:linear-gradient(180deg,#f0fdf4,#dcfce7)}
+  .w.c .w-h{background:linear-gradient(180deg,#eff6ff,#dbeafe)}
+  .w-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;background:#e5e7eb;color:#9ca3af;border:1px solid #d1d5db}
+  .w.d .w-n{background:#22c55e;color:#fff;border-color:#16a34a}.w.c .w-n{background:#3b82f6;color:#fff;border-color:#2563eb}
+  .w-i{flex:1}.w-t{font-size:13px;font-weight:700;color:#1f2937}.w.d .w-t{color:#166534}.w-s{font-size:11px;color:#9ca3af}
+  .w-b{font-size:11px;font-weight:700;padding:2px 7px;border-radius:2px}
+  .w.d .w-b{background:#dcfce7;color:#166534}.w.c .w-b{background:#dbeafe;color:#1d4ed8}
+  .w-bd{padding:8px 10px 10px 40px;font-size:12px;color:#4b5563;line-height:1.6;display:none;border-top:1px solid #e5e7eb;background:#fff}
+  .w.c .w-bd{display:block}
+  .w-bd ol{padding-left:16px;margin:4px 0}.w-bd li{margin-bottom:3px}.w-bd strong{color:#111}
+  .w-r{margin-top:5px;padding:4px 8px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:2px;display:flex;align-items:center;gap:6px;font-size:12px;color:#166534;font-weight:600}
+  .wrb{flex:1;height:5px;background:#bbf7d0;border-radius:2px;overflow:hidden}.wrf{height:100%;background:#22c55e;border-radius:2px}
+  .w-btns{display:flex;gap:4px;margin-top:8px}
+  .wb{padding:5px 12px;font-size:12px;font-weight:600;border:1px solid;border-radius:2px;cursor:pointer;font-family:inherit}
+  .wb.ok{background:linear-gradient(180deg,#4ade80,#22c55e);color:#fff;border-color:#16a34a}
+  .wb.nx{background:linear-gradient(180deg,#60a5fa,#3b82f6);color:#fff;border-color:#2563eb}
+  .wb.vd{background:linear-gradient(180deg,#f3f4f6,#e5e7eb);color:#4b5563;border-color:#d1d5db}
+
+  /* Similar */
+  .sm{margin:5px 10px 10px;border:1px solid #d1d5db;border-radius:2px;background:#fff;overflow:hidden}
+  .sm-h{padding:6px 10px;background:linear-gradient(180deg,#f3f4f6,#e5e7eb);border-bottom:1px solid #d1d5db;font-size:12px;font-weight:700;color:#374151}
+  .sm-c{padding:6px 10px;border-bottom:1px solid #f3f4f6;font-size:12px}
+  .sm-c:last-child{border-bottom:none}
+  .smt{font-weight:700;color:#1f2937}.smm{color:#9ca3af;font-size:10px}.smr{color:#16a34a;font-weight:600}
+
+  /* Search */
+  .sw{padding:8px 10px}
+  .scnt{font-size:12px;color:#6b7280;margin-bottom:5px}
+  .sc{padding:8px 10px;border:1px solid #d1d5db;border-radius:2px;margin-bottom:5px;background:#fff;cursor:pointer}
+  .sc:hover{border-color:#3b82f6;background:#eff6ff}
+  .scd{font-family:Consolas,monospace;font-size:12px;font-weight:700;color:#dc2626}
+  .sct{font-size:13px;font-weight:700;color:#111;margin:2px 0}
+  .sds{font-size:11px;color:#6b7280}
+  .smt2{display:flex;gap:8px;margin-top:4px;font-size:11px;color:#9ca3af}
+  .smt2 b{color:#374151}
+  .stg{background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:1px 6px;border-radius:2px}
+
+  /* FAQ */
+  .fw{padding:8px 10px}
+  .fc{border:1px solid #d1d5db;border-radius:2px;margin-bottom:4px;background:#fff;overflow:hidden}
+  .fq{padding:8px 10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:flex-start;gap:6px;background:linear-gradient(180deg,#f9fafb,#f3f4f6);color:#1f2937}
+  .fq .qb{width:20px;height:20px;border-radius:2px;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+  .fa{padding:8px 10px 8px 36px;font-size:12px;color:#4b5563;line-height:1.7;border-top:1px solid #e5e7eb;background:#fff;display:none}
+  .fc.op .fa{display:block}.fa strong{color:#111}
+
+  /* HD */
+  .hd{padding:7px 10px;background:linear-gradient(180deg,#e5e7eb,#d1d5db);border-top:1px solid #adb5bd;display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .hd-t{flex:1;font-size:11px;color:#4b5563;line-height:1.4}
+  .hd-b{padding:6px 14px;background:linear-gradient(180deg,#f87171,#dc2626);color:#fff;border:1px solid #b91c1c;border-radius:2px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<div class="gui">
+  <img src="AOIGUI.png" alt="KohYoung AOI GUI">
+
+
+  <div class="toast">
+    ⚠ ERR-GUI-001 | GUI 응답 지연 감지 — Memory 95%
+    <button class="toast-btn" onclick="openG()">📖 가이드 보기 →</button>
+  </div>
+
+  <div class="err-overlay" id="errOverlay">
+    <div class="err-pop">
+      <div class="ep-titlebar">
+        <div class="ep-titlebar-ic"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#d03b3b"/><text x="8" y="12" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Segoe UI">!</text></svg></div>
+        <div class="ep-titlebar-txt">ERR-GUI-001</div>
+        <div class="ep-titlebar-btns">
+          <button title="Minimize">&#xE921;</button>
+          <button title="Maximize">&#xE922;</button>
+          <button class="ep-close" title="Close" onclick="document.getElementById('errOverlay').style.display='none'">&#xE8BB;</button>
+        </div>
+      </div>
+      <div class="ep-body">
+        <div class="ep-warn"><svg viewBox="0 0 32 32"><path d="M16 2 L30 28 L2 28 Z" fill="#f0c000" stroke="#b8960a" stroke-width="1"/><text x="16" y="24" text-anchor="middle" fill="#1e1e1e" font-size="16" font-weight="900" font-family="Segoe UI">!</text></svg></div>
+        <div class="ep-content">
+          <div class="ep-sv">CRITICAL</div>
+          <div class="ep-tt">GUI 응답 지연 감지</div>
+          <div class="ep-ds">GUI가 응답하지 않습니다. 메모리: 3.8GB / 4.0GB (95%)<br>※ 검사 데이터는 자동 저장되어 있습니다.</div>
+          <div class="ep-steps">
+            <div class="ep-st"><div class="ep-sn">1</div><span>GUI 재시작 (데이터 자동 저장됨)</span></div>
+            <div class="ep-st"><div class="ep-sn">2</div><span>재발 시: AoiGuiSetup.ini MemoryLimit 확인</span></div>
+            <div class="ep-st"><div class="ep-sn">3</div><span>지속 시: SW 버전 업데이트 (v2.10.2.0)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ep-footer">
+        <button class="ep-b p" onclick="openG()">상세 가이드</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="gtrig" onclick="toggleG()">❓<span class="nb">NEW</span></div>
+
+  <!-- Guide Panel -->
+  <div class="gpanel hid" id="gp">
+    <div class="gp-tb"><span>🔧 Troubleshooting Guide <span class="bd">NEW</span></span><div class="gp-x" onclick="toggleG()">✕</div></div>
+    <div class="gp-sr"><span class="si">🔎</span><input type="text" placeholder="에러 코드 또는 증상 검색 (예: GUI, 프리징, ERR-CAM)" id="si" oninput="doS(this.value)"></div>
+    <div class="gp-tabs">
+      <button class="gp-t on" onclick="tb('wiz')">🔧 현재이슈</button>
+      <button class="gp-t" onclick="tb('sch')">🔎 가이드검색</button>
+      <button class="gp-t" onclick="tb('faq')">💡 FAQ</button>
+    </div>
+    <div class="gp-body">
+
+      <div class="gv on" id="v-wiz">
+        <div class="ab">
+          <div class="r1"><div class="ic">!</div><div class="cd">ERR-GUI-001</div><div class="sv">CRITICAL</div></div>
+          <div class="tt">GUI 응답 지연 — 메모리 초과</div>
+          <div class="dd">메모리 사용량 95% (3.8GB / 4.0GB). 임계치 90% 초과.</div>
+          <div class="ar"><span>자체 해결률</span><div class="arb"><div class="arf" style="width:62%"></div></div><span class="arp">62%</span></div>
+        </div>
+        <div class="wh">📋 단계별 해결 가이드 (4단계)</div>
+
+        <div class="w" onclick="wS(this)">
+          <div class="w-h"><div class="w-n">1</div><div class="w-i"><div class="w-t">Step 1. GUI 재시작</div><div class="w-s">검사 데이터 자동 저장 후 재시작</div></div></div>
+          <div class="w-bd"><p>GUI 종료 후 재실행. 데이터 자동 저장됨.</p><div class="w-r"><span>해결률</span><div class="wrb"><div class="wrf" style="width:33%"></div></div>33%</div></div>
+        </div>
+        <div class="w c" onclick="wS(this)">
+          <div class="w-h"><div class="w-n">2</div><div class="w-i"><div class="w-t">Step 2. AoiGuiSetup.ini 확인</div><div class="w-s">MemoryLimit 값 확인 및 조정</div></div></div>
+          <div class="w-bd">
+            <p>재시작 후 반복되면 설정 파일 수정:</p>
+            <ol><li><strong>C:\KYGui\Config\AoiGuiSetup.ini</strong> 열기</li><li><strong>[System]</strong> &gt; <strong>MemoryLimit</strong> 확인</li><li>2048 이하 → <strong>4096</strong>으로 변경</li><li>GUI 재시작 후 메모리 확인</li></ol>
+            <div class="w-r"><span>누적 해결률</span><div class="wrb"><div class="wrf" style="width:48%"></div></div>48%</div>
+          </div>
+        </div>
+        <div class="w" onclick="wS(this)">
+          <div class="w-h"><div class="w-n">3</div><div class="w-i"><div class="w-t">Step 3. SW 버전 업데이트</div><div class="w-s">최신 패치 적용</div></div></div>
+          <div class="w-bd"><ol><li>Help Desk에서 최신 버전 확인</li><li>메모리 관련 패치 노트 확인</li><li>업데이트 설치</li></ol><div class="w-r"><span>누적 해결률</span><div class="wrb"><div class="wrf" style="width:76%"></div></div>76%</div></div>
+        </div>
+        <div class="w" onclick="wS(this)">
+          <div class="w-h"><div class="w-n">4</div><div class="w-i"><div class="w-t">Step 4. HQ 에스컬레이션</div><div class="w-s">미해결 시 Help Desk 접수</div></div></div>
+          <div class="w-bd"><ol><li>[Help Desk 접수] 클릭</li><li>에러코드 + 로그 자동 첨부</li><li>추가 증상 입력</li></ol></div>
+        </div>
+
+        <div class="sm">
+          <div class="sm-h">📋 유사 해결 사례 (3건)</div>
+          <div class="sm-c"><div class="smt">고객사 A · Line3 — GUI 프리징</div><div class="smm">2026.03 | v2.9.1</div><div class="smr">→ MemoryLimit 4096 변경 해결</div></div>
+          <div class="sm-c"><div class="smt">고객사 B · 미주 — 검사 속도 저하</div><div class="smm">2025.11 | v2.8.5</div><div class="smr">→ v2.9.0 업데이트 + ini 수정</div></div>
+          <div class="sm-c"><div class="smt">고객사 C — 1시간 후 프리징</div><div class="smm">2026.05 | v2.9.2</div><div class="smr">→ 핫픽스 v2.9.2.1 적용</div></div>
+        </div>
+      </div>
+
+      <div class="gv" id="v-sch">
+        <div class="sw">
+          <div class="scnt" id="srC">전체 10개 에러 유형</div>
+          <div class="sc" data-k="ERR-GUI-001 GUI 응답 프리징 멈춤 메모리" onclick="tb('wiz')"><div class="scd">ERR-GUI-001</div><div class="sct">GUI 응답 없음 / 프리징</div><div class="sds">재시작 → ini 수정 → SW 업데이트</div><div class="smt2"><b>473건</b> | 해결 <b>146일</b> <span class="stg">자체해결 62%</span></div></div>
+          <div class="sc" data-k="ERR-CAM-002 3D 복원 이미지 카메라"><div class="scd">ERR-CAM-002</div><div class="sct">3D 복원 불안정</div><div class="sds">Glass → KY Cal → PZT → 그래버</div><div class="smt2"><b>543건</b> | <b>106일</b> <span class="stg">자체해결 53%</span></div></div>
+          <div class="sc" data-k="ERR-COM-001 KSmart 연결 서버 통신"><div class="scd">ERR-COM-001</div><div class="sct">KSmart 서버 연결 실패</div><div class="sds">서비스 재시작 → 버전 → 네트워크</div><div class="smt2"><b>487건</b> <span class="stg">자체해결 85%</span></div></div>
+          <div class="sc" data-k="ERR-INS-001 오검출 False Call"><div class="scd">ERR-INS-001</div><div class="sct">오검출 (False Call)</div><div class="sds">Tolerance → Fiducial → SW 원복</div><div class="smt2"><b>270건</b> <span class="stg">자체해결 59%</span></div></div>
+          <div class="sc" data-k="ERR-CAL-001 캘리브레이션 실패 Cal"><div class="scd">ERR-CAL-001</div><div class="sct">캘리브레이션 실패</div><div class="sds">타겟 클리닝 → Phase별 → PZT/OPO</div><div class="smt2"><b>436건</b> <span class="stg">자체해결 55%</span></div></div>
+          <div class="sc" data-k="ERR-GUI-003 PC 교체 설치"><div class="scd">ERR-GUI-003</div><div class="sct">PC 교체 절차</div><div class="sds">백업 → OS → GUI → 복원 → Cal</div><div class="smt2"><b>536건</b> <span class="stg">절차 가이드</span></div></div>
+          <div class="sc" data-k="ERR-COM-002 MES 통신 SECS GEM"><div class="scd">ERR-COM-002</div><div class="sct">MES 통신 오류</div><div class="sds">SECS/GEM·PLC 설정 → 네트워크</div><div class="smt2"><b>121건</b> <span class="stg">자체해결 83%</span></div></div>
+          <div class="sc" data-k="ERR-DAT-002 Job Recipe 로드"><div class="scd">ERR-DAT-002</div><div class="sct">Job/Recipe 로드 실패</div><div class="sds">버전 호환 → 자동 변환 → ePM</div><div class="smt2"><b>197건</b> <span class="stg">자체해결 75%</span></div></div>
+          <div class="sc" data-k="ERR-DAT-001 DB 데이터 복구"><div class="scd">ERR-DAT-001</div><div class="sct">DB / 데이터 복구</div><div class="sds">백업 복원 → 레지스트리 → HQ</div><div class="smt2"><b>200건</b> <span class="stg">자체해결 70%</span></div></div>
+          <div class="sc" data-k="ERR-INS-002 Barcode 바코드"><div class="scd">ERR-INS-002</div><div class="sct">Barcode 인식 실패</div><div class="sds">영역 → Type → HW/SW 점검</div><div class="smt2"><b>138건</b> <span class="stg">자체해결 65%</span></div></div>
+        </div>
+      </div>
+
+      <div class="gv" id="v-faq">
+        <div class="fw">
+          <div class="fc op" onclick="this.classList.toggle('op')"><div class="fq"><span class="qb">Q</span>GUI가 자꾸 멈춤. 재시작해도 반복.</div><div class="fa"><strong>원인:</strong> 메모리 누수 (v2.9+)<br><br>1. AoiGuiSetup.ini &gt; MemoryLimit → 4096<br>2. 최신 SW 패치<br>3. Help Desk<br><br><strong>데이터:</strong> 473건, 62% 자체해결</div></div>
+          <div class="fc" onclick="this.classList.toggle('op')"><div class="fq"><span class="qb">Q</span>검사 이미지 흐림 / 3D 값 불안정</div><div class="fa">1. Glass 클리닝<br>2. KY Cal (42%)<br>3. PZT 케이블 점검</div></div>
+          <div class="fc" onclick="this.classList.toggle('op')"><div class="fq"><span class="qb">Q</span>KSmart 서버 연결 안 됨</div><div class="fa">1. KSmartService 재시작 (62%)<br>2. 버전 확인<br>3. 방화벽 포트</div></div>
+          <div class="fc" onclick="this.classList.toggle('op')"><div class="fq"><span class="qb">Q</span>오검출(False Call) 급증</div><div class="fa">1. SW 원복<br>2. Tolerance 조정 (37%)<br>3. Fiducial Global→Local</div></div>
+          <div class="fc" onclick="this.classList.toggle('op')"><div class="fq"><span class="qb">Q</span>캘리브레이션 특정 단계 실패</div><div class="fa">1. 타겟 클리닝 (35%)<br>2. Phase3→PZT<br>3. Phase2→Glass+OPO<br>4. Phase1→미러</div></div>
+          <div class="fc" onclick="this.classList.toggle('op')"><div class="fq"><span class="qb">Q</span>Job 파일 열리지 않음 / 손상</div><div class="fa">1. 버전 호환 확인<br>2. ePM 자동 변환 (45%)<br>3. 백업 복원</div></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hd"><div class="hd-t">자체 해결 불가 시 →<br>에러코드 + 로그 자동 첨부</div><button class="hd-b">🎫 Help Desk 접수</button></div>
+  </div>
+</div>
+
+<script>
+function toggleG(){document.getElementById('gp').classList.toggle('hid')}
+function openG(){document.getElementById('gp').classList.remove('hid')}
+function tb(id){
+  document.querySelectorAll('.gv').forEach(function(v){v.classList.remove('on')});
+  document.querySelectorAll('.gp-t').forEach(function(t){t.classList.remove('on')});
+  document.getElementById('v-'+id).classList.add('on');
+  var m={wiz:0,sch:1,faq:2};
+  if(m[id]!==undefined)document.querySelectorAll('.gp-t')[m[id]].classList.add('on');
+}
+function wS(el){
+  if(el.classList.contains('c'))return;
+  document.querySelectorAll('.w.c').forEach(function(s){s.classList.remove('c')});
+  el.classList.add('c');
+}
+function doS(v){
+  if(v.length>0){
+    tb('sch');var c=0;
+    document.querySelectorAll('.sc').forEach(function(x){
+      var d=(x.getAttribute('data-k')||'')+' '+x.textContent;
+      var ok=d.toLowerCase().indexOf(v.toLowerCase())!==-1;
+      x.style.display=ok?'block':'none';if(ok)c++;
+    });
+    document.getElementById('srC').textContent=c+'개 검색 결과';
+  }else{tb('wiz');}
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AOI PRESETTING GUIDE</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f3f4f6;--panel:#ffffff;--card:#f8fafc;--card-border:#e2e8f0;
+  --accent:#2563eb;--accent-light:#eff6ff;--text:#1e293b;--text-sec:#64748b;
+  --text-muted:#94a3b8;--badge1:#ef4444;--badge2:#f59e0b;--badge3:#22c55e;
+  --arrow:#2563eb;--divider:#e2e8f0;--clear-btn:#cbd5e1;--clear-hover:#a8b5c5;
+  --crm-text:#dc2626;--check-fg:#2563eb;
+}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;}
+.main{display:flex;gap:10px;padding:10px;height:100vh;}
+.left-panel{width:350px;min-width:320px;background:var(--panel);border-radius:10px;border:1px solid var(--card-border);display:flex;flex-direction:column;overflow:hidden;}
+.right-panel{flex:1;background:var(--panel);border-radius:10px;border:1px solid var(--card-border);display:flex;flex-direction:column;overflow:hidden;}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 0;}
+.panel-title h3{font-size:14px;font-weight:700;}
+.sel-count{font-size:11px;color:var(--accent);}
+.divider{height:1px;background:var(--divider);margin:6px 12px 0;}
+.part-row{display:flex;align-items:center;gap:8px;padding:8px 20px 0 20px;}
+.part-row label{font-size:12px;font-weight:700;white-space:nowrap;}
+.part-select{flex:1;height:28px;border:1px solid var(--card-border);border-radius:0;background:var(--card);font-size:12px;font-family:inherit;color:var(--text);padding:0 8px;cursor:pointer;appearance:auto;}
+.symptom-scroll{flex:1;overflow-y:auto;padding:4px 6px;}
+.symptom-scroll::-webkit-scrollbar{width:6px;}
+.symptom-scroll::-webkit-scrollbar-track{background:transparent;}
+.symptom-scroll::-webkit-scrollbar-thumb{background:var(--clear-btn);border-radius:3px;}
+.cat-pair{display:grid;grid-template-columns:1fr 1fr;gap:0 0;padding:4px 0;}
+.cat-col{padding:0 2px;}
+.cat-label{font-size:12px;font-weight:700;color:var(--accent);padding:4px 8px 2px;}
+.sym-row{display:flex;align-items:center;gap:4px;padding:1px 8px;}
+.sym-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--check-fg);cursor:pointer;margin:0;}
+.sym-row span{font-size:12px;cursor:pointer;user-select:none;}
+.bottom-bar{padding:2px 12px 8px;display:flex;justify-content:flex-end;}
+.btn-clear{background:var(--clear-btn);color:var(--text-sec);border:none;border-radius:5px;padding:4px 12px;font-size:12px;font-family:inherit;cursor:pointer;}
+.btn-clear:hover{background:var(--clear-hover);}
+.tabs{display:flex;padding:8px 8px 0;gap:0;justify-content:center;}
+.tab-wrap{display:inline-flex;background:var(--card-border);border-radius:6px;overflow:hidden;}
+.tab-btn{padding:5px 18px;text-align:center;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:background .15s,color .15s;border-radius:0;}
+.tab-btn.active{background:var(--accent);color:#fff;}
+.tab-btn:not(.active){background:var(--card-border);color:var(--text);}
+.tab-btn:not(.active):hover{background:var(--clear-btn);}
+.tab-content{flex:1;overflow-y:auto;padding:0 4px 4px;}
+.tab-content::-webkit-scrollbar{width:6px;}
+.tab-content::-webkit-scrollbar-track{background:transparent;}
+.tab-content::-webkit-scrollbar-thumb{background:var(--clear-btn);border-radius:3px;}
+.result-header{display:flex;align-items:center;padding:4px 8px;}
+.result-count{font-size:11px;color:var(--text-muted);}
+.empty-msg{text-align:center;color:var(--text-muted);font-size:14px;padding:60px 0;}
+.rule-card{background:var(--card);border-radius:8px;border:1px solid var(--card-border);margin:3px 4px;padding:0;}
+.rule-top{display:flex;align-items:center;padding:8px 12px 3px;}
+.badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:8px;padding:1px 8px;margin-right:8px;min-width:28px;text-align:center;}
+.badge-1{background:var(--badge1);}
+.badge-2{background:var(--badge2);}
+.badge-3{background:var(--badge3);}
+.rule-name{font-size:13px;font-weight:700;flex:1;}
+.btn-apply{background:var(--accent);color:#fff;border:none;border-radius:5px;padding:3px 14px;font-size:11px;font-family:inherit;cursor:pointer;white-space:nowrap;}
+.btn-apply:hover{background:#1d4ed8;}
+.rule-desc{font-size:12px;color:var(--text-sec);padding:0 12px 4px;line-height:1.4;}
+.rule-desc.crm{color:var(--crm-text);}
+.change-box{background:var(--accent-light);border-radius:5px;margin:0 12px 8px;padding:2px 0;}
+.change-row{display:flex;align-items:center;padding:2px 10px;gap:4px;font-size:12px;}
+.change-row .key{width:220px;min-width:180px;color:var(--text);}
+.change-row .default-val{color:var(--text-muted);}
+.change-row .arrow{color:var(--arrow);font-weight:700;font-size:11px;margin:0 4px;}
+.change-row .new-val{color:var(--accent);font-weight:700;}
+.guide-card{background:var(--card);border-radius:8px;border:1px solid var(--card-border);margin:2px 8px;padding:6px 10px;}
+.guide-card h4{font-size:14px;font-weight:700;color:var(--text);}
+.guide-card .guide-desc{font-size:12px;color:var(--text-sec);margin:0 0 2px;line-height:1.4;}
+.guide-opts{background:var(--accent-light);border-radius:5px;padding:4px 0;margin-top:4px;}
+.guide-opt{display:flex;padding:5px 8px;gap:8px;}
+.guide-opt .opt-name{min-width:200px;width:200px;font-size:13px;color:var(--accent);flex-shrink:0;}
+.guide-opt .opt-desc{font-size:12px;color:var(--text);line-height:1.4;}
+.guide-cat-title{font-size:15px;font-weight:700;color:var(--accent);padding:8px 8px 4px;}
+.overview-card{background:var(--card);border-radius:8px;border:1px solid var(--card-border);margin:4px 8px 8px;padding:8px 10px;}
+.overview-card h4{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:2px;}
+.overview-card .ov-desc{font-size:12px;color:var(--text-sec);line-height:1.4;margin-bottom:6px;}
+.ov-table{background:var(--accent-light);border-radius:5px;padding:4px 0;}
+.ov-table table{width:100%;border-collapse:collapse;font-size:12px;}
+.ov-table th{font-size:11px;font-weight:700;color:var(--text-muted);text-align:left;padding:4px 10px;border-bottom:1px solid var(--card-border);}
+.ov-table td{padding:4px 10px;vertical-align:top;}
+.ov-table .cat-cell{font-weight:400;color:var(--accent);white-space:nowrap;}
+.ov-table .role-cell{color:var(--text);}
+.ov-table .params-cell{color:var(--text-sec);}
+</style>
+</head>
+<body>
+<div class="main">
+  <div class="left-panel">
+    <div class="panel-title">
+      <h3>증상 선택</h3>
+      <span class="sel-count" id="selCount"></span>
+    </div>
+    <div class="divider"></div>
+    <div class="part-row">
+      <label>파트 타입 :</label>
+      <select class="part-select" id="partSelect"></select>
+    </div>
+    <div class="divider"></div>
+    <div class="symptom-scroll" id="symptomArea"></div>
+    <div class="bottom-bar">
+      <button class="btn-clear" id="btnClear">전체 해제</button>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="tabs">
+      <div class="tab-wrap">
+        <button class="tab-btn active" data-tab="combo">추천 조합</button>
+        <button class="tab-btn" data-tab="guide">파라미터 가이드</button>
+      </div>
+    </div>
+    <div class="tab-content" id="tabCombo">
+      <div class="result-header"><span class="result-count" id="resultCount"></span></div>
+      <div id="resultArea"><div class="empty-msg">증상을 선택하세요</div></div>
+    </div>
+    <div class="tab-content" id="tabGuide" style="display:none;"></div>
+  </div>
+</div>
+<script>
+const SYMPTOM_CATEGORIES = {
+  "3D 형상": ["3D 무너짐","높이 부족","높이 과다","베이스 불안정","Lead 높이 이상"],
+  "노이즈": ["Body 노이즈","Lead 노이즈","밝은 영역 포화(노이즈)","어두운 영역 노이즈","Body 홀 노이즈"],
+  "위치/검출": ["Body 위치 못 잡음","Body 크기 안 맞음","Tombstone 오검","Pad 검출 이상"],
+  "부품 특징": ["Mirror/반사 표면","투명/반투명 다이","흰색 부품","검은 바디 + 플럭스","반짝이는 커넥터/금속면"],
+  "기판/환경": ["FPCB 휨(Warp)","밀집 부품 배치","오클루전(쉴드 캔)","높은 부품 옆 간섭"],
+  "기타": ["Hotbar 부품","큰 부품 (BGA/QFP)","사이클 타임 개선","PCB 홀 노이즈","SW 업그레이드 후 3D 이상"]
+};
+
+const PART_TYPES = [
+  ["선택 안 함",[]],
+  ["Chip (소형 수동소자)",["Tombstone 오검","높이 부족"]],
+  ["IC (Lead형 - QFP/SOP)",["Lead 높이 이상","Lead 노이즈","큰 부품 (BGA/QFP)"]],
+  ["BGA/CSP",["큰 부품 (BGA/QFP)","3D 무너짐","베이스 불안정"]],
+  ["QFN/DFN (무리드)",["Pad 검출 이상","높이 부족"]],
+  ["Connector",["높은 부품 옆 간섭","반짝이는 커넥터/금속면"]],
+  ["LED/다이오드",["투명/반투명 다이","흰색 부품"]],
+  ["전해 캐패시터",["높은 부품 옆 간섭","3D 무너짐"]],
+  ["이형 부품 (Odd Shape)",["Body 크기 안 맞음","Body 위치 못 잡음"]],
+  ["Shield Can",["오클루전(쉴드 캔)"]]
+];
+
+const DEFAULTS = {
+  "Body Location Mode":"Full 3D (Adaptive Hei. Ths.)","Body Fitting by":"Fit Rectangle",
+  "Warp Compensation":"Not Use","Search Mode":"Auto","Base Height Value":"CAD",
+  "Location Restraint Mode":"None","Noise Reduction":"Off (Normal)","Body Inspection":"On",
+  "Extra Body Location Mode":"No Extra Location","Body Offset for Odd Shape":"Not Use",
+  "Pad Detection":"Off","Occlusion Component Check":"Not Use",
+  "Z-Axis Move for Additional 2D Image":"Not Use","Lead Base Align Mode":"Off",
+  "Base ROI Expansion Mode":"Auto","Base Setting":"Basic",
+  "Base Slope Compensation Mode":"Not Use","Base ROI Alignment Mode":"Normal",
+  "Processing Speed":"x1","Measure Range(%)":"90.0","Higher Measurement":"Not Use",
+  "3D Projection Switches":"Hide","Filtering":"Not Use",
+  "3D Reconstruction in FOV":"Not Use (Component ROI)","Bright Threshold(Gray)":"230",
+  "Dark Threshold(Gray)":"5","Amplitude Threshold(0-255)":"1",
+  "Visibility Threshold(0-1.0)":"0.1","3D Noise of Lead":"Level 0 (Normal)",
+  "Mode of Flux on Black Body":"Off","Shadow Check":"Normal","White Component":"No",
+  "2D/3D Noise of Body":"No","AI Denoising":"Off","Hole Noise Removal":"Off",
+  "Shape based Noise Filter":"Off","Solder Joint 3D Mode":"Normal",
+  "Lead Area Reconstruction":"Off","Left(um)":"100","Top(um)":"100","Right(um)":"100","Bottom(um)":"100"
+};
+
+const RULES = [
+  {symptoms:["Tombstone 오검","높이 부족"],changes:{"Body Location Mode":"Two Terminal Chip","Body Inspection":"On","Higher Measurement":"Use (Higher)"},priority:1,name:"Chip 전용 Two Terminal + Higher",desc:"소형 Chip 부품(0201~1206). Two Terminal Chip 모드로 양단자 전용 검출 + Higher Measurement."},
+  {symptoms:["Lead 높이 이상","Lead 노이즈","큰 부품 (BGA/QFP)"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Lead Base Align Mode":"Use (Lead Base Align)","3D Noise of Lead":"Level 1","Processing Speed":"x2"},priority:1,name:"IC Lead형 Corner 3D + Lead 정렬",desc:"QFP/SOP 등 Lead형 IC. Corner 3D + Lead Base 정렬로 Lead 높이 정확도 향상."},
+  {symptoms:["큰 부품 (BGA/QFP)","3D 무너짐","베이스 불안정"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","3D Reconstruction in FOV":"Use (FOV)","Processing Speed":"x4","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute","AI Denoising":"On"},priority:1,name:"BGA/CSP 종합 대응",desc:"BGA/CSP 대형 패키지. Corner 3D + FOV GPU 재구성 + Manual Base 확장."},
+  {symptoms:["Pad 검출 이상","높이 부족"],changes:{"Body Location Mode":"Full 3D (Adaptive Hei. Ths.)","Pad Detection":"On (Pad Detection)","Higher Measurement":"Use (Higher)"},priority:1,name:"QFN/DFN Pad 검출 + Higher",desc:"QFN/DFN 무리드 IC. Pad Detection으로 패드 검출 + Higher Measurement로 낮은 높이 정밀 측정."},
+  {symptoms:["높은 부품 옆 간섭","반짝이는 커넥터/금속면"],changes:{"Body Location Mode":"Full 3D (Fixed Hei. Ths.)","3D Projection Switches":"Show (All Ch. On)","Bright Threshold(Gray)":"255","Amplitude Threshold(0-255)":"0","Filtering":"Flat Surface"},priority:1,name:"Connector Fixed Hei. + Projection 확인",desc:"커넥터류. Fixed Hei. Ths.로 높은 부품 안정 검출 + Projection 간섭 채널 확인."},
+  {symptoms:["투명/반투명 다이","흰색 부품"],changes:{"Body Location Mode":"Full 3D (Adaptive Hei. Ths.)","White Component":"Yes","Noise Reduction":"On (Using 2D)","Filtering":"Gaussian Blur"},priority:1,name:"LED Adaptive + White + 투명 보정",desc:"LED/다이오드. White Component + 2D 노이즈 리덕션 + Gaussian으로 Fringe 투과 보상."},
+  {symptoms:["높은 부품 옆 간섭","3D 무너짐"],changes:{"Body Location Mode":"Full 3D (Fixed Hei. Ths.)","3D Projection Switches":"Show (All Ch. On)","Higher Measurement":"Use (Higher)","AI Denoising":"On"},priority:2,name:"전해캡 Fixed Hei. + Higher",desc:"전해 캐패시터 등 높은 원통형 부품. Fixed Hei. Ths.로 안정 검출 + Higher Measurement."},
+  {symptoms:["Body 크기 안 맞음","Body 위치 못 잡음"],changes:{"Body Location Mode":"Odd Shape","Extra Body Location Mode":"Resize Body for Odd Shape","Body Offset for Odd Shape":"Use","Noise Reduction":"On (Using 3D+2D)"},priority:1,name:"Odd Shape 전용 모드",desc:"이형 부품. Odd Shape 모드 + 리사이즈 + 3D+2D 노이즈 리덕션으로 위치/크기 보정."},
+  {symptoms:["오클루전(쉴드 캔)"],changes:{"Body Location Mode":"Full 3D (Adaptive Hei. Ths.)","Occlusion Component Check":"Use (Occlusion)","Z-Axis Move for Additional 2D Image":"Use"},priority:3,name:"Shield Can Adaptive + 오클루전 + Z축",desc:"Shield Can. Adaptive 모드 + 오클루전 체크 + Z축 이동으로 가려진 부품 검사."},
+  {symptoms:["3D 무너짐"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Body Offset for Odd Shape":"Use","Z-Axis Move for Additional 2D Image":"Use","AI Denoising":"On","3D Projection Switches":"Show (All Ch. On)"},priority:1,name:"3D 무너짐 기본 대응",desc:"Corner 3D 모드로 전환하고 AI Denoising 활성화. 전 채널 프로젝션으로 3D 복원 품질 향상."},
+  {symptoms:["3D 무너짐"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute","Amplitude Threshold(0-255)":"0","3D Projection Switches":"Show (All Ch. On)","Filtering":"Flat Surface"},priority:2,name:"3D 무너짐 + Base Manual 조정",desc:"Base를 Manual로 400um 확장하고 Absolute 정렬. Flat Surface 필터 적용."},
+  {symptoms:["3D 무너짐"],changes:{"Body Location Mode":"Full 3D (Fixed Hei. Ths.)","3D Reconstruction in FOV":"Use (FOV)","AI Denoising":"On","Processing Speed":"x4"},priority:3,name:"3D 무너짐 + GPU 재구성",desc:"FOV 단위 GPU 기반 3D 재구성으로 전환. 넓은 영역 기준면 계산으로 안정성 향상."},
+  {symptoms:["높이 부족"],changes:{"Higher Measurement":"Use (Higher)","Amplitude Threshold(0-255)":"0","Measure Range(%)":"95.0","3D Projection Switches":"Show (All Ch. On)"},priority:1,name:"높이 부족 기본 대응",desc:"Higher Measurement 활성화로 저높이 정밀도 향상. Measure Range 확대, Amplitude Threshold 0."},
+  {symptoms:["높이 부족"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Higher Measurement":"Use (Higher)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute","AI Denoising":"On"},priority:2,name:"높이 부족 + Corner 3D + Manual Base",desc:"Corner 3D + Manual Base로 기준면 안정화 후 Higher Measurement 적용."},
+  {symptoms:["높이 과다"],changes:{"Filtering":"Flat Surface","Bright Threshold(Gray)":"200","Amplitude Threshold(0-255)":"3"},priority:1,name:"높이 과다 기본 대응",desc:"Flat Surface 필터로 과도한 높이 평탄화. Bright Threshold 낮춰서 포화 영역 제거."},
+  {symptoms:["높이 과다"],changes:{"Filtering":"Gaussian Blur","AI Denoising":"On","Base Height Value":"Measured (Valid)"},priority:2,name:"높이 과다 + Gaussian + Measured Base",desc:"Gaussian Blur로 스파이크 스무딩. Measured Base로 실측 기준면 적용."},
+  {symptoms:["높이 과다"],changes:{"3D Reconstruction in FOV":"Use (FOV)","Filtering":"Flat Surface","Visibility Threshold(0-1.0)":"0.3"},priority:3,name:"높이 과다 + FOV 재구성 + Visibility",desc:"FOV 단위 재구성으로 넓은 영역 평균화. Visibility 임계값 올려 불안정 픽셀 제거."},
+  {symptoms:["베이스 불안정"],changes:{"Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute"},priority:1,name:"Base Manual 확장",desc:"Base ROI를 Manual로 상하좌우 400um 확장. Absolute 정렬로 안정화."},
+  {symptoms:["베이스 불안정"],changes:{"Base Setting":"Same as Board","3D Reconstruction in FOV":"Use (FOV)"},priority:2,name:"Board Base + FOV 재구성",desc:"Board Programming의 Base Color 사용. FOV 단위 GPU 재구성으로 넓은 기준면."},
+  {symptoms:["베이스 불안정"],changes:{"Base Setting":"Manual","Left(um)":"600","Top(um)":"600","Right(um)":"600","Bottom(um)":"600","Base ROI Expansion Mode":"By Keyboard","Base ROI Alignment Mode":"Absolute","Base Slope Compensation Mode":"Iterative Plane Fit"},priority:3,name:"Base 대폭 확장 + 기울기 보상",desc:"Base 600um 확장 + Iterative Plane Fit 기울기 보상. 심한 불안정 시."},
+  {symptoms:["Body 노이즈"],changes:{"2D/3D Noise of Body":"Yes","Shadow Check":"High","AI Denoising":"On"},priority:1,name:"Body 노이즈 제거",desc:"2D/3D Body 노이즈 보정 + Shadow Check High + AI Denoising."},
+  {symptoms:["Lead 노이즈"],changes:{"3D Noise of Lead":"Level 1"},priority:1,name:"Lead 노이즈 Level 1",desc:"Lead 영역 1차 노이즈 제거."},
+  {symptoms:["Lead 노이즈"],changes:{"3D Noise of Lead":"Level 2"},priority:2,name:"Lead 노이즈 Level 2 (강력)",desc:"Level 1로 부족 시. 주의: 높이 측정값이 변경될 수 있음."},
+  {symptoms:["밝은 영역 포화(노이즈)"],changes:{"Bright Threshold(Gray)":"200"},priority:1,name:"Bright Threshold 낮춤",desc:"밝은 영역 필터 임계값을 230→200으로 낮춰 포화 영역 제거."},
+  {symptoms:["밝은 영역 포화(노이즈)"],changes:{"Bright Threshold(Gray)":"180","AI Denoising":"On"},priority:2,name:"Bright Threshold 대폭 + AI",desc:"임계값 180까지 낮추고 AI Denoising 보조."},
+  {symptoms:["어두운 영역 노이즈"],changes:{"Dark Threshold(Gray)":"10"},priority:1,name:"Dark Threshold 상향",desc:"어두운 영역 임계값을 5→10으로 올려 어두운 노이즈 제거."},
+  {symptoms:["Body 홀 노이즈"],changes:{"Mode of Flux on Black Body":"On"},priority:1,name:"Black Body 플럭스 보정",desc:"검은 Body의 Fringe 미생성 영역을 채워서 홀 제거."},
+  {symptoms:["Body 홀 노이즈"],changes:{"Mode of Flux on Black Body":"On","AI Denoising":"On","Amplitude Threshold(0-255)":"0"},priority:2,name:"홀 노이즈 + AI + Amplitude 해제",desc:"플럭스 보정 + AI Denoising + Amplitude 임계값 0으로 홀 주변 잔여 노이즈까지 제거."},
+  {symptoms:["Body 위치 못 잡음"],changes:{"Noise Reduction":"On (Using 3D+2D)","Body Offset for Odd Shape":"Use"},priority:1,name:"3D+2D 노이즈 리덕션",desc:"3D Plane Fitting + Morphology로 Body Map 노이즈 제거 후 위치 재탐색."},
+  {symptoms:["Body 위치 못 잡음"],changes:{"Noise Reduction":"On (Using 2D)","Location Restraint Mode":"Shape Matching"},priority:2,name:"2D 노이즈 리덕션 + Shape Matching",desc:"2D 이미지 보강 + Shape Matching으로 위치 구속."},
+  {symptoms:["Body 크기 안 맞음"],changes:{"Extra Body Location Mode":"Resize Body for Odd Shape","Body Offset for Odd Shape":"Use"},priority:1,name:"Odd Shape 리사이즈",desc:"검출된 Body 외곽선을 강제 스케일링하여 크기 보정."},
+  {symptoms:["Mirror/반사 표면"],changes:{"Body Location Mode":"Mirror Surface","Filtering":"Flat Surface","Warp Compensation":"Use"},priority:1,name:"Mirror Surface + Flat Surface",desc:"DFM(LCoS) 광원으로 3D 재구성. Flat Surface 필터로 Fringe 미생성 보상."},
+  {symptoms:["Mirror/반사 표면"],changes:{"Body Location Mode":"Mirror Surface","Filtering":"Gaussian Blur","Warp Compensation":"Use","Base Height Value":"Measured (Valid)"},priority:2,name:"Mirror Surface + Gaussian",desc:"Gaussian Blur로 표면 스무딩. Fringe가 일부 투과하는 반투명 미러에 적합."},
+  {symptoms:["투명/반투명 다이"],changes:{"Noise Reduction":"On (Using 2D)","Filtering":"Gaussian Blur"},priority:1,name:"투명 다이 기본 대응",desc:"2D 노이즈 리덕션으로 위치 보정 + Gaussian 필터로 Fringe 투과 보상."},
+  {symptoms:["투명/반투명 다이"],changes:{"Higher Measurement":"Use (Higher)","AI Denoising":"On","Filtering":"Flat Surface","Amplitude Threshold(0-255)":"0"},priority:2,name:"투명 다이 + Higher + AI",desc:"Higher Measurement로 낮은 높이 정밀 측정. AI Denoising으로 Fringe 투과 잔여 노이즈 제거."},
+  {symptoms:["흰색 부품"],changes:{"White Component":"Yes"},priority:1,name:"White Component 모드",desc:"흰색 부품 전용 알고리즘. 주의: 기본 노이즈 제거 알고리즘이 비활성화됨."},
+  {symptoms:["흰색 부품"],changes:{"White Component":"Yes","Noise Reduction":"On (Using 2D)","AI Denoising":"On"},priority:2,name:"White Component + 2D 보강 + AI",desc:"White Component 모드에서 기본 노이즈 제거가 꺼지므로 2D 노이즈 리덕션 + AI로 보완."},
+  {symptoms:["검은 바디 + 플럭스"],changes:{"Mode of Flux on Black Body":"On","AI Denoising":"On"},priority:1,name:"Black Body 플럭스 + AI",desc:"Fringe 미생성 영역 채우기 + AI 노이즈 제거."},
+  {symptoms:["검은 바디 + 플럭스"],changes:{"Mode of Flux on Black Body":"On","Shadow Check":"Normal","White Component":"Yes"},priority:2,name:"플럭스 + Shadow Off + White [CRM]",desc:"[CRM 실적] Shadow Check OFF + White Component 활성화. 플럭스로 인한 3D 왜곡 해소."},
+  {symptoms:["반짝이는 커넥터/금속면"],changes:{"Bright Threshold(Gray)":"255","Dark Threshold(Gray)":"0","Amplitude Threshold(0-255)":"0","Visibility Threshold(0-1.0)":"0.0","AI Denoising":"Off"},priority:1,name:"금속면 노이즈 임계값 초기화 [CRM]",desc:"[CRM 실적] 반짝이는 커넥터/금속 표면의 3D 노이즈. 모든 노이즈 임계값을 0으로 초기화."},
+  {symptoms:["반짝이는 커넥터/금속면"],changes:{"Body Location Mode":"Mirror Surface","Filtering":"Flat Surface","Bright Threshold(Gray)":"255","AI Denoising":"Off"},priority:2,name:"금속면 Mirror + 임계값 해제 [CRM]",desc:"[CRM 실적] Mirror Surface 모드 + Flat Surface + 임계값 최대화."},
+  {symptoms:["SW 업그레이드 후 3D 이상"],changes:{"Shadow Check":"Normal"},priority:1,name:"Shadow Check Normal 전환 [CRM]",desc:"[CRM 실적] SW 업그레이드 후 Shadow Check가 3D 무너짐 유발. Normal로 전환."},
+  {symptoms:["SW 업그레이드 후 3D 이상"],changes:{"Shadow Check":"Normal","AI Denoising":"Off"},priority:2,name:"Shadow Normal + AI Off [CRM]",desc:"[CRM 실적] AI Denoising이 언웨팅 불량을 Pass 처리하는 경우. 둘 다 Off."},
+  {symptoms:["FPCB 휨(Warp)"],changes:{"Base Slope Compensation Mode":"Iterative Plane Fit","Lead Base Align Mode":"Use (Lead Base Align)"},priority:1,name:"FPCB 기울기 보상",desc:"Iterative Plane Fit으로 4방향 기울기 보상. Lead가 있으면 Lead Base Align 추가."},
+  {symptoms:["밀집 부품 배치"],changes:{"Base Setting":"Same as Board","3D Reconstruction in FOV":"Use (FOV)","Base ROI Expansion Mode":"By Keyboard"},priority:1,name:"밀집 배치 대응",desc:"Board Base + FOV GPU 재구성. Base ROI 수동 조정."},
+  {symptoms:["밀집 부품 배치"],changes:{"Base Setting":"Manual","Left(um)":"200","Top(um)":"200","Right(um)":"200","Bottom(um)":"200","2D/3D Noise of Body":"Yes"},priority:2,name:"밀집 배치 + Manual Base 축소",desc:"Base를 200um으로 줄여 인접 부품 간섭 방지. Body 노이즈 보정."},
+  {symptoms:["오클루전(쉴드 캔)"],changes:{"Occlusion Component Check":"Use (Occlusion)"},priority:1,name:"오클루전 모드",desc:"쉴드 캔에 가려진 부품 인식. Body Coplanarity/Upside-down 검사 제외됨."},
+  {symptoms:["오클루전(쉴드 캔)"],changes:{"Occlusion Component Check":"Use (Occlusion)","Z-Axis Move for Additional 2D Image":"Use","Processing Speed":"x2"},priority:2,name:"오클루전 + Z축 이동 + 속도 x2",desc:"Z축 추가 이동으로 쉴드 캔 아래 부품 2D 이미지 확보. 속도 x2로 시간 절충."},
+  {symptoms:["Lead 높이 이상"],changes:{"Lead Base Align Mode":"Use (Lead Base Align)","Base ROI Alignment Mode":"Advanced Mode"},priority:1,name:"Lead Base Align + Advanced",desc:"Lead 기준면을 별도 정렬하여 Lead 높이 측정 정확도 향상."},
+  {symptoms:["Lead 높이 이상"],changes:{"Lead Base Align Mode":"Use (Lead Base Align)","Higher Measurement":"Use (Higher)","Base Slope Compensation Mode":"Iterative Plane Fit"},priority:2,name:"Lead Align + Higher + 기울기 보상",desc:"Lead Base 정렬 + Higher Measurement + 기울기 보상으로 종합 대응."},
+  {symptoms:["Tombstone 오검"],changes:{"Body Inspection":"On","Body Location Mode":"Two Terminal Chip"},priority:1,name:"Two Terminal Chip + Body Inspection",desc:"Two Terminal Chip 모드로 양단자 부품 전용 검출. Body Inspection으로 들뜸 판별."},
+  {symptoms:["Tombstone 오검"],changes:{"Body Inspection":"On","Noise Reduction":"On (Using 3D+2D)","Base ROI Alignment Mode":"Advanced Mode"},priority:2,name:"Tombstone 3D+2D 보강",desc:"3D+2D 노이즈 리덕션으로 Body Map 정밀화. Advanced 정렬로 기준면 정확도 향상."},
+  {symptoms:["Pad 검출 이상"],changes:{"Pad Detection":"On (Pad Detection)"},priority:1,name:"Pad Detection 활성화",desc:"Pad Detection 모드 활성화하여 패드 영역 별도 검출."},
+  {symptoms:["Pad 검출 이상"],changes:{"Pad Detection":"On (Pad Detection)","Noise Reduction":"On (Using 2D)","Base Height Value":"Measured (Valid)"},priority:2,name:"Pad Detection + 2D 보강",desc:"Pad Detection + 2D 노이즈 리덕션으로 패드 인식률 향상. 실측 Base 적용."},
+  {symptoms:["높은 부품 옆 간섭"],changes:{"3D Projection Switches":"Show (All Ch. On)","AI Denoising":"On"},priority:1,name:"Projection 확인 + AI 보정",desc:"3D Projection 채널별 On/Off 표시 후 간섭 채널 식별. AI Denoising으로 1차 보정."},
+  {symptoms:["높은 부품 옆 간섭"],changes:{"3D Projection Switches":"Show (All Ch. On)","3D Reconstruction in FOV":"Use (FOV)","Filtering":"Gaussian Blur"},priority:2,name:"Projection + FOV + Gaussian",desc:"FOV 단위 재구성으로 간섭 영역 보상. Gaussian 필터로 반사 노이즈 스무딩."},
+  {symptoms:["Hotbar 부품"],changes:{"Body Location Mode":"White Circle","Shape based Noise Filter":"On"},priority:1,name:"Hotbar White Circle",desc:"White Circle 모드로 Hotbar 검출. Shape Filter로 반구형 노이즈 제거."},
+  {symptoms:["Hotbar 부품"],changes:{"Body Location Mode":"Black Circle","Shape based Noise Filter":"On"},priority:2,name:"Hotbar Black Circle",desc:"어두운 원형 Hotbar에 적합. Shape Filter 활성화."},
+  {symptoms:["큰 부품 (BGA/QFP)"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Processing Speed":"x4","3D Projection Switches":"Show (All Ch. On)","3D Reconstruction in FOV":"Use (FOV)"},priority:1,name:"큰 부품 Corner 3D + GPU",desc:"4코너 기반 검출 + GPU FOV 재구성. 처리 속도 x4."},
+  {symptoms:["사이클 타임 개선"],changes:{"3D Reconstruction in FOV":"Use (FOV)","Processing Speed":"x4"},priority:1,name:"GPU + 속도 x4",desc:"FOV GPU 재구성 + Processing Speed x4로 속도 향상. 정밀도 약간 감소 가능."},
+  {symptoms:["PCB 홀 노이즈"],changes:{"Hole Noise Removal":"On","Measure Range(%)":"80.0"},priority:1,name:"PCB 홀 노이즈 제거",desc:"Hole Noise Removal 활성화 + Measure Range 축소로 핀 바스켓 노이즈 감소."},
+  {symptoms:["3D 무너짐","Mirror/반사 표면"],changes:{"Body Location Mode":"Mirror Surface","Filtering":"Flat Surface","Warp Compensation":"Use","AI Denoising":"On","3D Projection Switches":"Show (All Ch. On)"},priority:1,name:"Mirror 3D 무너짐 대응",desc:"Mirror Surface 모드 우선. Flat Surface + AI로 3D 복원."},
+  {symptoms:["3D 무너짐","베이스 불안정"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute","AI Denoising":"On","3D Projection Switches":"Show (All Ch. On)"},priority:1,name:"3D 무너짐 + Base 안정화",desc:"Corner 3D + Manual Base 400um 확장 + Absolute 정렬."},
+  {symptoms:["3D 무너짐","큰 부품 (BGA/QFP)"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Processing Speed":"x4","3D Projection Switches":"Show (All Ch. On)","3D Reconstruction in FOV":"Use (FOV)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","AI Denoising":"On"},priority:1,name:"큰 부품 3D 무너짐 종합",desc:"Corner 3D + GPU FOV + Manual Base + AI. 대형 부품 3D 복원 종합 대응."},
+  {symptoms:["높이 부족","베이스 불안정"],changes:{"Higher Measurement":"Use (Higher)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute","Amplitude Threshold(0-255)":"0"},priority:1,name:"높이 부족 + Base 안정화",desc:"Base 안정화 후 Higher Measurement로 정밀 측정."},
+  {symptoms:["Body 노이즈","밀집 부품 배치"],changes:{"2D/3D Noise of Body":"Yes","Base Setting":"Same as Board","3D Reconstruction in FOV":"Use (FOV)","Shadow Check":"High"},priority:1,name:"밀집 + Body 노이즈",desc:"Board Base + FOV 재구성으로 밀집 대응. Body 노이즈 + Shadow 제거."},
+  {symptoms:["FPCB 휨(Warp)","베이스 불안정"],changes:{"Base Slope Compensation Mode":"Iterative Plane Fit","Lead Base Align Mode":"Use (Lead Base Align)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400"},priority:1,name:"FPCB 휨 + Base 안정화",desc:"기울기 보상 + Manual Base 확장으로 FPCB 환경 안정화."},
+  {symptoms:["3D 무너짐","SW 업그레이드 후 3D 이상"],changes:{"Shadow Check":"Normal","Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","AI Denoising":"Off","3D Projection Switches":"Show (All Ch. On)"},priority:1,name:"업그레이드 후 3D 무너짐 [CRM]",desc:"[CRM 실적] Shadow Check Normal + AI Off로 업그레이드 후 3D 무너짐 해소."},
+  {symptoms:["높이 부족","Lead 노이즈"],changes:{"Higher Measurement":"Use (Higher)","3D Noise of Lead":"Level 1","Lead Base Align Mode":"Use (Lead Base Align)"},priority:1,name:"높이 부족 + Lead 노이즈",desc:"Higher Measurement + Lead 노이즈 Level 1 제거 + Lead Base 정렬."},
+  {symptoms:["3D 무너짐","Body 노이즈"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","2D/3D Noise of Body":"Yes","AI Denoising":"On","Shadow Check":"High"},priority:1,name:"3D 무너짐 + Body 노이즈",desc:"Corner 3D로 3D 복원 + Body 노이즈 보정 + Shadow Check High."},
+  {symptoms:["3D 무너짐","밀집 부품 배치"],changes:{"Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","Base Setting":"Same as Board","3D Reconstruction in FOV":"Use (FOV)","AI Denoising":"On"},priority:1,name:"밀집 배치 3D 무너짐",desc:"Corner 3D + Board Base + FOV 재구성. 밀집 환경에서 인접 부품 간섭 최소화."},
+  {symptoms:["Body 위치 못 잡음","Body 노이즈"],changes:{"Noise Reduction":"On (Using 3D+2D)","2D/3D Noise of Body":"Yes","Body Inspection":"On"},priority:1,name:"위치 + 노이즈 복합 대응",desc:"3D+2D 노이즈 리덕션으로 Body Map 정밀화 후 Body 노이즈 보정."},
+  {symptoms:["높이 과다","밝은 영역 포화(노이즈)"],changes:{"Filtering":"Flat Surface","Bright Threshold(Gray)":"180","AI Denoising":"On"},priority:1,name:"높이 과다 + 밝은 포화 복합",desc:"Flat Surface + Bright 임계값 180 + AI로 포화 영역의 높이 스파이크 종합 제거."},
+  {symptoms:["Mirror/반사 표면","높이 부족"],changes:{"Body Location Mode":"Mirror Surface","Higher Measurement":"Use (Higher)","Filtering":"Flat Surface","Warp Compensation":"Use"},priority:1,name:"Mirror + 높이 부족",desc:"Mirror Surface 모드 + Higher Measurement로 반사 표면의 낮은 높이 정밀 측정."},
+  {symptoms:["투명/반투명 다이","베이스 불안정"],changes:{"Filtering":"Gaussian Blur","Noise Reduction":"On (Using 2D)","Base Setting":"Manual","Left(um)":"400","Top(um)":"400","Right(um)":"400","Bottom(um)":"400","Base ROI Alignment Mode":"Absolute"},priority:1,name:"투명 다이 + Base 안정화",desc:"투명 다이로 인한 Fringe 투과 + Base 불안정 동시 대응. Manual Base 400um 확장."},
+  {symptoms:["FPCB 휨(Warp)","높이 부족"],changes:{"Base Slope Compensation Mode":"Iterative Plane Fit","Lead Base Align Mode":"Use (Lead Base Align)","Higher Measurement":"Use (Higher)","Amplitude Threshold(0-255)":"0"},priority:1,name:"FPCB 휨 + 높이 부족",desc:"기울기 보상으로 FPCB 기판 안정화 후 Higher Measurement로 정밀 측정."},
+  {symptoms:["높은 부품 옆 간섭","3D 무너짐"],changes:{"3D Projection Switches":"Show (All Ch. On)","Body Location Mode":"Corner 3D (Fixed Hei. Ths.)","AI Denoising":"On","3D Reconstruction in FOV":"Use (FOV)"},priority:1,name:"높은 부품 간섭 + 3D 무너짐",desc:"Projection 채널 확인 후 간섭 채널 Off. Corner 3D + FOV 재구성으로 3D 복원."},
+  {symptoms:["검은 바디 + 플럭스","Body 홀 노이즈"],changes:{"Mode of Flux on Black Body":"On","AI Denoising":"On","Amplitude Threshold(0-255)":"0"},priority:1,name:"검은 바디 + 홀 노이즈 복합",desc:"플럭스 보정으로 Fringe 미생성 영역 채우기 + AI로 홀 주변 잔여 노이즈 제거."},
+  {symptoms:["Lead 높이 이상","FPCB 휨(Warp)"],changes:{"Lead Base Align Mode":"Use (Lead Base Align)","Base Slope Compensation Mode":"Iterative Plane Fit","Higher Measurement":"Use (Higher)","Base ROI Alignment Mode":"Advanced Mode"},priority:1,name:"FPCB Lead 높이 종합",desc:"FPCB 기울기 보상 + Lead Base 별도 정렬 + Higher Measurement."},
+  {symptoms:["높은 부품 옆 간섭","Lead 노이즈"],changes:{"3D Projection Switches":"Show (All Ch. On)","3D Noise of Lead":"Level 1","AI Denoising":"On"},priority:1,name:"높은 부품 간섭 + Lead 노이즈",desc:"높은 부품 Projection 반사로 인한 Lead 노이즈. 간섭 채널 Off + Lead 노이즈 Level 1."}
+];
+
+const PARAM_GUIDE = [
+  ["바디 기본설정",[
+    ["Body Location Mode (바디 추출 모드)",[["Full 3D (Adaptive Hei. Ths.)","[Default] 카메라 상단(Top) 이미지로 외형선 추출. 3D 높이를 자동 적응하여 외형선 결정. 일반 부품에 사용"],["Full 3D (Fixed Hei. Ths.)","사용자가 설정한 높이 임계값 이상의 영역으로 외형선 추출. 리드 높이가 바디 상면과 가까울 때, 바디에 여러 높이가 있을 때 사용"],["Corner 3D (Fixed Hei. Ths.)","4개 코너의 3D 정보만 사용하여 외형선 추출. 대형 부품(BGA/QFP)이나 리드가 많은 부품에 사용. Tact Time 절감 효과"],["Full Shadow","그림자 영역으로 부품 존재 여부 판단 (2D 방식, 두께 측정 불가). 높이 5mm 이상의 직육면체 부품에 사용"],["Two Terminal Chip","양단에 터미널이 있는 부품, 2D+3D 정보로 외형선 추출. 칩 부품, 일부 반투명 다이에 사용"],["Odd Shape","이미지 플레인을 사용하여 외형선 추출. 직사각형이 아닌 부품, 3D로 복원 불가한 바디에 사용"],["Mirror Surface","DFM(LCoS) 광으로 3D 복원 및 외형선 추출. 미러 표면 부품에 사용 (경사 측정 범위: -5~5도)"]]],
+    ["Body Inspection (바디 검사)",[["On / Off","Component의 Body 검사여부 설정. 사용자가 Solder fillet 및 Lead만 검사하려는 경우 Off"]]],
+    ["Location Restraint Mode (위치 제약 모드)",[["None","[Default] 제약 없음"],["Shape Matching","3D 정보로 부품 위치 검색. 한쪽이 다른 물체에 붙어 외형선 추출이 어려울 때 사용"],["Search Terminal Edge Only","전극의 2D 위치 정보로 위치 검색. 양쪽이 다른 물체에 붙어 있을 때"]]],
+    ["Extra Body Location Mode (바디 위치 재추출 모드)",[["No Extra Location","[Default] 해당 옵션 사용하지 않음"],["Lead Shoulder for IC","Body와 Lead의 높이가 비슷하여 외형선이 부정확할 때 사용. IC 부품 대상"],["Resize Body for Odd Shape","측정된 Body 외형선을 강제로 확대/축소. 이형 부품 대상"]]],
+    ["Noise Reduction (노이즈 감소)",[["Off (Normal)","[Default] 대부분의 부품은 차이 없음"],["On (Using 2D)","2D 이미지를 크게 향상시켜 부품 위치를 대략 파악 후 ROI와 겹치는 영역 추출"],["On (Using 3D+2D)","3D plane fitting + morphology를 적용하여 노이즈 제거. CAD 정보 기반으로 점수 비교"]]],
+    ["Occlusion Component Check (차폐 부품 검사)",[["Not Use","[Default] 사용하지 않음"],["Use (Occlusion)","쉴드캔 등에 의해 부품이 가려진 경우, 가려진 부분을 제외하고 3D 형상 식별"]]],
+    ["Pad Detection (패드 검출)",[["Off","[Default] 사용하지 않음"],["On (Pad Detection)","QFN/DFN 등 무리드 부품에서 패드 영역을 별도 검출"]]]
+  ]],
+  ["3D 기준면 파라미터",[
+    ["Base ROI Expansion Mode (기준면 ROI 확장 모드)",[["Auto","[Default] CAD 기반으로 ROI 자동설정"],["By Keyboard","사용자가 입력한 수치만큼 ROI 확장"],["By Mouse","마우스로 기준면 ROI 크기를 직접 설정"]]],
+    ["Base Setting (기준면 유형)",[["Basic","[Default] 확장된 ROI 내에서 기준면 계산"],["Manual","이미지 플레인과 밝기를 기준면으로 수동 설정"],["Same as Board","Board Programming에서 설정한 보드 베이스 컬러 영역의 기준면 사용"]]],
+    ["Base Slope Compensation Mode (기준면 기울기 보상 모드)",[["Not Use","[Default] 보정 없음"],["Iterative Plane Fit","부품의 Body를 4개의 영역으로 나누어 평탄 면을 비교하여 값을 보정"]]],
+    ["Lead Base Align Mode (리드 기준면 정렬)",[["Off","[Default] 사용하지 않음"],["Use (Lead Base Align)","각 리드 하단 패드 앞 높이를 측정하고 2D curve fitting으로 기울기 보상"]]]
+  ]],
+  ["3D 파라미터",[
+    ["Base ROI Alignment Mode (기준면 ROI 정렬 모드)",[["Normal","[Default] 기준면 공간이 충분할 때 사용"],["Advanced Mode","각 채널의 기준면 중 가장 적합한 값을 사용. 부품이 클 때, 옆에 대형 부품이 있을 때"]]],
+    ["Processing Speed (처리 속도)",[["x1","[Default] 3D 형상 정확도 최우선"],["x2","속도 2배. 정밀도 약간 감소"],["x4","속도 4배. 3D 이미지 정확도 저하"]]],
+    ["Measure Range(%) (측정 범위)",[["기본값: 75%","최대 측정 높이에 대한 측정 범위 설정"],["고부품 시 80~90%","7~8mm 높이의 부품 검사 시 확대"]]],
+    ["Higher Measurement (다파장 측정)",[["Not Use","단파장 사용. 낮은 부품의 안정적 3D 복원"],["Use (Higher)","다파장 사용. 최대 약 5mm까지 측정 가능"]]],
+    ["3D Projection Switches (3D 프로젝션 스위치)",[["Show (All Ch. On)","채널별 Projection On/Off 가능"],["원리","AOI는 여러 방향에서 구조광을 쏴서 3D 데이터를 복원"]]],
+    ["Filtering (필터링)",[["Not Use","[Default] 필터링 미사용"],["Gaussian Blur","프린지가 반투명 미러 표면을 투과할 때 스무딩"],["Flat Surface","프린지가 생성되지 않는 미러 표면에서 3D 복원"]]],
+    ["3D Reconstruction in FOV (FOV 내 3D 재구성)",[["Not Use (Component ROI)","[Default] CPU 기반 3D 복원"],["Use (FOV)","GPU(CUDA) 기반 3D 복원. 넓은 기준면 확보"],["Use (Combination)","Component ROI + FOV 조합"]]]
+  ]],
+  ["3D 노이즈 파라미터",[
+    ["Edit Noise Threshold (노이즈 임계값)",[["Bright Threshold (Gray)","밝은 영역 노이즈 처리 (기본값: 230)"],["Dark Threshold (Gray)","어두운 영역 노이즈 처리 (기본값: 5)"],["Amplitude Threshold (0~255)","진폭 기반 노이즈 판정 (기본값: 1)"],["Visibility Threshold (0~1.0)","가시성 기반 노이즈 판정 (기본값: 0.1)"]]],
+    ["3D Noise of Lead (리드 영역 3D 노이즈 제거)",[["Level 0 (Normal)","[Default]"],["Level 1","사전 노이즈 제거 적용"],["Level 2","Level 1로 부족 시. 주의: 측정값 변화 가능"]]],
+    ["Mode of Flux on Black Body (검은 Body 플럭스 모드)",[["Off","[Default]"],["On","검정색 바디 표면의 hole을 채우는 알고리즘"]]],
+    ["Shadow Check (그림자 체크)",[["Normal","[Default]"],["High","더 적극적으로 그림자 제거"]]],
+    ["White Component (흰색 부품)",[["No (Normal)","[Default]"],["Yes (White Component)","흰색/투명 LED에 적용. 주의: 기본 노이즈 제거 비활성화"]]],
+    ["2D/3D Noise of Body (바디 노이즈)",[["No","[Default]"],["Yes","좁은 기준면에서의 노이즈 시 사용. Full 3D 모드 전용"]]],
+    ["AI Denoising (AI 디노이징)",[["Off","[Default]"],["On","AI 기반 3D 노이즈 제거"]]],
+    ["Hole Noise Removal (홀 노이즈 제거)",[["Off","[Default]"],["On","원형 홀 영역의 노이즈 제거"]]],
+    ["Shape based Noise Filter (형상 기반 노이즈 필터)",[["Off","[Default]"],["Hemi-sphere / Sphere","반구형 노이즈 제거"]]],
+    ["Solder Joint 3D Mode (솔더 조인트 3D 모드)",[["Normal","[Default]"],["Advanced","고급 알고리즘"],["Advanced (Side)","측면 포함"]]],
+    ["Lead Area Reconstruction (리드 영역 3D 재구성)",[["Off","[Default]"],["On","Odd Shape 부품의 Lead 영역 3D 복원"]]]
+  ]],
+  ["Auto-tuning (자동 조율)",[
+    ["Auto-tuning 개요 (AOI 2.9.0.0+)",[["기능","비전문가도 쉽게 사용할 수 있도록 3D 복원 파라미터를 자동으로 조율"],["적용 범위","Body Finding, 3D Base Parameter, 3D Parameter, 3D Noise Parameter"],["제한사항","수동 검사보다 느릴 수 있음. FOV보다 큰 부품 및 쉴드 부품에는 적용 불가"]]]
+  ]],
+  ["CRM 실제 해결 사례",[
+    ["검정색 BGA Body 3D 무너짐",[["증상","검정색 PCB에 검정색 BGA의 Body 3D 무너짐"],["해결","VisionConfig.ini의 IterativeSlopeComp 값을 1000→800으로 변경"]]],
+    ["CT 단축 + 커넥터 3D 꺼짐",[["증상","CT 30초→20초 단축 목표. CUDA 적용 후 높은 커넥터에서 3D 꺼짐"],["해결","FOV 재구성 Use(FOV) → 노이즈 Threshold 변경 → ROI Auto→Mouse → Advanced→Normal"]]],
+    ["고부품 7~8mm 측정 범위 부족",[["증상","7mm 이상 높이 부품을 AOI 시스템이 완전히 검사하지 못함"],["해결","Measure Range 90%로 확대, Visibility/Amplitude를 0으로, Iterative Plane Fit 활성화"]]],
+    ["SW 업그레이드 후 3D 이상",[["증상","SW 업그레이드 후 Shadow Check가 3D 무너짐 유발"],["해결","Shadow Check를 Normal로 전환. AI Denoising Off"]]]
+  ]],
+  ["부품 유형별 권장 설정",[
+    ["BGA / Die (SiP 보드 포함)",[["Body Location Mode","일반: Full 3D (Fixed). 패턴 미러: Full 3D 또는 Two Terminal Chip"],["Base Setting","Same as Board. Basic으로 안정적 복원 시 변경 불필요"],["3D Reconstruction in FOV","Use (FOV) — 부품 간격 좁을 때"]]],
+    ["Chip 부품 (Two Terminal)",[["Body Location Mode","Two Terminal Chip 모드"],["Noise Reduction","주변 노이즈 시 On (Using 3D+2D)"]]],
+    ["미러 표면 부품",[["Body Location Mode","Mirror Surface 모드"],["Filtering","반투명: Gaussian Blur / 미러: Flat Surface"]]],
+    ["이형 부품 (Odd Shape)",[["Body Location Mode","Odd Shape 모드"],["Extra Body Location Mode","Resize Body for Odd Shape"]]],
+    ["검정색 부품 / 플럭스",[["Mode of Flux on Black Body","On"],["Base Setting","Manual"]]],
+    ["흰색 부품 / 투명 LED",[["White Component","Yes — 포화 또는 3D 이미지 무너짐 시"]]],
+    ["고부품 (5mm+)",[["Body Location Mode","5mm+ 직육면체: Full Shadow"],["Measure Range","80~90%로 확대"]]],
+    ["부품 간격이 좁은 보드",[["Base ROI Expansion Mode","By Keyboard / By Mouse"],["3D Reconstruction in FOV","Use (FOV)"]]],
+    ["FPCB / 휘어진 보드",[["Base Slope Compensation","Iterative Plane Fit"],["Lead Base Align Mode","Use"]]]
+  ]]
+];
+
+const PARAM_GUIDE_DESC = {
+  "Body Location Mode (바디 추출 모드)":"부품 바디의 외형선을 추출하는 방법을 선택합니다.",
+  "Body Inspection (바디 검사)":"Component의 Body 검사 여부를 설정합니다.",
+  "Location Restraint Mode (위치 제약 모드)":"외형선 추출이 어려울 때 부품 위치를 구속하는 방법을 선택합니다.",
+  "Extra Body Location Mode (바디 위치 재추출 모드)":"1차 추출된 바디 위치가 부정확할 때 재추출 방법을 선택합니다.",
+  "Noise Reduction (노이즈 감소)":"2D/3D 합성 이미지를 활용하여 노이즈를 제거합니다.",
+  "Occlusion Component Check (차폐 부품 검사)":"쉴드캔 등에 의해 부품이 가려진 경우 3D 형상을 식별합니다.",
+  "Pad Detection (패드 검출)":"QFN/DFN 등 무리드 부품에서 패드 영역을 별도 검출합니다.",
+  "Base ROI Expansion Mode (기준면 ROI 확장 모드)":"기준면(Base) ROI의 확장 방식을 설정합니다.",
+  "Base Setting (기준면 유형)":"기준면을 산출하는 방식을 선택합니다.",
+  "Base Slope Compensation Mode (기준면 기울기 보상 모드)":"휘어짐이 있을 때 기울기를 보상합니다.",
+  "Lead Base Align Mode (리드 기준면 정렬)":"리드 하단 패드 높이를 기준으로 기울기를 보상합니다.",
+  "Base ROI Alignment Mode (기준면 ROI 정렬 모드)":"기준면 ROI의 정렬 방식을 설정합니다.",
+  "Processing Speed (처리 속도)":"3D 복원의 속도를 설정합니다. x1 권장.",
+  "Measure Range(%) (측정 범위)":"최대 측정 높이에 대한 범위를 설정합니다.",
+  "Higher Measurement (다파장 측정)":"단파장/다파장 측정 방식을 선택합니다.",
+  "3D Projection Switches (3D 프로젝션 스위치)":"채널별 Projection On/Off를 설정합니다.",
+  "Filtering (필터링)":"미러 표면 등의 3D 복원 이미지 보정에 사용합니다.",
+  "3D Reconstruction in FOV (FOV 내 3D 재구성)":"CPU/GPU를 활용한 3D 복원 방식을 결정합니다.",
+  "Edit Noise Threshold (노이즈 임계값)":"밝기, 진폭, 가시성 기준으로 노이즈 임계값을 설정합니다.",
+  "3D Noise of Lead (리드 영역 3D 노이즈 제거)":"리드 주변 노이즈 발생 시 적용합니다.",
+  "Mode of Flux on Black Body (검은 Body 플럭스 모드)":"검정색 바디의 hole을 채우는 알고리즘입니다.",
+  "Shadow Check (그림자 체크)":"그림자로 인한 노이즈를 제거합니다.",
+  "White Component (흰색 부품)":"흰색 부품 또는 투명 LED에 적용합니다.",
+  "2D/3D Noise of Body (바디 노이즈)":"좁은 기준면에서의 노이즈를 제거합니다. Full 3D 전용.",
+  "AI Denoising (AI 디노이징)":"딥러닝 기반 3D 노이즈 제거입니다.",
+  "Hole Noise Removal (홀 노이즈 제거)":"원형 홀 영역의 노이즈를 제거합니다.",
+  "Shape based Noise Filter (형상 기반 노이즈 필터)":"특정 형상의 노이즈를 제거합니다.",
+  "Solder Joint 3D Mode (솔더 조인트 3D 모드)":"솔더 조인트의 3D 검사 알고리즘을 선택합니다.",
+  "Lead Area Reconstruction (리드 영역 3D 재구성)":"Odd Shape 부품의 Lead 영역 3D 복원.",
+  "Auto-tuning 개요 (AOI 2.9.0.0+)":"3D 복원 파라미터를 자동으로 조율하는 기능입니다."
+};
+
+function matchRules(selectedSymptoms) {
+  if (!selectedSymptoms.length) return [];
+  const sel = new Set(selectedSymptoms);
+  const results = [];
+  const seen = new Set();
+  for (const rule of RULES) {
+    const rs = new Set(rule.symptoms);
+    if ([...rs].every(s => sel.has(s))) {
+      const score = rs.size * 10 - rule.priority;
+      if (!seen.has(rule.name)) {
+        results.push({ score, rule });
+        seen.add(rule.name);
+      }
+    }
+  }
+  results.sort((a, b) => b.score - a.score);
+  return results.map(r => r.rule);
+}
+
+const symptomCheckboxes = {};
+const partSelect = document.getElementById('partSelect');
+const selCount = document.getElementById('selCount');
+const resultCount = document.getElementById('resultCount');
+const resultArea = document.getElementById('resultArea');
+const symptomArea = document.getElementById('symptomArea');
+const tabCombo = document.getElementById('tabCombo');
+const tabGuide = document.getElementById('tabGuide');
+
+PART_TYPES.forEach(([name]) => {
+  const opt = document.createElement('option');
+  opt.value = name;
+  opt.textContent = name;
+  partSelect.appendChild(opt);
+});
+
+const cats = Object.entries(SYMPTOM_CATEGORIES);
+for (let i = 0; i < cats.length; i += 2) {
+  const pair = document.createElement('div');
+  pair.className = 'cat-pair';
+  for (let col = 0; col < 2 && i + col < cats.length; col++) {
+    const [cat, symptoms] = cats[i + col];
+    const colDiv = document.createElement('div');
+    colDiv.className = 'cat-col';
+    const label = document.createElement('div');
+    label.className = 'cat-label';
+    label.textContent = cat;
+    colDiv.appendChild(label);
+    symptoms.forEach(sym => {
+      const row = document.createElement('label');
+      row.className = 'sym-row';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.addEventListener('change', onSymptomChange);
+      symptomCheckboxes[sym] = cb;
+      const sp = document.createElement('span');
+      sp.textContent = sym;
+      row.appendChild(cb);
+      row.appendChild(sp);
+      colDiv.appendChild(row);
+    });
+    pair.appendChild(colDiv);
+  }
+  symptomArea.appendChild(pair);
+}
+
+partSelect.addEventListener('change', () => {
+  Object.values(symptomCheckboxes).forEach(cb => cb.checked = false);
+  const pt = PART_TYPES.find(p => p[0] === partSelect.value);
+  if (pt) pt[1].forEach(s => { if (symptomCheckboxes[s]) symptomCheckboxes[s].checked = true; });
+  onSymptomChange();
+});
+
+document.getElementById('btnClear').addEventListener('click', () => {
+  partSelect.value = PART_TYPES[0][0];
+  Object.values(symptomCheckboxes).forEach(cb => cb.checked = false);
+  selCount.textContent = '';
+  resultCount.textContent = '';
+  resultArea.innerHTML = '<div class="empty-msg">증상을 선택하세요</div>';
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    tabCombo.style.display = btn.dataset.tab === 'combo' ? '' : 'none';
+    tabGuide.style.display = btn.dataset.tab === 'guide' ? '' : 'none';
+  });
+});
+
+function onSymptomChange() {
+  const selected = Object.entries(symptomCheckboxes).filter(([,cb]) => cb.checked).map(([s]) => s);
+  selCount.textContent = selected.length ? `${selected.length}개 선택` : '';
+  displayResults(matchRules(selected));
+}
+
+function displayResults(rules) {
+  resultArea.innerHTML = '';
+  if (!rules.length) {
+    resultCount.textContent = '';
+    resultArea.innerHTML = '<div class="empty-msg">증상을 선택하세요</div>';
+    return;
+  }
+  resultCount.textContent = `${rules.length}개`;
+  rules.forEach((rule, i) => addRuleCard(i + 1, rule));
+}
+
+function addRuleCard(rank, rule) {
+  const card = document.createElement('div');
+  card.className = 'rule-card';
+  const badgeClass = rank <= 1 ? 'badge-1' : rank <= 2 ? 'badge-2' : 'badge-3';
+  const isCrm = rule.name.includes('[CRM]');
+  let changesHtml = '';
+  for (const [key, val] of Object.entries(rule.changes)) {
+    const def = DEFAULTS[key] || '?';
+    const arrow = def !== val ? `<span class="default-val">${esc(def)}</span><span class="arrow">&gt;</span>` : '';
+    changesHtml += `<div class="change-row"><span class="key">${esc(key)}</span>${arrow}<span class="new-val">${esc(val)}</span></div>`;
+  }
+  card.innerHTML = `
+    <div class="rule-top">
+      <span class="badge ${badgeClass}">#${rank}</span>
+      <span class="rule-name">${esc(rule.name)}</span>
+      <button class="btn-apply">적용</button>
+    </div>
+    <div class="rule-desc${isCrm ? ' crm' : ''}">${esc(rule.desc)}</div>
+    <div class="change-box">${changesHtml}</div>
+  `;
+  resultArea.appendChild(card);
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function buildGuideTab() {
+  const OVERVIEW = [
+    ["Body Finding","부품 바디의 3D 이미지 복원 방법","Body Location Mode, Body Inspection, Extra Body Location Mode, Pad Detection, Occlusion"],
+    ["3D Base Parameter","부품 주변 기준면(Base) 획득 설정","Base ROI Expansion Mode, Base Setting, Base Slope Compensation Mode"],
+    ["3D Parameter","3D 복원 방법 및 필터링 설정","Base ROI Alignment Mode, Processing Speed, Higher Measurement, Filtering, 3D Reconstruction in FOV"],
+    ["3D Noise Parameter","3D 노이즈 제거","Edit Noise Threshold, 3D Noise of Lead, Shadow Check, White Component, AI Denoising"]
+  ];
+
+  let html = '<div class="overview-card"><h4>Body Presetting 구조 개요</h4>';
+  html += '<div class="ov-desc">Body Presetting은 AOI 장비에서 부품의 3D 형상을 복원하고 외형선을 추출하기 위한 핵심 설정입니다.</div>';
+  html += '<div class="ov-table"><table><tr><th>카테고리</th><th>역할</th><th>주요 파라미터</th></tr>';
+  OVERVIEW.forEach(([cat, role, params]) => {
+    html += `<tr><td class="cat-cell">${esc(cat)}</td><td class="role-cell">${esc(role)}</td><td class="params-cell">${esc(params)}</td></tr>`;
+  });
+  html += '</table></div></div>';
+
+  PARAM_GUIDE.forEach(([catName, params]) => {
+    html += `<div class="guide-cat-title">${esc(catName)}</div>`;
+    params.forEach(([paramName, options]) => {
+      const desc = PARAM_GUIDE_DESC[paramName] || '';
+      html += '<div class="guide-card">';
+      html += `<h4>${esc(paramName)}</h4>`;
+      if (desc) html += `<div class="guide-desc">${esc(desc)}</div>`;
+      html += '<div class="guide-opts">';
+      options.forEach(([optName, optDesc]) => {
+        html += `<div class="guide-opt"><span class="opt-name">${esc(optName)}</span><span class="opt-desc">${esc(optDesc)}</span></div>`;
+      });
+      html += '</div></div>';
+    });
+  });
+
+  tabGuide.innerHTML = html;
+}
+
+buildGuideTab();
+</script>
+</body>
+</html>

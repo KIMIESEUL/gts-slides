@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIELD AI — KohYoung</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#4CB944; --green-deep:#3A9B35; --green-soft:#E8F5E3;
+    --bg:#F9FBFA; --card:#fff; --ink:#1A1A2E; --dim:#5C6B7A; --muted:#94a3b8;
+    --line:#E8EDEB; --red:#EF4444; --yellow:#EAB308; --blue:#3D4F9F; --sidebar:#001E2B;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;overflow:hidden;height:100vh}
+  a{color:inherit}
+  /* sidebar */
+  .sidebar{position:fixed;top:0;left:0;width:248px;height:100vh;background:var(--sidebar);color:#ccc;overflow-y:auto;padding:26px 0;z-index:50}
+  .logo{padding:0 22px 20px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:14px}
+  .logo h2{font-size:28px;font-weight:800;color:#fff;margin-top:-3px}
+  .logo p{font-size:12px;color:var(--green);margin-top:0;font-weight:700;letter-spacing:.3px}
+  .navsec{padding:10px 22px 4px;font-size:10px;font-weight:700;color:#5b6b78;text-transform:uppercase;letter-spacing:1px}
+  .nav{display:flex;align-items:center;gap:9px;padding:9px 22px;font-size:13.5px;color:#9fb0bd;cursor:pointer;border-left:3px solid transparent;transition:.15s}
+  .nav:hover{color:#fff;background:rgba(255,255,255,.04)}
+  .nav.active{color:#fff;background:rgba(76,185,68,.12);border-left-color:var(--green);font-weight:600}
+  .nav .ic{width:18px;text-align:center;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;opacity:.7}
+  .side-meta{padding:16px 22px;margin-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:#5b6b78;line-height:1.7}
+  .side-meta b{color:#cbd5e1}
+  /* main */
+  .main{margin-left:248px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  #root{flex:1;overflow:hidden}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+  .topbar h1{font-size:18px;font-weight:800}
+  .topbar .sub{font-size:12px;color:var(--dim);margin-top:1px}
+  .live{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--green-deep);background:var(--green-soft);padding:6px 12px;border-radius:100px;font-weight:700}
+  .live .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(76,185,68,.5);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(76,185,68,.5)}70%{box-shadow:0 0 0 8px rgba(76,185,68,0)}100%{box-shadow:0 0 0 0 rgba(76,185,68,0)}}
+  .view{padding:28px 32px 60px;max-width:1000px;flex:1}
+  /* cards & bits */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .card.gl{border-left:4px solid var(--green)}
+  .card.bl{border-left:4px solid var(--blue)}
+  .card.yl{border-left:4px solid var(--yellow)}
+  h3{font-size:16px;font-weight:800;margin:6px 0 12px}
+  h4{font-size:13.5px;font-weight:700;color:var(--green-deep);margin:14px 0 8px}
+  .muted{color:var(--dim)}
+  .pill{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:700}
+  .pill.case{background:#eaf1fb;color:#2456b8}.pill.report{background:#e9f7ec;color:#1f8a3b}.pill.manual{background:#fef3c7;color:#92400e}
+  .pill.ok{background:#dcfce7;color:#16a34a}.pill.warn{background:#fef9c3;color:#a16207}.pill.no{background:#fee2e2;color:#dc2626}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+  .chip{background:#eef3f0;border:1px solid var(--line);border-radius:100px;padding:5px 13px;font-size:12.5px;cursor:pointer;transition:.12s}
+  .chip:hover{background:var(--green-soft);border-color:var(--green)}
+  /* chat */
+  .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 62px)}
+  .chat-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:28px 32px}
+  .chat-in{background:var(--bg);padding:10px 32px 14px;flex-shrink:0;position:sticky;bottom:0}
+  .chat-input-box{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:visible;transition:border-color .15s;position:relative}
+  .chat-input-box:focus-within{border-color:var(--green)}
+  .chat-in textarea{display:block;width:100%;border:0;padding:14px 16px 6px;font:inherit;font-size:14px;resize:none;min-height:40px;max-height:200px;overflow-y:hidden;outline:none;background:transparent}
+  .chat-in-toolbar{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 8px;border-top:1px solid var(--line)}
+  .chat-in-toolbar-left{display:flex;align-items:center;gap:2px}
+  .img-btn{width:31px;height:31px;border-radius:50%;border:0;background:transparent;cursor:pointer;color:var(--dim);display:flex;align-items:center;justify-content:center;transition:.15s}
+  .img-btn:hover{color:var(--green)}
+  #send{width:31px;height:31px;border-radius:50%;background:var(--green);color:#fff;border:0;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.15s}
+  #send:hover{background:var(--green-deep)}
+  .filter-btn{width:31px;height:31px;border-radius:50%;border:0;background:transparent;cursor:pointer;color:var(--dim);display:flex;align-items:center;justify-content:center;transition:.15s}
+  .filter-btn:hover{color:var(--green)}
+  .filter-btn.on{color:var(--green)}
+  .filter-wrap{position:relative}
+  .filter-drop{display:none;position:absolute;bottom:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.10);z-index:9999;min-width:130px}
+  .filter-drop.show{display:block}
+  .filter-opt{padding:7px 12px;font-size:13px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:.1s}
+  .filter-opt:hover{background:var(--green-soft);color:var(--green-deep)}
+  .filter-opt.active{background:var(--green);color:#fff;font-weight:600}
+  .mode-wrap{position:relative}
+  .mode-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;border:0;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--dim);transition:.15s;white-space:nowrap}
+  .mode-btn:hover{background:var(--green-soft);color:var(--green-deep)}
+  .mode-btn .mode-icon{font-size:14px}
+  .mode-drop{display:none;position:absolute;bottom:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.10);z-index:9999;min-width:240px}
+  .mode-drop.show{display:block}
+  .mode-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:.1s}
+  .mode-opt:hover{background:#f8faf9}
+  .mode-opt.active{background:var(--green-soft)}
+  .mode-opt .mo-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;opacity:.7}
+  .mode-opt .mo-name{font-size:13px;font-weight:700;color:var(--ink)}
+  .mode-opt .mo-desc{font-size:11px;color:var(--dim);margin-top:1px}
+  .mode-opt .mo-check{margin-left:auto;color:var(--green);font-size:16px;font-weight:700;flex-shrink:0;display:none}
+  .mode-opt.active .mo-check{display:block}
+  .toolbar-sep{width:1px;height:20px;background:var(--line);margin:0 4px;flex-shrink:0}
+  .filter-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 4px}
+  .filter-chip{display:inline-flex;align-items:center;gap:4px;background:var(--green-soft);color:var(--green-deep);font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:100px}
+  .filter-chip button{border:0;background:transparent;color:var(--green-deep);cursor:pointer;font-size:13px;padding:0;line-height:1}
+  .img-preview{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 16px 0}
+  .img-thumb-wrap{position:relative;display:inline-block}
+  .img-thumb{height:64px;max-width:100px;border-radius:8px;border:1px solid var(--line);object-fit:cover}
+  .img-remove{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;border:0;cursor:pointer;font-size:11px;line-height:18px;text-align:center}
+  .bubble-img{max-width:280px;max-height:180px;border-radius:10px;margin-bottom:8px;display:block}
+  .msg{max-width:100%;margin:0 auto 18px}
+  .bubble-u{background:var(--sidebar);color:#fff;padding:11px 16px;border-radius:14px 14px 4px 14px;margin-left:auto;max-width:70%;width:fit-content}
+  .ans{background:#fff;border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .ans .sumline{font-size:14px;margin-bottom:6px}
+  .ans .sumline b{color:var(--green-deep)}
+  .metrics{display:flex;gap:10px;margin:12px 0}
+  .met{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+  .met .v{font-size:20px;font-weight:800;color:var(--green-deep)}
+  .met .l{font-size:11px;color:var(--dim);margin-top:2px}
+  .sol{border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:12px 14px;margin:8px 0;background:#fcfefb}
+  .sol .st{font-weight:700;font-size:13.5px}
+  .sol .sm{font-size:11.5px;color:var(--dim);margin:3px 0 6px;display:flex;gap:10px;flex-wrap:wrap}
+  .sol .sx{font-size:13px;color:#334;line-height:1.65}
+  .sol a{color:var(--blue);text-decoration:none;font-size:11.5px;font-weight:600}
+  .sol a:hover{text-decoration:underline}
+  .simitem{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .simitem:last-child{border:0}
+  .simitem a{color:var(--ink);font-weight:600;text-decoration:none}.simitem a:hover{color:var(--blue)}
+  .simitem .sm{font-size:11px;color:var(--dim);margin-top:2px}
+  details summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--dim);margin-top:6px}
+  .note{font-size:11.5px;color:var(--muted);margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+  .aiblock{background:linear-gradient(135deg,#f0fdf4,#f7fef9);border:1px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  .aihead{font-weight:800;font-size:14px;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .aislot{font-size:13.5px;line-height:1.8;color:#1e293b}
+  .aislot b{color:var(--green-deep)} .aislot br{content:"";display:block;margin:2px 0}
+  .cite{color:var(--blue);font-weight:700;font-size:11px;background:#eaf1fb;padding:0 5px;border-radius:4px}
+  .fb-bar{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+  .fb-bar .fb-label{font-size:11px;color:var(--muted)}
+  .fb-btn{border:0;background:transparent;cursor:pointer;font-size:18px;padding:4px 8px;border-radius:6px;transition:.15s;opacity:.5}
+  .fb-btn:hover{opacity:1;background:var(--green-soft)}
+  .fb-btn.active{opacity:1}
+  .fb-btn.up.active{color:var(--green-deep);background:var(--green-soft)}
+  .fb-btn.down.active{color:var(--red);background:#fee2e2}
+  .fb-btn:disabled{cursor:default;opacity:.3}
+  .fb-btn:disabled:hover{background:transparent}
+  .fb-done{font-size:11px;color:var(--green-deep);font-weight:600}
+  .fb-edit textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;font-size:13px;resize:vertical;margin-top:8px}
+  .fb-edit-actions{display:flex;gap:6px;margin-top:6px}
+  .fb-edit-actions button{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:600;border:0;cursor:pointer}
+  .fb-save{background:var(--green);color:#fff}
+  .fb-save:hover{background:var(--green-deep)}
+  .fb-cancel{background:#eef3f0;color:var(--dim)}
+  .golden-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:100px;font-weight:600;margin-left:8px}
+  .evhead{font-size:12px;font-weight:700;color:var(--dim);margin:4px 0 10px}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid #cfe;border-top-color:var(--green);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
+  @keyframes s{to{transform:rotate(360deg)}}
+  /* viewer */
+  .viewer-wrap{display:flex;height:calc(100vh - 62px);overflow:hidden}
+  .viewer-toc{width:280px;min-width:280px;border-right:1px solid var(--line);background:#fff;overflow-y:auto;padding:12px 0;font-size:13px}
+  .viewer-toc .toc-head{padding:8px 16px;font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+  .viewer-toc .toc-manual{padding:6px 16px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;border-left:3px solid transparent;transition:.12s}
+  .viewer-toc .toc-manual:hover{background:var(--green-soft);color:var(--green-deep)}
+  .viewer-toc .toc-manual.active{border-left-color:var(--green);background:var(--green-soft);color:var(--green-deep)}
+  .viewer-toc .toc-item{padding:5px 16px;cursor:pointer;border-left:3px solid transparent;transition:.12s;color:#334;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .viewer-toc .toc-item:hover{background:#f1f5f9}
+  .viewer-toc .toc-item.active{border-left-color:var(--green);background:var(--green-soft);color:var(--green-deep);font-weight:600}
+  .viewer-toc .toc-item.d0{padding-left:16px;font-weight:700;font-size:13.5px;color:var(--ink);margin-top:8px}
+  .viewer-toc .toc-item.d1{padding-left:30px;font-weight:600;color:var(--green-deep)}
+  .viewer-toc .toc-item.d2{padding-left:44px;font-weight:400;color:#556}
+  .viewer-toc .toc-item .toc-len{font-size:10px;color:var(--muted);margin-left:4px}
+  .viewer-toc .toc-section{padding:10px 16px 4px;font-size:12px;font-weight:800;color:var(--green-deep);text-transform:uppercase;letter-spacing:.3px;border-top:1px solid var(--line);margin-top:6px}
+  .viewer-content{flex:1;overflow-y:auto;padding:28px 36px 60px}
+  .viewer-content h2{font-size:20px;font-weight:800;margin-bottom:6px;color:var(--ink)}
+  .viewer-content .vc-sub{font-size:12px;color:var(--dim);margin-bottom:20px}
+  .viewer-content .vc-body{font-size:14px;line-height:1.8;color:#1e293b}
+  .viewer-content .vc-body b{color:var(--green-deep)}
+  .viewer-content .vc-body h3{font-size:17px;font-weight:700;margin:18px 0 6px;color:var(--ink)}
+  .viewer-content .vc-body h4{font-size:15px;font-weight:700;margin:14px 0 4px;color:var(--ink)}
+  .viewer-content .vc-body h5{font-size:14px;font-weight:700;margin:10px 0 4px;color:var(--ink)}
+  .viewer-content .vc-body table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px}
+  .viewer-content .vc-body th,.viewer-content .vc-body td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+  .viewer-content .vc-body th{background:var(--bg2);font-weight:700;color:var(--ink)}
+  .viewer-content .vc-body ul{margin:8px 0;padding-left:22px}
+  .viewer-content .vc-body li{margin:3px 0}
+  .viewer-content .vc-empty{text-align:center;padding:80px 0;color:var(--muted);font-size:15px}
+  .toc-search{padding:8px 12px}
+  .toc-search input{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 10px 7px 30px;font-size:13px;outline:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E") 9px center no-repeat}
+  .toc-search input:focus{border-color:var(--green)}
+  .toc-search-results{border-top:1px solid var(--line);margin-top:4px}
+  .toc-search-result{padding:8px 14px;cursor:pointer;border-left:3px solid transparent;transition:.12s}
+  .toc-search-result:hover{background:#f1f5f9}
+  .toc-search-result .sr-title{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .toc-search-result .sr-snippet{font-size:11.5px;color:var(--dim);margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .toc-search-result .sr-snippet mark{background:var(--green-soft);color:var(--green-deep);padding:0 1px;border-radius:2px}
+  /* search */
+  .searchrow{display:flex;gap:8px;margin-bottom:8px}
+  .searchrow input{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font:inherit;font-size:14px;outline:none}
+  .searchrow input:focus{border-color:var(--green)}
+  .searchrow select{border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff}
+  .searchrow button{background:var(--green);color:#fff;border:0;border-radius:10px;padding:0 20px;font-weight:700;cursor:pointer}
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  th{background:#f1f5f9;padding:9px 12px;text-align:left;font-size:12px;color:var(--dim);font-weight:700}
+  td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:top}
+  /* metric row */
+  .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .bars .bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12.5px}
+  .bars .bl2{width:120px;text-align:right;color:var(--dim);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bars .bt{flex:1;background:#eef3f0;border-radius:5px;height:20px;overflow:hidden}
+  .bars .bf{height:100%;background:linear-gradient(90deg,var(--green),#7ed957);border-radius:5px}
+  .bars .bv{width:44px;font-weight:700;color:var(--green-deep)}
+  .phase{display:flex;gap:14px;margin:14px 0}
+  .phase .pn{flex-shrink:0;width:64px;height:64px;border-radius:14px;background:var(--green-soft);color:var(--green-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800}
+  .phase .pn small{font-size:10px;font-weight:600}
+  .arch{background:var(--sidebar);color:#e2e8f0;border-radius:12px;padding:18px 22px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto}
+  .arch .g{color:var(--green);font-weight:700}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo"><h2>FIELD AI</h2></div>
+  <div class="navsec">AI 챗봇</div>
+  <div class="nav active" data-v="chat"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span> AI 챗봇</div>
+  <div class="navsec">설치가이드</div>
+  <div class="nav" data-v="install" data-product="AOI"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> AOI 설치가이드</div>
+  <div class="nav" data-v="install" data-product="SPI"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> SPI 설치가이드</div>
+  <div class="nav" data-v="install" data-product="ReviewStation"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> Review Station 설치가이드</div>
+  <div class="nav" data-v="install" data-product="KPO"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> KPO 설치가이드</div>
+  <div class="nav" data-v="install" data-product="KSmart"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></span> KSmart 설치가이드</div>
+  <div class="navsec">AOI 매뉴얼</div>
+  <div class="nav" data-v="viewer" data-manual="AOI_UserGuide_2.9.0"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> AOI 사용자 가이드</div>
+  <div class="nav" data-v="viewer" data-manual="Evaluation Guideline_AOI Presetting"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> AOI Presetting 가이드</div>
+  <div class="navsec">SPI 매뉴얼</div>
+  <div class="nav" data-v="viewer" data-manual="SPI_UserGuide"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> SPI 사용자 가이드</div>
+  <div class="nav" data-v="viewer" data-manual="RtoS_SPI User Guide_1.1.2.0"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> RtoS SPI 가이드</div>
+  <div class="navsec">WinMCS 매뉴얼</div>
+  <div class="nav" data-v="viewer" data-manual="WinMCS_800.0.18_UserGuide"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> WinMCS 사용자 가이드</div>
+  <div class="navsec">트러블슈팅 가이드</div>
+  <div class="nav" data-v="flowchart"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></span> Top 10 이슈 Flowchart</div>
+  <div class="navsec">현황</div>
+  <div class="nav" data-v="stats"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span> 지식베이스 현황</div>
+  <div class="side-meta" id="sideMeta"><b>실제 데이터 연동</b><br>불러오는 중…</div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div><h1 id="vTitle">AI 챗봇</h1><div class="sub" id="vSub">장비·SW 문제 해결 및 기능 정의 검색</div></div>
+    <div class="live"><span class="dot"></span> CRM+매뉴얼 <span id="liveCnt">141,527</span>건 연동</div>
+  </div>
+  <div id="root"></div>
+</div>
+
+<script>
+const $=(s,el=document)=>el.querySelector(s);
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function renderMd(src){
+  let h=esc(src);
+  // tables
+  h=h.replace(/((?:\|[^\n]+\|\n?)+)/g,(m)=>{
+    const rows=m.trim().split('\n').filter(r=>r.trim());
+    if(rows.length<2)return m;
+    const sep=rows.findIndex(r=>/^\|[\s:*-]+\|/.test(r.replace(/&[a-z]+;/g,'')));
+    const hdr=sep>0?rows.slice(0,sep):[];
+    const body=sep>=0?rows.slice(sep+1):rows;
+    const cells=r=>r.split('|').slice(1,-1).map(c=>c.trim());
+    let t='<table>';
+    if(hdr.length){t+='<thead>'+hdr.map(r=>'<tr>'+cells(r).map(c=>'<th>'+c+'</th>').join('')+'</tr>').join('')+'</thead>';}
+    t+='<tbody>'+body.map(r=>'<tr>'+cells(r).map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+    return t;
+  });
+  // headers
+  h=h.replace(/^#{4}\s+(.+)$/gm,'<h5>$1</h5>');
+  h=h.replace(/^#{3}\s+(.+)$/gm,'<h4>$1</h4>');
+  h=h.replace(/^#{2}\s+(.+)$/gm,'<h3>$1</h3>');
+  h=h.replace(/^#{1}\s+(.+)$/gm,'<h3>$1</h3>');
+  // bold
+  h=h.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  // unordered list
+  h=h.replace(/^[-*]\s+(.+)$/gm,'<li>$1</li>');
+  h=h.replace(/((?:<li>.*<\/li>\n?)+)/g,'<ul>$1</ul>');
+  // paragraphs
+  h=h.replace(/(\r?\n){2,}/g,'</p><p>');
+  h=h.replace(/\r?\n/g,'<br>');
+  return '<p>'+h+'</p>';
+}
+const api=async(p)=>{ const r=await fetch(p); return r.json(); };
+let STATS=null;
+
+const VIEWS={
+  chat:{title:'AI 챗봇',sub:'장비·SW 문제 해결 및 기능 정의 검색',render:renderChat},
+  viewer:{title:'매뉴얼 가이드',sub:'매뉴얼 항목별 설명서',render:renderViewer},
+  install:{title:'설치가이드',sub:'제품별 설치 및 초기 셋업 가이드',render:()=>renderInstallGuide()},
+  flowchart:{title:'Top 10 이슈 Flowchart',sub:'서비스 리포트 3,394건 기반 진단 플로우차트',render:renderFlowchart},
+  stats:{title:'지식베이스 현황',sub:'CRM 14.1만건 + 매뉴얼 2,896건 — 지식베이스 규모와 해결률',render:renderStats},
+};
+
+let _viewerManual=null;
+const MANUAL_LABELS={
+  'AOI_UserGuide_2.9.0':'AOI 사용자 가이드',
+  'Evaluation Guideline_AOI Presetting':'AOI Presetting 가이드',
+  'SPI_UserGuide':'SPI 사용자 가이드',
+  'RtoS_SPI User Guide_1.1.2.0':'RtoS SPI 가이드',
+  'WinMCS_800.0.18_UserGuide':'WinMCS 사용자 가이드',
+};
+const INSTALL_LABELS={AOI:'AOI 설치가이드',SPI:'SPI 설치가이드',ReviewStation:'Review Station 설치가이드',KPO:'KPO 설치가이드',KSmart:'KSmart 설치가이드'};
+function go(v,opts){
+  document.querySelectorAll('.nav').forEach(n=>{
+    let match=n.dataset.v===v;
+    if(v==='viewer'&&opts?.manual) match=match&&n.dataset.manual===opts.manual;
+    if(v==='install'&&opts?.product) match=match&&n.dataset.product===opts.product;
+    n.classList.toggle('active',match);
+  });
+  let title=VIEWS[v]?.title||v, sub=VIEWS[v]?.sub||'';
+  if(v==='viewer'&&opts?.manual){title=MANUAL_LABELS[opts.manual]||opts.manual;sub=opts.manual+' 항목별 설명서';}
+  if(v==='install'&&opts?.product){title=INSTALL_LABELS[opts.product]||opts.product+' 설치가이드';sub=(INSTALL_GUIDES[opts.product]?.desc)||'설치 및 초기 셋업 가이드';}
+  $('#vTitle').textContent=title; $('#vSub').textContent=sub;
+  if(v==='viewer') _viewerManual=opts?.manual||'Evaluation Guideline_AOI Presetting';
+  if(v==='install'&&opts?.product) _installProduct=opts.product;
+  VIEWS[v].render();
+  if(v==='viewer'&&opts?.manual) location.hash='viewer:'+encodeURIComponent(opts.manual);
+  else if(v==='install'&&opts?.product) location.hash='install:'+encodeURIComponent(opts.product);
+  else location.hash=v;
+}
+document.querySelectorAll('.nav').forEach(n=>n.addEventListener('click',()=>go(n.dataset.v,{manual:n.dataset.manual,product:n.dataset.product})));
+
+/* ---------- 트러블슈팅 챗봇 ---------- */
+function renderChat(){
+  renderChatUI({
+    placeholder:'예) 3D 높이 측정이 불안정한데 캘리브레이션은 Pass야',
+    greeting:'장비·SW 문제를 설명하면 <b>CRM·리포트·매뉴얼</b>에서 해결책을 찾아드립니다. 기능 정의 모드로 전환하면 파라미터·기능 설명을 검색합니다.',
+    chips:[
+      {q:'Zenith 2 odd shape 3D inner distance 측정 불안정',label:'3D 측정 불안정'},
+      {q:'KSmart 서버 연결 실패',label:'KSmart 연결 실패'},
+      {q:'GUI 크래시 자꾸 발생',label:'GUI 크래시'},
+      {q:'캘리브레이션 실패',label:'캘리브레이션 실패'},
+      {q:'바코드 인식 불량',label:'바코드 인식 불량'},
+    ],
+    type:null,
+    sourceLabel:'CRM·매뉴얼 종합',
+  });
+}
+
+/* ---------- 범용 챗 UI ---------- */
+let _pendingImage=null,_selectedProduct=null,_chatType=null,_chatSourceLabel='CRM 케이스';
+function renderChatUI(cfg){
+  _pendingImage=null;_chatType=cfg.type||null;_chatSourceLabel=cfg.sourceLabel||'CRM 케이스';
+  const chipsHtml=cfg.chips.map(c=>`<div class="chip" data-q="${esc(c.q)}">${esc(c.label)}</div>`).join('');
+  $('#root').innerHTML=`
+    <div class="chat-wrap">
+      <div class="chat-body" id="chat">
+        <div class="msg"><div class="ans">
+          <div class="sumline"><b>안녕하세요 👋</b> ${cfg.greeting}</div>
+          <div class="chips">${chipsHtml}</div>
+        </div></div>
+      </div>
+      <div class="chat-in">
+        <div class="chat-input-box">
+          <div class="img-preview" id="imgPreview"></div>
+          <textarea id="q" placeholder="${esc(cfg.placeholder)}"></textarea>
+          <div class="chat-in-toolbar">
+            <div class="chat-in-toolbar-left">
+              <button class="img-btn" id="imgBtn" title="이미지 첨부 (Ctrl+V 붙여넣기)"><svg width="21" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
+              <input type="file" id="imgFile" accept="image/*" style="display:none">
+              <div class="filter-wrap">
+                <button class="filter-btn" id="filterBtn" title="제품 필터"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8.5V18l-4 2v-7.5z"/></svg></button>
+                <div class="filter-drop" id="filterDrop">
+                  <div class="filter-opt" data-p="AOI">AOI</div>
+                  <div class="filter-opt" data-p="SPI">SPI</div>
+                  <div class="filter-opt" data-p="RtoS SPI">RtoS SPI</div>
+                  <div class="filter-opt" data-p="WinMCS">WinMCS</div>
+                </div>
+              </div>
+              <div class="filter-chips" id="filterChips"></div>
+              <div class="toolbar-sep"></div>
+              <div class="mode-wrap">
+                <button class="mode-btn" id="modeBtn"><span class="mode-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> <span id="modeName">트러블슈팅</span></button>
+                <div class="mode-drop" id="modeDrop">
+                  <div class="mode-opt active" data-mode="troubleshoot" data-type="" data-label="CRM·매뉴얼 종합">
+                    <span class="mo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+                    <div><div class="mo-name">트러블슈팅</div><div class="mo-desc">장비·SW 문제 해결 — CRM, 리포트, 매뉴얼 종합 분석</div></div>
+                    <span class="mo-check">✓</span>
+                  </div>
+                  <div class="mode-opt" data-mode="manual" data-type="manual" data-label="매뉴얼">
+                    <span class="mo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+                    <div><div class="mo-name">기능 정의</div><div class="mo-desc">파라미터·기능·모드가 뭔지 매뉴얼에서 설명</div></div>
+                    <span class="mo-check">✓</span>
+                  </div>
+                  <div class="mode-opt" data-mode="claude" data-type="claude" data-label="Claude AI">
+                    <span class="mo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+                    <div><div class="mo-name">Claude AI</div><div class="mo-desc">CRM 검색 없이 Claude에 직접 질문 — 범용 AI 대화</div></div>
+                    <span class="mo-check">✓</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button id="send" title="전송"><svg width="21" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  const send=()=>{
+    const q=$('#q').value.trim();const img=_pendingImage;
+    const pq=_selectedProduct?(_selectedProduct+' '+q):q;
+    if(!q&&!img)return;
+    $('#q').value='';clearImage();
+    if(img) askVision(q,img,_chatType,_chatSourceLabel);
+    else askChat(pq,_chatType,_chatSourceLabel);
+  };
+  $('#send').onclick=send;
+  $('#q').addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+  if(!window._chipHandler){
+    window._chipHandler=e=>{ const c=e.target.closest('.chip[data-q]'); if(c&&c.dataset.q) askChat(c.dataset.q,_chatType,_chatSourceLabel); };
+    $('#root').addEventListener('click',window._chipHandler);
+  }
+  $('#imgBtn').onclick=()=>$('#imgFile').click();
+  $('#imgFile').onchange=e=>{ if(e.target.files[0]) readImageFile(e.target.files[0]); e.target.value=''; };
+  if(window._pasteHandler) document.removeEventListener('paste',window._pasteHandler);
+  window._pasteHandler=_handlePaste;
+  document.addEventListener('paste',window._pasteHandler);
+  const wrap=$('.chat-wrap');
+  wrap.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';});
+  wrap.addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer?.files[0];if(f&&f.type.startsWith('image/'))readImageFile(f);});
+  // filter
+  $('#filterBtn').onclick=()=>$('#filterDrop').classList.toggle('show');
+  $('#filterDrop').addEventListener('click',e=>{
+    const opt=e.target.closest('.filter-opt');if(!opt)return;
+    const p=opt.dataset.p;
+    if(_selectedProduct===p){_selectedProduct=null;opt.classList.remove('active');}
+    else{_selectedProduct=p;$('#filterDrop').querySelectorAll('.filter-opt').forEach(o=>o.classList.toggle('active',o.dataset.p===p));}
+    renderFilterChips();$('#filterDrop').classList.remove('show');
+    $('#filterBtn').classList.toggle('on',!!_selectedProduct);
+  });
+  // mode
+  const mMode=cfg.type==='manual'?'manual':'troubleshoot', mName=cfg.type==='manual'?'기능 정의':'트러블슈팅';
+  const activeOpt=$('#modeDrop').querySelector(`.mode-opt[data-mode="${mMode}"]`);
+  $('#modeBtn').innerHTML=`<span class="mode-icon">${activeOpt.querySelector('.mo-icon').innerHTML}</span> <span id="modeName">${mName}</span>`;
+  $('#modeDrop').querySelectorAll('.mode-opt').forEach(o=>o.classList.toggle('active',o.dataset.mode===(cfg.type==='manual'?'manual':'troubleshoot')));
+  $('#modeBtn').onclick=()=>$('#modeDrop').classList.toggle('show');
+  $('#modeDrop').addEventListener('click',e=>{
+    const opt=e.target.closest('.mode-opt');if(!opt)return;
+    _chatType=opt.dataset.type||null;_chatSourceLabel=opt.dataset.label;
+    $('#modeDrop').querySelectorAll('.mode-opt').forEach(o=>o.classList.toggle('active',o===opt));
+    $('#modeBtn').innerHTML=`<span class="mode-icon">${opt.querySelector('.mo-icon').innerHTML}</span> <span id="modeName">${opt.querySelector('.mo-name').textContent}</span>`;
+    $('#modeDrop').classList.remove('show');
+  });
+  // close dropdowns on outside click
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.filter-wrap'))$('#filterDrop')?.classList.remove('show');
+    if(!e.target.closest('.mode-wrap'))$('#modeDrop')?.classList.remove('show');
+  });
+  const qa=$('#q');
+  qa.addEventListener('input',()=>{qa.style.height='auto';const sh=qa.scrollHeight;qa.style.height=Math.min(sh,200)+'px';qa.style.overflowY=sh>200?'auto':'hidden';});
+  qa.focus();
+}
+function renderFilterChips(){
+  const el=$('#filterChips');if(!el)return;
+  el.innerHTML=_selectedProduct?`<span class="filter-chip">${esc(_selectedProduct)}<button onclick="_selectedProduct=null;renderFilterChips();document.getElementById('filterBtn').classList.remove('on');document.querySelectorAll('.filter-opt').forEach(o=>o.classList.remove('active'))">×</button></span>`:'';
+}
+function _handlePaste(e){
+  if(!$('#imgPreview'))return;
+  const items=e.clipboardData?.items;if(!items)return;
+  for(const item of items){if(item.type.startsWith('image/')){e.preventDefault();readImageFile(item.getAsFile());break;}}
+}
+function readImageFile(file){
+  if(file.size>10*1024*1024){alert('이미지는 10MB 이하만 가능합니다.');return;}
+  const reader=new FileReader();
+  reader.onload=()=>{_pendingImage=reader.result.split(',')[1];showImagePreview(reader.result);};
+  reader.readAsDataURL(file);
+}
+function showImagePreview(dataUrl){
+  const p=$('#imgPreview');if(!p)return;
+  p.innerHTML=`<div class="img-thumb-wrap"><img class="img-thumb" src="${dataUrl}"><button class="img-remove" onclick="clearImage()">×</button></div>`;
+}
+function clearImage(){_pendingImage=null;const p=$('#imgPreview');if(p)p.innerHTML='';}
+const _answerMeta = new Map();
+function feedbackHtml(aid) {
+  return `<div class="fb-bar" id="fb-${aid}">
+    <span class="fb-label">답변이 도움이 되었나요?</span>
+    <button class="fb-btn up" onclick="doFeedback('${aid}',1)">👍</button>
+    <button class="fb-btn down" onclick="doFeedback('${aid}',-1)">👎</button>
+    <button class="fb-btn" onclick="showEdit('${aid}')" style="font-size:12px">✏️ 수정</button>
+  </div>`;
+}
+async function doFeedback(aid, rating) {
+  const m = _answerMeta.get(aid); if (!m) return;
+  try {
+    await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: m.question, answer: m.answer, rating, mode: m.mode || '', keywords: m.keywords || [], edited: false })
+    });
+  } catch {}
+  const bar = document.getElementById('fb-' + aid); if (!bar) return;
+  bar.innerHTML = rating === 1
+    ? '<span class="fb-done">👍 감사합니다! 검증된 답변으로 저장되었습니다.</span>'
+    : '<span class="fb-done" style="color:var(--dim)">👎 피드백 감사합니다.</span>';
+}
+function showEdit(aid) {
+  const m = _answerMeta.get(aid); if (!m) return;
+  const bar = document.getElementById('fb-' + aid); if (!bar) return;
+  bar.innerHTML = `<div style="width:100%">
+    <div class="fb-label" style="margin-bottom:4px">답변을 수정한 후 저장하면 검증된 답변으로 등록됩니다.</div>
+    <div class="fb-edit"><textarea id="fbedit-${aid}">${esc(m.answer)}</textarea>
+    <div class="fb-edit-actions">
+      <button class="fb-save" onclick="saveEdit('${aid}')">저장 (👍 추천)</button>
+      <button class="fb-cancel" onclick="cancelEdit('${aid}')">취소</button>
+    </div></div></div>`;
+}
+async function saveEdit(aid) {
+  const m = _answerMeta.get(aid); if (!m) return;
+  const ta = document.getElementById('fbedit-' + aid); if (!ta) return;
+  const edited = ta.value.trim(); if (!edited) return;
+  m.answer = edited;
+  try {
+    await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: m.question, answer: edited, rating: 1, mode: m.mode || '', keywords: m.keywords || [], edited: true })
+    });
+  } catch {}
+  const bar = document.getElementById('fb-' + aid); if (!bar) return;
+  bar.innerHTML = '<span class="fb-done">✏️ 수정된 답변이 검증된 답변으로 저장되었습니다.</span>';
+}
+function cancelEdit(aid) {
+  const bar = document.getElementById('fb-' + aid); if (!bar) return;
+  bar.innerHTML = feedbackHtml(aid).replace(/^<div[^>]*id="[^"]*">/, '').replace(/<\/div>$/, '');
+  bar.innerHTML = `<span class="fb-label">답변이 도움이 되었나요?</span>
+    <button class="fb-btn up" onclick="doFeedback('${aid}',1)">👍</button>
+    <button class="fb-btn down" onclick="doFeedback('${aid}',-1)">👎</button>
+    <button class="fb-btn" onclick="showEdit('${aid}')" style="font-size:12px">✏️ 수정</button>`;
+}
+function mdRender(t){
+  let h=esc(t);
+  h=h.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  h=h.replace(/\[(\d+)\]/g,'<span class="cite">[$1]</span>');
+  h=h.replace(/\n/g,'<br>');
+  return h;
+}
+async function askChat(q,type,sourceLabel){
+  if(type==='claude') return askClaude(q);
+  const chat=$('#chat');
+  chat.insertAdjacentHTML('beforeend',`<div class="msg"><div class="bubble-u">${esc(q)}</div></div>`);
+  const id='a'+Date.now();
+  chat.insertAdjacentHTML('beforeend',`<div class="msg"><div class="ans" id="${id}"><span class="spin"></span> 검색 중…</div></div>`);
+  chat.scrollTop=chat.scrollHeight;
+  const typeQ = type ? ('&type='+encodeURIComponent(type)) : '';
+  try{
+    const resp=await fetch('/api/chat?q='+encodeURIComponent(q)+typeQ);
+    const reader=resp.body.getReader();
+    const decoder=new TextDecoder();
+    let meta=null, answerText='', buf='';
+    const el=document.getElementById(id);
+    while(true){
+      const{done,value}=await reader.read();
+      if(done)break;
+      buf+=decoder.decode(value,{stream:true});
+      const lines=buf.split('\n');
+      buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data: '))continue;
+        const d=JSON.parse(line.slice(6));
+        if(d.type==='meta'){
+          meta=d; meta._kw=d.kw||[]; meta._sourceLabel=sourceLabel||'케이스';
+          el.innerHTML=answerHtml(meta);
+          const aiBlock=el.querySelector('.aiblock');
+          if(aiBlock) aiBlock.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+        if(d.type==='golden'){
+          answerText=d.answer;
+          const slot=el.querySelector('.aislot');
+          if(slot) slot.innerHTML=mdRender(answerText);
+          const head=el.querySelector('.aihead');
+          if(head&&!head.querySelector('.golden-badge')) head.insertAdjacentHTML('beforeend','<span class="golden-badge">⭐ 검증된 답변</span>');
+        }
+        if(d.type==='chunk'){
+          answerText+=d.text;
+          const slot=el.querySelector('.aislot');
+          if(slot) slot.innerHTML=mdRender(answerText);
+        }
+        if(d.type==='done'&&meta){
+          const slot=el.querySelector('.aislot');
+          const noteText=d.golden
+            ?`<div class="note">⭐ 검증된 답변 · ${((d.ms||0)/1000).toFixed(1)}s</div>`
+            :`<div class="note">Claude가 ${sourceLabel||'CRM'} 근거로 생성 · ${((d.ms||0)/1000).toFixed(1)}s</div>`;
+          if(slot&&answerText) slot.innerHTML=mdRender(answerText)+noteText;
+          _answerMeta.set(id,{question:q,answer:answerText,keywords:meta._kw||[],mode:type||''});
+          const aiBlock=el.querySelector('.aiblock');
+          if(aiBlock) aiBlock.insertAdjacentHTML('afterend',feedbackHtml(id));
+        }
+        if(d.type==='error'){
+          const slot=el.querySelector('.aislot');
+          if(slot) slot.innerHTML='<span class="muted">답변 생성 실패</span>';
+        }
+      }
+    }
+    chat.scrollTop=chat.scrollHeight;
+  }catch(e){
+    document.getElementById(id).innerHTML='<span class="muted">요청 실패: '+esc(e.message)+'</span>';
+  }
+}
+async function askVision(q,imgBase64,type,sourceLabel){
+  const chat=$('#chat');
+  let bHtml=`<img class="bubble-img" src="data:image/png;base64,${imgBase64}">`;
+  bHtml+=q?esc(q):'<span style="opacity:.7">이미지 분석 요청</span>';
+  chat.insertAdjacentHTML('beforeend',`<div class="msg"><div class="bubble-u">${bHtml}</div></div>`);
+  const id='v'+Date.now();
+  chat.insertAdjacentHTML('beforeend',`<div class="msg"><div class="ans" id="${id}"><span class="spin"></span> 이미지 분석 중… (10~30초)</div></div>`);
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    const resp=await fetch('/api/vision',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q||'이 이미지를 분석해 주세요.',image:imgBase64})});
+    const r=await resp.json();
+    document.getElementById(id).innerHTML=r.answer
+      ?`<div class="aiblock"><div class="aihead">🤖 AI 이미지 분석</div><div class="aislot">${mdRender(r.answer)}${r.ms?`<div class="note">분석 시간: ${(r.ms/1000).toFixed(1)}s</div>`:''}</div></div>`
+      :`<span class="muted">분석 실패: ${esc(r.error||'')}</span>`;
+  }catch(e){document.getElementById(id).innerHTML='<span class="muted">이미지 분석 오류</span>';}
+  chat.scrollTop=chat.scrollHeight;
+}
+async function askClaude(q){
+  const chat=$('#chat');
+  chat.insertAdjacentHTML('beforeend',`<div class="msg"><div class="bubble-u">${esc(q)}</div></div>`);
+  const id='c'+Date.now();
+  chat.insertAdjacentHTML('beforeend',`<div class="msg"><div class="ans" id="${id}"><div class="aiblock"><div class="aihead">🤖 Claude AI</div><div class="aislot"><span class="spin"></span> 답변 생성 중…</div></div></div></div>`);
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    const resp=await fetch('/api/claude?q='+encodeURIComponent(q));
+    const reader=resp.body.getReader();
+    const decoder=new TextDecoder();
+    let answerText='',buf='';
+    const el=document.getElementById(id);
+    while(true){
+      const{done,value}=await reader.read();
+      if(done)break;
+      buf+=decoder.decode(value,{stream:true});
+      const lines=buf.split('\n');
+      buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data: '))continue;
+        const d=JSON.parse(line.slice(6));
+        if(d.type==='chunk'){
+          answerText+=d.text;
+          el.querySelector('.aislot').innerHTML=mdRender(answerText);
+          chat.scrollTop=chat.scrollHeight;
+        }
+        if(d.type==='done'){
+          el.querySelector('.aislot').innerHTML=mdRender(answerText)+`<div class="note">Claude AI · ${((d.ms||0)/1000).toFixed(1)}s</div>`;
+          _answerMeta.set(id,{question:q,answer:answerText,keywords:[],mode:'claude'});
+          const aiBlock=el.querySelector('.aiblock');
+          if(aiBlock) aiBlock.insertAdjacentHTML('afterend',feedbackHtml(id));
+        }
+      }
+    }
+  }catch(e){
+    document.getElementById(id).querySelector('.aislot').innerHTML='<span class="muted">요청 실패: '+esc(e.message)+'</span>';
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+function answerHtml(r){
+  if(r.empty||!r.matched) return `<div class="sumline">관련된 과거 케이스를 찾지 못했습니다. 다른 표현으로 질문해 보세요.</div>`;
+  const src=r._sourceLabel||'케이스';
+  const isManual=!!(r.manualSources&&r.manualSources.length);
+  let h=`<div class="aiblock"><div class="aihead">🤖 AI 종합 답변 <span class="muted" style="font-weight:500;font-size:11px">Claude · ${esc(src)} 근거</span></div>
+    <div class="aislot"><span class="spin"></span> Claude가 근거를 읽고 종합 중… (5~20초)</div></div>`;
+  const kws=(r._kw&&r._kw.length?r._kw:(r.terms||[]));
+  if(isManual){
+    h+=`<div class="evhead">📘 근거 매뉴얼</div><div style="margin:4px 0 12px">${r.manualSources.map(n=>`<div style="font-size:13px;padding:4px 0;color:var(--ink)">📄 ${esc(n)}</div>`).join('')}</div>`;
+  } else {
+    h+=`<div class="evhead">📁 근거 — 관련 ${esc(src)} ${r.matched}건 · 해결 ${r.resolvedCount}건 (${r.resolutionRate}%)</div>`;
+  }
+  if(kws.length) h+=`<div class="chips" style="margin:0 0 10px">🔍 ${kws.slice(0,14).map(k=>`<span class="chip" style="cursor:default;padding:3px 10px;font-size:11.5px">${esc(k)}</span>`).join('')}</div>`;
+  if(!isManual){
+    h+=`<div class="metrics">
+        <div class="met"><div class="v">${r.matched}</div><div class="l">관련 케이스</div></div>
+        <div class="met"><div class="v">${r.resolvedCount}</div><div class="l">해결 완료</div></div>
+        <div class="met"><div class="v">${r.resolutionRate}%</div><div class="l">해결률</div></div>
+      </div>`;
+    if(r.solutions.length){
+      h+=`<h4>💡 기록된 해결책 (실제 케이스)</h4>`;
+      r.solutions.forEach((s,i)=>{
+        h+=`<div class="sol"><div class="st">${i+1}. ${esc(s.title)}</div>
+          <div class="sm"><span class="pill ok">${esc(s.status||'해결')}</span>
+          ${s.product?'제품 '+esc(s.product):''} ${s.date?'· '+esc(s.date):''}</div>
+          <div class="sx">${esc(s.solution)}</div>
+          <a href="${esc(s.url)}" target="_blank">CRM에서 열기 →</a></div>`;
+      });
+    }
+    if(r.similar.length){
+      h+=`<details><summary>유사 사례 ${r.similar.length}건 더보기</summary>`;
+      r.similar.forEach(s=>{ h+=`<div class="simitem"><a href="${esc(s.url)}" target="_blank">${esc(s.title)}</a>
+        <div class="sm">${esc(s.status||'')} ${s.date?'· '+esc(s.date):''} ${s.product?'· '+esc(s.product):''}</div></div>`; });
+      h+=`</details>`;
+    }
+  } else {
+    if(r.similar.length){
+      h+=`<details><summary>관련 매뉴얼 챕터 ${r.similar.length}건 더보기</summary>`;
+      r.similar.forEach(s=>{ h+=`<div class="simitem"><span style="font-weight:600">${esc(s.title)}</span>
+        <div class="sm">${s.product?'제품 '+esc(s.product):''}</div></div>`; });
+      h+=`</details>`;
+    }
+  }
+  return h;
+}
+
+/* ---------- AOI Presetting 챗봇 ---------- */
+function renderPreset(){
+  renderChatUI({
+    placeholder:'예) Body Location Mode를 Mirror Surface로 바꾸면 뭐가 달라지나요?',
+    greeting:'AOI <b>Body/Lead Presetting 가이드라인</b> 기반으로 답변합니다. 바디·리드 기본설정, 3D 파라미터, 노이즈 파라미터, VisionConfig.ini 등을 물어보세요.',
+    chips:[
+      {q:'Body Location Mode 종류와 각각 언제 쓰는지 알려줘',label:'Body Location Mode 종류'},
+      {q:'Lead Tip Search Mode 종류와 언제 쓰는지 알려줘',label:'Tip Search Mode'},
+      {q:'Solder Joint 3D Mode 설정 방법과 옵션 설명',label:'Solder Joint 3D 모드'},
+      {q:'3D Noise Parameter에서 AI Denoising은 뭐고 언제 켜야 해?',label:'AI Denoising 설명'},
+      {q:'Mirror Surface 모드 설정 방법',label:'Mirror Surface 설정'},
+      {q:'Base Slope Compensation Mode Iterative Plane Fit은 언제 쓰나',label:'기울기 보상 모드'},
+      {q:'Hotbar 검사할 때 Presetting 어떻게 해야 하나',label:'핫바 Presetting'},
+      {q:'Cycle Time이 느려졌을 때 확인할 설정 항목',label:'사이클 타임 개선'},
+    ],
+    type:'manual',
+    sourceLabel:'AOI Presetting 가이드',
+  });
+}
+
+/* ---------- 매뉴얼 가이드 뷰어 ---------- */
+const KO={
+'About This Documentation':'문서 안내','Copyright and Disclaimer':'저작권 및 면책조항','Revision History':'개정 이력','Purpose':'목적','Share with':'공유 대상','Term/Acronym':'용어/약어',
+'Body Presetting':'바디 기본설정','Body Finding':'바디 찾기','Body Location Mode':'바디 위치 모드','Body Inspection':'바디 검사',
+'Extra Body Location Mode':'추가 바디 위치 모드','Body Offset for Odd Shape':'이형 부품 바디 오프셋',
+'Pad Detection':'패드 검출','Occlusion Component Check':'차폐 부품 검사','Z-Axis Move for Additional 2D Image':'추가 2D 이미지용 Z축 이동',
+'3D Base Parameter':'3D 기준면 파라미터','Base ROI Expansion Mode':'기준면 ROI 확장 모드','Base Setting':'기준면 설정','Base Slope Compensation Mode':'기준면 기울기 보상 모드',
+'3D Parameter':'3D 파라미터','Base ROI Alignment Mode':'기준면 ROI 정렬 모드','Processing Speed':'처리 속도','Measure Range(%)':'측정 범위(%)',
+'Higher Measurement':'고높이 측정','3D Projection Switches':'3D 프로젝션 스위치','Filtering':'필터링','3D Reconstruction in FOV':'FOV 내 3D 재구성',
+'3D Noise Parameter':'3D 노이즈 파라미터','Edit Noise Threshold':'노이즈 임계값 편집','3D Noise of Lead':'리드 3D 노이즈',
+'Mode of Flux on Black Body':'검은 바디 플럭스 모드','Shadow Check':'그림자 체크','White Component':'흰색 부품',
+'2D/3D Noise of Body':'바디 2D/3D 노이즈','AI Denoising':'AI 노이즈 제거','Hole Noise Removal':'홀 노이즈 제거','Hotbar Noise Filter':'핫바 노이즈 필터',
+'Lead Presetting':'리드 기본설정','Lead Finding':'리드 찾기','Tip Search Mode':'팁 검색 모드','Solder Joint 3D Mode':'솔더 조인트 3D 모드',
+'VisionConfig.ini File':'VisionConfig.ini 파일','AOICUDAEngine.ini File':'AOICUDAEngine.ini 파일',
+'Settings according to Applications':'어플리케이션별 설정','Cautionary List':'주의사항','Focus Setting (Meister S/D/D+)':'포커스 설정 (Meister S/D/D+)',
+'Z-axis Check and Settings':'Z축 점검 및 설정','Laser Setting':'레이저 설정','SiP (System in Package)':'SiP (시스템 인 패키지)','Programming':'프로그래밍',
+'Embedded Die (Active Die)':'임베디드 다이 (액티브 다이)','Hot Bar':'핫바','C4 Bump (Round)':'C4 범프 (원형)',
+'Troubleshoot Problems related to Cycle Time':'사이클 타임 관련 문제 해결',
+'Increase in Cycle Time due to Lack of Available Resources':'리소스 부족으로 인한 사이클 타임 증가',
+'Check Result Options and Debug Options':'결과/디버그 옵션 확인','Turn off Unused Features':'미사용 기능 끄기',
+'Check Memory Usage':'메모리 사용량 확인','Check Memory Used in VTM Monitor':'VTM 모니터 메모리 확인',
+'VTM Reset':'VTM 리셋','Spare Memory for VTM Pool Size Necessary during Inspection':'검사 중 VTM 풀 여유 메모리',
+'[TT_Measure_Condition]':'[TT_Measure_Condition]','[InspStatus]':'[InspStatus]','[OCRV_Condition]':'[OCRV_Condition]',
+'[Cmn_Alg_Extra_Setting]':'[Cmn_Alg_Extra_Setting]','[TT_Inspection_Setting]':'[TT_Inspection_Setting]',
+'[MT_Measure_Condition]':'[MT_Measure_Condition]','[WFMI]':'[WFMI]','[SPREAD_NOISE]':'[SPREAD_NOISE]','[2D_BASE_MAP]':'[2D_BASE_MAP]',
+};
+function ko(t){ return KO[t]||t; }
+async function renderViewer(){
+  const manual=_viewerManual||'Evaluation Guideline_AOI Presetting';
+  const label=MANUAL_LABELS[manual]||manual;
+  $('#root').innerHTML=`<div class="viewer-wrap">
+    <div class="viewer-toc" id="vtoc"><div class="toc-head">목차</div><div style="padding:16px;color:var(--muted)"><span class="spin"></span> 불러오는 중…</div></div>
+    <div class="viewer-content" id="vcontent"><div class="vc-empty">← 좌측 목차에서 항목을 선택하세요</div></div>
+  </div>`;
+  try{
+    const r=await api('/api/manual-toc?manual='+encodeURIComponent(manual));
+    if(!r.chapters.length){ $('#vtoc').innerHTML='<div style="padding:16px;color:var(--red)">챕터를 찾을 수 없습니다</div>'; return; }
+    let html='<div class="toc-head">'+esc(label)+' <span style="font-weight:400;color:var(--muted)">'+r.chapters.length+'개 항목</span></div>';
+    html+='<div class="toc-search"><input id="manualSearch" placeholder="매뉴얼 내 검색…"></div>';
+    html+='<div id="tocList">';
+    html+=r.chapters.map(c=>{
+      if(c.id.startsWith('__section:')) return `<div class="toc-section">${esc(ko(c.title))}</div>`;
+      const d=Math.min(c.depth,2);
+      return `<div class="toc-item d${d}" data-id="${esc(c.id)}" title="${esc(c.title)}">${esc(ko(c.title))} <span class="toc-len">${c.len>999?((c.len/1000).toFixed(1)+'k'):c.len}</span></div>`;
+    }).join('');
+    html+='</div><div id="searchResults" style="display:none"></div>';
+    $('#vtoc').innerHTML=html;
+    $('#vtoc').addEventListener('click',e=>{
+      const ci=e.target.closest('.toc-item')||e.target.closest('.toc-search-result');
+      const id=ci?.dataset?.id;
+      if(id&&!id.startsWith('__section:')) loadChapter(id,$('#manualSearch')?.value?.trim());
+    });
+    let _searchTimer=null;
+    $('#manualSearch').addEventListener('input',e=>{
+      clearTimeout(_searchTimer);
+      const q=e.target.value.trim();
+      if(!q){ $('#tocList').style.display=''; $('#searchResults').style.display='none'; return; }
+      _searchTimer=setTimeout(async()=>{
+        $('#tocList').style.display='none';
+        const sr=$('#searchResults');
+        sr.style.display='';
+        sr.innerHTML='<div style="padding:12px 16px;color:var(--muted);font-size:12px"><span class="spin"></span> 검색 중…</div>';
+        try{
+          const r=await api('/api/manual-search?manual='+encodeURIComponent(manual)+'&q='+encodeURIComponent(q));
+          if(!r.results.length){ sr.innerHTML='<div style="padding:16px;color:var(--muted);font-size:13px">검색 결과 없음</div>'; return; }
+          sr.innerHTML='<div style="padding:6px 14px;font-size:11px;color:var(--dim)">'+r.results.length+'건</div>'+r.results.map(x=>{
+            const t=ko(x.title.split(' — ').pop());
+            const snip=highlightSnippet(x.snippet,q);
+            return `<div class="toc-search-result" data-id="${esc(x.id)}"><div class="sr-title">${esc(t)}</div><div class="sr-snippet">${snip}</div></div>`;
+          }).join('');
+        }catch{ sr.innerHTML='<div style="padding:16px;color:var(--red);font-size:13px">검색 실패</div>'; }
+      },300);
+    });
+    $('#manualSearch').addEventListener('keydown',e=>{ if(e.key==='Escape'){e.target.value='';e.target.dispatchEvent(new Event('input'));} });
+    const first=r.chapters.find(c=>c.depth>0)||r.chapters.find(c=>c.depth===0&&!c.id.startsWith('__section:'));
+    if(first) loadChapter(first.id);
+  }catch(e){ $('#vtoc').innerHTML='<div style="padding:16px;color:var(--red)">목차 로드 실패</div>'; }
+}
+function highlightSnippet(snippet,query){
+  if(!snippet)return '';
+  let h=esc(snippet);
+  query.split(/\s+/).filter(Boolean).forEach(t=>{
+    const re=new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    h=h.replace(re,'<mark>$1</mark>');
+  });
+  return h;
+}
+
+async function loadChapter(id,highlight){
+  document.querySelectorAll('.toc-item,.toc-search-result').forEach(n=>n.classList.toggle('active',n.dataset.id===id));
+  const vc=$('#vcontent');
+  vc.innerHTML='<div style="padding:40px;text-align:center"><span class="spin"></span> 본문 로드 중…</div>';
+  try{
+    const r=await api('/api/manual-chapter?id='+encodeURIComponent(id));
+    if(!r.body){ vc.innerHTML='<div class="vc-empty">내용 없음</div>'; return; }
+    const parts=r.title.split(' — ');
+    const chTitle=ko(parts.length>1?parts.slice(1).join(' — '):r.title);
+    let body=r.body.replace(/TOP\s*$/,'').trim();
+    body=renderMd(body);
+    if(highlight){
+      highlight.split(/\s+/).filter(Boolean).forEach(t=>{
+        const re=new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+        body=body.replace(re,'<mark style="background:var(--green-soft);padding:0 2px;border-radius:2px">$1</mark>');
+      });
+    }
+    vc.innerHTML=`<h2>${esc(chTitle)}</h2>
+      <div class="vc-sub">${r.body.length.toLocaleString()}자</div>
+      <div class="vc-body">${body}</div>`;
+    vc.scrollTop=0;
+    if(highlight){
+      const firstMark=vc.querySelector('mark');
+      if(firstMark) firstMark.scrollIntoView({block:'center',behavior:'smooth'});
+    }
+  }catch{ vc.innerHTML='<div class="vc-empty" style="color:var(--red)">로드 실패</div>'; }
+}
+
+/* ---------- CRM/매뉴얼 검색 ---------- */
+function renderSearch(){
+  $('#root').innerHTML=`<div class="view">
+    <div class="searchrow">
+      <input id="sq" placeholder="예) MCS homing error / false call FMI / calibration 절차">
+      <select id="stype"><option value="">전체</option><option value="case">케이스</option><option value="report">리포트</option><option value="manual">매뉴얼</option></select>
+      <button id="sgo">검색</button>
+    </div>
+    <div class="muted" style="font-size:12px;margin-bottom:12px">CRM 서비스 케이스·리포트 + 제품 매뉴얼에서 관련도순 검색</div>
+    <div id="sres"></div></div>`;
+  const typeLabel=t=>({case:'케이스',report:'리포트',manual:'매뉴얼'}[t]||t);
+  const run=async()=>{
+    const q=$('#sq').value.trim(); if(!q)return;
+    const type=$('#stype').value;
+    $('#sres').innerHTML='<span class="spin"></span> 검색 중…';
+    const r=await api('/api/search?q='+encodeURIComponent(q)+'&type='+type);
+    if(!r.results.length){ $('#sres').innerHTML='<div class="card muted">관련 기록 없음</div>'; return; }
+    $('#sres').innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:10px">${r.results.length}건 · ${r.ms}ms · 검색어: ${r.terms.map(esc).join(', ')}</div>`+
+      r.results.map(d=>`<div class="card"><span class="pill ${d.type}">${typeLabel(d.type)}</span>
+        <a href="${esc(d.url)}" target="_blank" style="font-weight:700;text-decoration:none;margin-left:6px">${esc(d.title)}</a>
+        <div class="sm" style="font-size:11.5px;color:var(--dim);margin:5px 0">${esc(d.status||'')} ${d.product?'· 제품 '+esc(d.product):''} ${d.date?'· '+esc(d.date):''}</div>
+        <div style="font-size:13px;color:#334">${esc(d.excerpt)}</div></div>`).join('');
+  };
+  $('#sgo').onclick=run; $('#sq').addEventListener('keydown',e=>{if(e.key==='Enter')run();}); $('#sq').focus();
+}
+
+
+/* ---------- 지식베이스 현황 ---------- */
+function donut(pct){
+  const R=52,C=2*Math.PI*R,off=C*(1-pct/100);
+  return `<svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="${R}" fill="none" stroke="#eef3f0" stroke-width="14"/>
+    <circle cx="70" cy="70" r="${R}" fill="none" stroke="#4CB944" stroke-width="14" stroke-linecap="round"
+      stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 70 70)"/>
+    <text x="70" y="66" text-anchor="middle" font-size="28" font-weight="800" fill="#3A9B35">${pct}%</text>
+    <text x="70" y="86" text-anchor="middle" font-size="11" fill="#5C6B7A">해결률</text></svg>`;
+}
+function lineChart(pts){
+  const w=640,h=180,pad=30;
+  const xs=pts.map(p=>+p.y), ys=pts.map(p=>p.c), maxY=Math.max(...ys,1);
+  const X=i=>pad+ (i*(w-2*pad)/(pts.length-1||1));
+  const Y=v=>h-pad-(v*(h-2*pad)/maxY);
+  const path=pts.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p.c).toFixed(1)}`).join(' ');
+  const area=`M${pad},${h-pad} `+pts.map((p,i)=>`L${X(i).toFixed(1)},${Y(p.c).toFixed(1)}`).join(' ')+` L${(w-pad)},${h-pad} Z`;
+  return `<svg width="100%" viewBox="0 0 ${w} ${h}">
+    <path d="${area}" fill="rgba(76,185,68,.12)"/>
+    <path d="${path}" fill="none" stroke="#4CB944" stroke-width="2.5"/>
+    ${pts.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.c)}" r="3" fill="#3A9B35"/>
+      <text x="${X(i)}" y="${h-10}" text-anchor="middle" font-size="10" fill="#5C6B7A">${p.y}</text>`).join('')}
+  </svg>`;
+}
+/* ---------- 설치가이드 ---------- */
+const INSTALL_GUIDES={
+  AOI:{
+    name:'AOI (3D Automated Optical Inspection)',
+    icon:'\u{1F50D}',
+    desc:'3D \uC790\uB3D9 \uAD11\uD559 \uAC80\uC0AC \uC7A5\uBE44 \uC124\uCE58 \uBC0F \uCD08\uAE30 \uC14B\uC5C5 \uAC00\uC774\uB4DC \u2014 CRM 299\uAC74 \uC2E4\uC81C \uC124\uCE58 \uC0AC\uB840 \uAE30\uBC18',
+    sections:[
+      {title:'1. \uC2DC\uC2A4\uD15C \uC694\uAD6C\uC0AC\uD56D',content:`**Vision PC \uD558\uB4DC\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+
+| \uD56D\uBAA9 | \uCD5C\uC18C \uC0AC\uC591 | \uAD8C\uC7A5 \uC0AC\uC591 | \uBE44\uACE0 |
+|------|----------|----------|------|
+| CPU | Intel Core i7-10700 | Intel Core i9-12900 \uC774\uC0C1 | \uAC80\uC0AC \uC2A4\uB808\uB4DC \uC218\uC5D0 \uC601\uD5A5 |
+| RAM | 32GB DDR4 | 64GB DDR4 \uC774\uC0C1 | Win10 \uC5C5\uADF8\uB808\uC774\uB4DC \uC2DC \uCD94\uAC00 RAM \uD544\uC694 \uC0AC\uB840 \uB2E4\uC218 |
+| GPU | NVIDIA RTX 3060 | NVIDIA RTX 4070 \uC774\uC0C1 | CUDA \uD638\uD658 \uD544\uC218 \uD655\uC778 |
+| SSD | 512GB NVMe | 1TB NVMe \uC774\uC0C1 | \uC774\uBBF8\uC9C0 \uB85C\uADF8 \uC800\uC7A5 \uACF5\uAC04 |
+| \uADF8\uB798\uBC84 | Euresys CoaxLink \uB610\uB294 Matrox Rapixo | \u2014 | \uC7A5\uBE44 \uBAA8\uB378\uBCC4 \uC0C1\uC774 |
+| NIC | 1GbE | 10GbE (\uB77C\uC778 \uC5F0\uB3D9 \uC2DC) | KSmart \uC5F0\uB3D9 \uD544\uC218 |
+
+**\uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+- Windows 10 Pro 64bit (Build 19044 \uC774\uC0C1) \u2014 Win10 \uC5C5\uADF8\uB808\uC774\uB4DC \uC2DC RAM \uCD94\uAC00 \uD544\uC218 (CRM \uB2E4\uC218 \uC0AC\uB840)
+- .NET Framework 4.8 \uC774\uC0C1
+- Visual C++ Redistributable 2019 \uC774\uC0C1
+- CUDA Toolkit 11.8 \uC774\uC0C1 \u2014 GPU/CUDA \uBC84\uC804 \uBD88\uC77C\uCE58 \uC2DC \uAC80\uC0AC \uC5D4\uC9C4 \uD06C\uB798\uC2DC \uBC1C\uC0DD
+- DirectX 11 \uC774\uC0C1
+- Euresys eGrabber \uB610\uB294 Matrox MIL \uB4DC\uB77C\uC774\uBC84 (\uADF8\uB798\uBC84 \uC885\uB958\uC5D0 \uB530\uB77C)`},
+      {title:'2. \uC124\uCE58 \uC804 \uC900\uBE44 (\uD604\uC7A5 \uC791\uC5C5)',content:`**\uC7A5\uBE44 \uD558\uB4DC\uC6E8\uC5B4 \uCCB4\uD06C\uB9AC\uC2A4\uD2B8** (Installation Report \uAE30\uBC18)
+1. **\uBA38\uC2E0 \uB808\uBCA8\uB9C1** \u2014 \uC218\uD3C9\uACC4\uB85C \uC7A5\uBE44 \uC218\uD3C9 \uD655\uC778 (\uD544\uC218, 3D \uCE21\uC815 \uC815\uD655\uB3C4\uC5D0 \uC9C1\uACB0)
+2. **\uD5E4\uB4DC \uB77D \uC81C\uAC70** \u2014 \uC6B4\uC1A1\uC6A9 \uD5E4\uB4DC \uACE0\uC815 \uC7A5\uCE58 \uD574\uC81C
+3. **\uC5D0\uC5B4/\uC804\uC6D0 \uC5F0\uACB0** \u2014 \uC555\uCD95 \uACF5\uAE30(0.4~0.6 MPa), \uC804\uC6D0(AC 220V, \uC811\uC9C0 \uD544\uC218)
+4. **UPS \uC124\uCE58** \u2014 Vision PC\uC6A9 UPS \uC124\uCE58 \uBC0F \uC5F0\uACB0
+5. **Vision PC \uC124\uCE58** \u2014 \uB799 \uB610\uB294 \uC7A5\uBE44 \uB0B4\uBD80\uC5D0 PC \uC7A5\uCC29
+6. **\uCF00\uC774\uBE14 \uC5F0\uACB0** \u2014 Camera Link \uCF00\uC774\uBE14, I/O \uCF00\uC774\uBE14, \uB124\uD2B8\uC6CC\uD06C \uCF00\uC774\uBE14
+
+**\uB124\uD2B8\uC6CC\uD06C \uC124\uC815**
+- \uC7A5\uBE44 PC\uC5D0 \uACE0\uC815 IP \uC124\uC815 (DHCP \uC0AC\uC6A9 \uAE08\uC9C0)
+- \uC11C\uBE0C\uB137 \uB9C8\uC2A4\uD06C: 255.255.255.0
+- \uAC8C\uC774\uD2B8\uC6E8\uC774/DNS: \uD604\uC7A5 \uB124\uD2B8\uC6CC\uD06C \uAD00\uB9AC\uC790\uC5D0\uAC8C \uD655\uC778
+- KSmart \uC11C\uBC84\uC640 \uD1B5\uC2E0 \uD655\uC778: \\\`ping <\uC11C\uBC84IP>\\\`
+
+**Camera Link \uCF00\uC774\uBE14 \uC8FC\uC758\uC0AC\uD56D** (CRM \uC2E4\uC81C \uC7A5\uC560 \uC0AC\uB840)
+- \uCF00\uC774\uBE14 \uBC29\uD5A5 \uD655\uC778 (IN/OUT \uB77C\uBCA8 \uD655\uC778 \u2014 \uC5ED\uBC29\uD5A5 \uC5F0\uACB0 \uC2DC \uC774\uBBF8\uC9C0 \uCDE8\uB4DD \uBD88\uAC00)
+- \uCF00\uC774\uBE14 \uAD6C\uBD80\uB9BC \uBC18\uACBD \uC900\uC218 \u2014 \uACFC\uB3C4\uD55C \uAD6C\uBD80\uB9BC \uC2DC \uC2E0\uD638 \uC190\uC2E4
+- \uCEE4\uB125\uD130 \uD540 \uC0C1\uD0DC \uD655\uC778 \u2014 \uD540 \uAEBE\uC784/\uC624\uC5FC \uC2DC Grabber \uC778\uC2DD \uC2E4\uD328`},
+      {title:'3. \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58',content:`**Step 1: \uCE74\uBA54\uB77C \uB4DC\uB77C\uC774\uBC84 \uC124\uCE58 (\uC7A5\uBE44 \uBAA8\uB378\uBCC4)**
+
+| \uADF8\uB798\uBC84 \uC885\uB958 | \uB4DC\uB77C\uC774\uBC84 | \uC8FC\uC758\uC0AC\uD56D |
+|-----------|---------|---------|
+| Euresys CoaxLink | eGrabber + Memento | \uBC84\uC804 \uC77C\uCE58 \uD544\uC218 (\uC608: coaxlink 12.7.2.114 + memento 12.7.1.102) |
+| Matrox Rapixo | MIL (Matrox Imaging Library) | MIL \uBC84\uC804\uACFC \uBCF4\uB4DC \uD38C\uC6E8\uC5B4 \uD638\uD658 \uD655\uC778 |
+
+> **CRM \uC2E4\uC0AC\uB840**: \uCE74\uBA54\uB77C 8M\u219212M \uC5C5\uADF8\uB808\uC774\uB4DC \uD6C4 Vision PC\uC5D0\uC11C Grabber \uC778\uC2DD \uBD88\uAC00 \u2192 coaxlink-win-x86_64-12.7.2.114 + memento-win-x86_64-12.7.1.102 \uC124\uCE58\uB85C \uD574\uACB0
+
+**Step 2: AOIGUI \uC124\uCE58**
+1. \\\`KY_AOI_vXXX_setup_x64_X.X.X.exe\\\` \uC2E4\uD589 (\uAD00\uB9AC\uC790 \uAD8C\uD55C)
+2. \uC124\uCE58 \uACBD\uB85C: \\\`C:\\\\KohYoung\\\\AOI\\\\\\\` (\uAE30\uBCF8\uAC12 \uAD8C\uC7A5)
+3. \uAD6C\uC131\uC694\uC18C \uC120\uD0DD:
+   - AOIGUI (\uD544\uC218)
+   - KYI Engine (\uD544\uC218)
+   - WinMCS (\uD544\uC218) \u2014 \uBC84\uC804 \uD655\uC778: 800.0.12.103 \uC774\uC0C1 \uAD8C\uC7A5
+   - KSmart Agent (KSmart \uC5F0\uB3D9 \uC2DC \uD544\uC218)
+4. \uC124\uCE58 \uC644\uB8CC \uD6C4 \uC7AC\uBD80\uD305
+
+**Step 3: WinMCS \uC124\uCE58/\uC5C5\uADF8\uB808\uC774\uB4DC**
+- MCS \uBC84\uC804\uC5D0 \uB530\uB77C TowerLamp, Wait PCB Mode \uB4F1 \uB3D9\uC791\uC774 \uB2EC\uB77C\uC9D0
+- \uAD8C\uC7A5 \uBC84\uC804: 800.0.12.103 \uC774\uC0C1 (PCB \uB3D9\uC2DC \uB85C\uB529/\uC5B8\uB85C\uB529 \uBB38\uC81C \uD574\uACB0)
+
+**Step 4: \uB77C\uC774\uC120\uC2A4 \uD65C\uC131\uD654**
+1. AOIGUI \uCD5C\uCD08 \uC2E4\uD589
+2. \\\`Help \u2192 License Manager\\\` \uBA54\uB274
+3. Machine ID \uD655\uC778 \uD6C4 \uBCF8\uC0AC\uC5D0 \uB77C\uC774\uC120\uC2A4 \uC694\uCCAD
+4. \uBC1C\uAE09\uBC1B\uC740 \uB77C\uC774\uC120\uC2A4 \uD30C\uC77C(\\\`.lic\\\`)\uC744 \\\`C:\\\\KohYoung\\\\AOI\\\\License\\\\\\\`\uC5D0 \uBCF5\uC0AC
+
+> **CRM \uC2E4\uC0AC\uB840**: Windows 10 \uB77C\uC774\uC120\uC2A4 \uD65C\uC131\uD654 \uC2E4\uD328 \u2192 MS \uC804\uD654 \uC778\uC99D\uC73C\uB85C \uD574\uACB0`},
+      {title:'4. \uCD08\uAE30 \uC124\uC815 (Configuration)',content:`**4-1. AOIGUISetup.ini \uAE30\uBCF8 \uC124\uC815**
+\uACBD\uB85C: \\\`C:\\\\KohYoung\\\\AOI\\\\AOIGUISetup.ini\\\`
+
+| \uD30C\uB77C\uBBF8\uD130 | \uC124\uBA85 | \uAE30\uBCF8\uAC12 | \uC8FC\uC758\uC0AC\uD56D |
+|---------|------|-------|---------|
+| GrabberType | \uADF8\uB798\uBC84 \uC885\uB958 (0=Matrox, 2=Euresys) | \uC7A5\uBE44\uBCC4 \uC0C1\uC774 | \uC798\uBABB \uC124\uC815 \uC2DC \uCE74\uBA54\uB77C \uC778\uC2DD \uBD88\uAC00 |
+| ConfigFile | \uCE74\uBA54\uB77C \uC124\uC815 XML/DCF \uD30C\uC77C\uBA85 | \uC7A5\uBE44\uBCC4 \uC0C1\uC774 | \uD30C\uC77C \uACBD\uB85C \uC624\uD0C0 \uC8FC\uC758 |
+| DualLane | \uB4C0\uC5BC\uB808\uC778 \uC0AC\uC6A9 \uC5EC\uBD80 (0/1) | 0 | \u2014 |
+| Use_GPU | GPU \uAC00\uC18D \uC0AC\uC6A9 \uC5EC\uBD80 (0/1) | 1 | GPU \uC5C6\uC744 \uC2DC \uBC18\uB4DC\uC2DC 0 |
+| THREAD_COUNT | \uAC80\uC0AC \uC2A4\uB808\uB4DC \uC218 | 12 | CPU \uCF54\uC5B4 \uC218\uC5D0 \uB9DE\uAC8C \uC870\uC815 |
+
+> **INI \uD30C\uC77C \uC778\uCF54\uB529 \uC8FC\uC758**: INI \uD30C\uC77C\uC740 \uBC18\uB4DC\uC2DC **ANSI \uC778\uCF54\uB529**\uC73C\uB85C \uC800\uC7A5. UTF-8 BOM\uC774 \uD3EC\uD568\uB418\uBA74 \\\`Fail loading ref/scl\\\` \uC624\uB958 \uBC1C\uC0DD (CRM \uBE48\uBC1C \uC0AC\uB840)
+
+**4-2. \uCE98\uB9AC\uBE0C\uB808\uC774\uC158** (Installation Report \uD45C\uC900 \uC808\uCC28)
+1. **Illumination Calibration** \u2014 \uC870\uBA85 \uADE0\uC77C\uB3C4 \uBCF4\uC815
+2. **Height Calibration** \u2014 \uB192\uC774 \uCE21\uC815 \uC815\uD655\uB3C4 \uBCF4\uC815
+   - \uCE98\uB9AC\uBE0C\uB808\uC774\uC158 \uBCF4\uB4DC(\uD45C\uC900 Dot Pattern) \uC7A5\uCC29
+   - Auto Calibration \uC2E4\uD589
+   - Repeatability < 10\u00B5m \uC774\uBA74 Pass
+3. **KYCAL \uC124\uCE58** (12M \uCE74\uBA54\uB77C \uC0AC\uC6A9 \uC2DC) \u2014 \uC608: KYCAL_Setup_52953M_1_1_0_4
+
+**4-3. \uCEE8\uBCA0\uC774\uC5B4 \uC124\uC815**
+1. \\\`Setup \u2192 Conveyor\\\` \uBA54\uB274
+2. \uBCF4\uB4DC \uD3ED, \uC774\uC1A1 \uC18D\uB3C4, \uC2A4\uD1A0\uD37C \uC704\uCE58 \uC124\uC815
+3. \uC13C\uC11C \uD14C\uC2A4\uD2B8: Board Available, Board Ready \uC2DC\uADF8\uB110 \uD655\uC778`},
+      {title:'5. \uAC80\uC99D \uBC0F \uD14C\uC2A4\uD2B8',content:`**\uAE30\uBCF8 \uB3D9\uC791 \uD655\uC778** (Installation Report \uCCB4\uD06C\uB9AC\uC2A4\uD2B8)
+1. WinMCS \uB7F0\uCE58 \u2014 \uC815\uC0C1 \uC2DC\uC791 \uD655\uC778
+2. AOIGUI \uC815\uC0C1 \uC2E4\uD589 \uD655\uC778
+3. \uCE74\uBA54\uB77C \uC774\uBBF8\uC9C0 \uCDE8\uB4DD \uD14C\uC2A4\uD2B8 (Live View)
+4. 3D \uB192\uC774 \uCE21\uC815 \uD14C\uC2A4\uD2B8 \u2014 \uD45C\uC900 \uAC8C\uC774\uC9C0 \uBE14\uB85D\uC73C\uB85C \uAC80\uC99D
+5. \uCEE8\uBCA0\uC774\uC5B4 In/Out \uB3D9\uC791 \uD655\uC778
+6. TowerLamp \uB3D9\uC791 \uD655\uC778 (Wait PCB Mode \uD3EC\uD568)
+
+**\uAC80\uC0AC \uD14C\uC2A4\uD2B8**
+1. \uD14C\uC2A4\uD2B8 \uBCF4\uB4DC \uB85C\uB529
+2. Job \uC0DD\uC131 \uB610\uB294 \uAE30\uC874 Job \uB85C\uB4DC
+3. \uC790\uB3D9 \uAC80\uC0AC \uC2E4\uD589 \u2014 Auto Loading Job File \uB3D9\uC791 \uD655\uC778
+4. \uAC80\uC0AC \uACB0\uACFC \uD655\uC778 \u2014 False Call \uBE44\uC728 \uCCB4\uD06C
+5. \uB9AC\uBDF0 \uC2A4\uD14C\uC774\uC158\uC5D0\uC11C \uACB0\uACFC \uD655\uC778 (\uC5F0\uB3D9 \uC2DC)
+
+> **CRM \uC2E4\uC0AC\uB840**: GUI \uBC84\uC804 2.7.5 \uC801\uC6A9 \uD6C4 Solder Fillet \uC624\uAC80\uCD9C \uAE09\uC99D \u2192 \uD328\uCE58 \uBC84\uC804(2.7.5.0-20-g75767e0c1d)\uC73C\uB85C \uC5C5\uADF8\uB808\uC774\uB4DC\uD558\uC5EC \uD574\uACB0
+
+**KSmart \uC5F0\uB3D9 \uD14C\uC2A4\uD2B8**
+1. KSmart Agent \uC11C\uBE44\uC2A4 \uC2E4\uD589 \uD655\uC778
+2. KSmart Dashboard\uC5D0\uC11C \uC7A5\uBE44 \uC628\uB77C\uC778 \uD655\uC778
+3. \uAC80\uC0AC \uACB0\uACFC \u2192 KSmart \uC804\uC1A1 \uD655\uC778
+4. SPC \uB370\uC774\uD130 \uC815\uC0C1 \uD45C\uC2DC \uD655\uC778`},
+      {title:'6. \uD2B8\uB7EC\uBE14\uC288\uD305 (CRM \uC2E4\uC81C \uC0AC\uB840)',content:`**\uC124\uCE58/\uC6B4\uC601 \uC911 \uBE48\uBC1C \uBB38\uC81C** (CRM 299\uAC74 \uBD84\uC11D)
+
+| \uC99D\uC0C1 | \uC6D0\uC778 | \uD574\uACB0 \uBC29\uBC95 | CRM \uBE48\uB3C4 |
+|------|------|----------|---------|
+| GUI \uC2E4\uD589 \uC548 \uB428 | .NET / VC++ \uBBF8\uC124\uCE58 | \uD544\uC218 \uB7F0\uD0C0\uC784 \uC7AC\uC124\uCE58 | \uC911 |
+| Grabber \uC778\uC2DD \uC548 \uB428 | CoaxLink \uB4DC\uB77C\uC774\uBC84 \uBC84\uC804 \uBD88\uC77C\uCE58 | \uC7A5\uBE44\uC5D0 \uB9DE\uB294 eGrabber \uBC84\uC804 \uC7AC\uC124\uCE58 (\uC608: 12.7.2.114) | \uB192\uC74C |
+| "Fail loading ref/scl" | INI \uD30C\uC77C UTF-8 BOM \uC778\uCF54\uB529 | \uBA54\uBAA8\uC7A5\uC5D0\uC11C ANSI\uB85C \uC7AC\uC800\uC7A5 | \uB192\uC74C |
+| \uB77C\uC774\uC120\uC2A4 \uC624\uB958 | Machine ID \uBD88\uC77C\uCE58 / BIOS \uC2DC\uAC04 \uC624\uB958 | License Manager ID \uC7AC\uD655\uC778, BIOS \uC2DC\uAC04 \uB3D9\uAE30\uD654 | \uC911 |
+| 3D \uB192\uC774 \uCE21\uC815 \uC774\uC0C1 | \uCE98\uB9AC\uBE0C\uB808\uC774\uC158 \uBBF8\uC218\uD589 | Height + Illumination Cal \uC7AC\uC2E4\uD589 | \uC911 |
+| GPU/CUDA \uC5D0\uB7EC | CUDA \uBC84\uC804\uACFC GPU \uB4DC\uB77C\uC774\uBC84 \uBD88\uC77C\uCE58 | CUDA Toolkit \uD638\uD658 \uBC84\uC804 \uC124\uCE58 | \uC911 |
+| Auto Loading Job \uC2E4\uD328 | WinMCS \uBC84\uC804 \uBB38\uC81C | MCS 800.0.12 \uC774\uC0C1\uC73C\uB85C \uC5C5\uADF8\uB808\uC774\uB4DC | \uC911 |
+| \uC624\uAC80\uCD9C(False Call) \uAE09\uC99D | GUI \uBC84\uC804 \uC5C5\uADF8\uB808\uC774\uB4DC \uBD80\uC791\uC6A9 | \uD328\uCE58 \uBC84\uC804 \uC801\uC6A9 \uB610\uB294 \uC774\uC804 \uBC84\uC804 \uB864\uBC31 | \uB192\uC74C |
+| IVPC \uBCF4\uB4DC \uACE0\uC7A5 | \uD558\uB4DC\uC6E8\uC5B4 \uACB0\uD568 | IVPC \uBCF4\uB4DC \uAD50\uCCB4 | \uB0AE\uC74C |
+| TowerLamp \uB3D9\uC791 \uC548 \uB428 | PCB \uB3D9\uC2DC \uB85C\uB529/\uC5B8\uB85C\uB529 \uC124\uC815 | MCS \uBC84\uC804 800.0.12.103 \uC774\uC0C1 \uC5C5\uADF8\uB808\uC774\uB4DC | \uB0AE\uC74C |
+| KSmart LM \uC11C\uBC84 \uC5F0\uACB0 \uB04A\uAE40 | \uB300\uB7C9 \uBC30\uD3EC \uC2DC \uC11C\uBC84 \uBD80\uD558 | DB \uCD5C\uC801\uD654, \uB3D9\uC2DC \uBC30\uD3EC \uC218 \uC81C\uD55C | \uC911 |`}
+    ]
+  },
+  SPI:{
+    name:'SPI (Solder Paste Inspection)',
+    icon:'\u{1F52C}',
+    desc:'3D \uC194\uB354 \uD398\uC774\uC2A4\uD2B8 \uAC80\uC0AC \uC7A5\uBE44 \uC124\uCE58 \uBC0F \uCD08\uAE30 \uC14B\uC5C5 \uAC00\uC774\uB4DC \u2014 CRM 263\uAC74 \uC2E4\uC81C \uC124\uCE58 \uC0AC\uB840 \uAE30\uBC18',
+    sections:[
+      {title:'1. \uC2DC\uC2A4\uD15C \uC694\uAD6C\uC0AC\uD56D',content:`**Vision PC \uD558\uB4DC\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+
+| \uD56D\uBAA9 | \uCD5C\uC18C \uC0AC\uC591 | \uAD8C\uC7A5 \uC0AC\uC591 | \uBE44\uACE0 |
+|------|----------|----------|------|
+| CPU | Intel Core i7-10700 | Intel Core i9-12900 \uC774\uC0C1 | \u2014 |
+| RAM | 16GB DDR4 | 32GB DDR4 \uC774\uC0C1 | Win10 \uC5C5\uADF8\uB808\uC774\uB4DC \uC2DC \uCD94\uAC00 RAM \uD544\uC694 |
+| GPU | NVIDIA GTX 1660 | NVIDIA RTX 3060 \uC774\uC0C1 | CUDA \uD638\uD658 \uD655\uC778 |
+| SSD | 256GB NVMe | 512GB NVMe \uC774\uC0C1 | \u2014 |
+| \uBAA8\uB2C8\uD130 | 1920\u00D71080 | 2560\u00D71440 \uC774\uC0C1 | \u2014 |
+
+**\uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+- Windows 10 Pro 64bit \uB610\uB294 Windows 11 Pro
+- .NET Framework 4.8 \uC774\uC0C1
+- Visual C++ Redistributable 2019 \uC774\uC0C1
+- CUDA Toolkit 11.x (GPU \uAC00\uC18D \uC0AC\uC6A9 \uC2DC)
+- SPI GUI (\uC608: 5.0.0.0_H01_T03)`},
+      {title:'2. \uC124\uCE58 \uC804 \uC900\uBE44 (\uD604\uC7A5 \uC791\uC5C5)',content:`**\uC7A5\uBE44 \uD558\uB4DC\uC6E8\uC5B4 \uCCB4\uD06C\uB9AC\uC2A4\uD2B8** (Installation Report \uAE30\uBC18)
+1. **\uC124\uCE58 \uC7A5\uC18C \uD658\uACBD \uD655\uC778**: \uC628\uB3C4 20~25\u00B0C, \uC2B5\uB3C4 40~60%
+2. **\uBC14\uB2E5 \uC9C4\uB3D9 \uD655\uC778** \u2014 \uC9C4\uB3D9 \uC5C6\uB294 \uC548\uC815\uB41C \uBC14\uB2E5 (3D \uCE21\uC815 \uC815\uD655\uB3C4\uC5D0 \uC9C1\uACB0)
+3. **\uBE0C\uB808\uC774\uCEE4 \uAD50\uCCB4** \u2014 \uD604\uC7A5 \uC804\uB825 \uC0C1\uD669\uC5D0 \uB9DE\uB294 \uBE0C\uB808\uC774\uCEE4 \uC124\uCE58 (CRM \uC2E4\uC0AC\uB840)
+4. **\uC804\uC6D0 \uC5F0\uACB0**: AC 220V, \uC811\uC9C0 \uD544\uC218
+5. **\uC555\uCD95 \uACF5\uAE30**: 0.4~0.6 MPa \uD655\uC778
+6. **UPS \uC124\uCE58** \u2014 Vision PC\uC6A9 UPS \uC124\uCE58 \uBC0F \uC5F0\uACB0
+7. **Vision PC \uC124\uCE58** \u2014 \uC7A5\uBE44 \uB0B4\uBD80 \uB610\uB294 \uC678\uBD80 \uB799\uC5D0 PC \uC7A5\uCC29
+8. **\uB192\uC774 \uC694\uAD6C\uC0AC\uD56D \uD655\uC778** \u2014 \uC124\uBE44 \uB192\uC774 \uAE30\uC900 \uCDA9\uC871 \uD655\uC778 (CRM: height requirement setup)
+
+**\uB124\uD2B8\uC6CC\uD06C \uC124\uC815**
+- \uACE0\uC815 IP \uC124\uC815 (\uD604\uC7A5 IT \uB2F4\uB2F9\uC790 \uD655\uC778)
+- KSmart \uC11C\uBC84\uC640 \uD1B5\uC2E0 \uD655\uC778
+- \uD3EC\uD2B8 \uAC1C\uBC29: TCP 8080, 8443`},
+      {title:'3. \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58',content:`**Step 1: SPI \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58**
+1. \\\`KY_SPI_Setup_vX.X.X.exe\\\` \uC2E4\uD589 (\uAD00\uB9AC\uC790 \uAD8C\uD55C)
+2. \uC124\uCE58 \uACBD\uB85C: \\\`C:\\\\KohYoung\\\\SPI\\\\\\\` (\uAE30\uBCF8\uAC12 \uAD8C\uC7A5)
+3. \uAD6C\uC131\uC694\uC18C:
+   - SPI Main Application (\uD544\uC218)
+   - 3D Engine (\uD544\uC218)
+   - WinMCS (\uD544\uC218)
+   - KSmart Agent (\uC120\uD0DD)
+4. \uC124\uCE58 \uC644\uB8CC \uD6C4 \uC7AC\uBD80\uD305
+
+**Step 2: \uCE74\uBA54\uB77C \uB4DC\uB77C\uC774\uBC84 \uC124\uCE58**
+- \uBAA8\uB378\uBCC4 \uCE74\uBA54\uB77C \uB4DC\uB77C\uC774\uBC84 \uC124\uCE58
+- \uD504\uB85C\uC81D\uD130 \uBAA8\uB4C8 \uB4DC\uB77C\uC774\uBC84 \uD655\uC778
+
+> **CRM \uC2E4\uC0AC\uB840**: \uC2E0\uADDC SPI \uC124\uCE58 \uC2DC \uCE74\uBA54\uB77C \uBD88\uB7C9 \uD655\uC778 \u2192 \uCE74\uBA54\uB77C \uAD50\uCCB4 \uD6C4 \uC815\uC0C1 \uB3D9\uC791 (\uC124\uCE58 \uC804 \uCE74\uBA54\uB77C \uB3D9\uC791 \uD14C\uC2A4\uD2B8 \uD544\uC218)
+
+**Step 3: \uB77C\uC774\uC120\uC2A4 \uD65C\uC131\uD654**
+1. SPI \uD504\uB85C\uADF8\uB7A8 \uCD5C\uCD08 \uC2E4\uD589
+2. Machine ID \uD655\uC778 \u2192 \uBCF8\uC0AC\uC5D0 \uB77C\uC774\uC120\uC2A4 \uC694\uCCAD
+3. \uB77C\uC774\uC120\uC2A4 \uD30C\uC77C\uC744 \\\`C:\\\\KohYoung\\\\SPI\\\\License\\\\\\\`\uC5D0 \uBCF5\uC0AC
+
+> **CRM \uC2E4\uC0AC\uB840**: SPI Renewal Upgrade \uC2DC RAMDISK \uB77C\uC774\uC120\uC2A4 \uC5C5\uB370\uC774\uD2B8 \uC2E4\uD328 \u2192 BIOS \uC2DC\uAC04 \uC62C\uBC14\uB974\uAC8C \uC124\uC815\uD558\uC5EC \uD574\uACB0
+
+**Step 4: kyconfig / AOIGUI \uC124\uC815**
+- \\\`kyconfig\\\` \uC720\uD2F8\uB9AC\uD2F0\uB85C \uC7A5\uBE44 \uAE30\uBCF8 \uD30C\uB77C\uBBF8\uD130 \uC124\uC815
+- SPI GUI \uC138\uBD80 \uC124\uC815 \uD655\uC778`},
+      {title:'4. \uCD08\uAE30 \uC124\uC815',content:`**4-1. \uAE30\uBCF8 \uD30C\uB77C\uBBF8\uD130 \uC124\uC815**
+- \uAC80\uC0AC \uBAA8\uB4DC \uC124\uC815: 2D/3D \uC120\uD0DD
+- \uCE21\uC815 \uD574\uC0C1\uB3C4 \uC124\uC815
+- \uD398\uC774\uC2A4\uD2B8 \uD0C0\uC785 \uC124\uC815 (Type 4/5/6 \uB4F1)
+
+**4-2. \uCE98\uB9AC\uBE0C\uB808\uC774\uC158** (Installation Report \uD45C\uC900 \uC808\uCC28)
+1. \uCE98\uB9AC\uBE0C\uB808\uC774\uC158 \uC9C0\uADF8 \uC7A5\uCC29
+2. **Height Calibration** \uC2E4\uD589
+3. **Bright Light Calibration** \uC2E4\uD589
+   - CH0 \uB108\uBB34 \uC5B4\uB450\uC6B4 \uACBD\uC6B0: TOP light \uAC12 \uB0AE\uCDA4 (CRM \uC2E4\uC0AC\uB840)
+   - \uAC01 \uCC44\uB110\uBCC4 \uBC1D\uAE30 \uADE0\uC77C\uB3C4 \uD655\uC778
+4. XY Calibration \uC2E4\uD589
+5. Repeatability \uD655\uC778: < 5\u00B5m
+
+**4-3. Gerber/CAD \uB370\uC774\uD130 \uC784\uD3EC\uD2B8**
+1. \\\`Job \u2192 New Job\\\` \uC0DD\uC131
+2. Gerber \uD30C\uC77C \uB610\uB294 CAD \uB370\uC774\uD130 \uC784\uD3EC\uD2B8
+3. \uD328\uB4DC \uC778\uC2DD \uD655\uC778 \uBC0F \uC218\uB3D9 \uBCF4\uC815
+4. \uAC80\uC0AC \uAE30\uC900(Spec) \uC124\uC815: Volume, Area, Height \uC0C1/\uD558\uD55C
+
+**4-4. Auto Repair \uAE30\uB2A5 \uC124\uC815 (\uD574\uB2F9 \uC2DC)**
+- Auto Repair \uC801\uC6A9 \uD6C4 APC \uB370\uC774\uD130\uC5D0 Bad\uB85C \uCD9C\uB825\uB418\uB294 \uC774\uC288 \uC8FC\uC758
+- \uC801\uC6A9 \uD6C4 \uBC18\uB4DC\uC2DC \uB370\uC774\uD130 \uC815\uD569\uC131 \uD655\uC778 (CRM \uC2E4\uC0AC\uB840)`},
+      {title:'5. \uAC80\uC99D \uBC0F \uD14C\uC2A4\uD2B8',content:`**\uAE30\uBCF8 \uB3D9\uC791 \uD655\uC778**
+1. SPI GUI \uC815\uC0C1 \uC2E4\uD589 \uD655\uC778
+2. \uCE74\uBA54\uB77C Live View \uD655\uC778
+3. 3D \uB192\uC774 \uCE21\uC815 \uD14C\uC2A4\uD2B8 \u2014 \uCE98\uB9AC\uBE0C\uB808\uC774\uC158 \uC815\uD655\uB3C4 \uD655\uC778
+4. \uCEE8\uBCA0\uC774\uC5B4 \uB3D9\uC791 \uD655\uC778
+5. TowerLamp \uB3D9\uC791 \uD655\uC778
+
+**\uAC80\uC0AC \uD14C\uC2A4\uD2B8**
+1. \uC194\uB354 \uD398\uC774\uC2A4\uD2B8\uAC00 \uC778\uC1C4\uB41C \uD14C\uC2A4\uD2B8 \uBCF4\uB4DC \uC900\uBE44
+2. \uAC80\uC0AC \uC2E4\uD589 \u2014 Volume, Area, Height \uCE21\uC815\uAC12 \uD655\uC778
+3. \uACB0\uACFC \uB9AC\uBDF0 \u2014 \uC624\uAC80\uCD9C \uC5EC\uBD80 \uD655\uC778
+4. Histogram Data \uD655\uC778
+
+**KSmart/SPC \uC5F0\uB3D9 \uD14C\uC2A4\uD2B8**
+1. KSmart Agent \uC11C\uBE44\uC2A4 \uD655\uC778
+2. SPC Plus \uB370\uC774\uD130 \uC815\uD569\uC131 \uD655\uC778 \u2014 GUI Histogram\uACFC SPCPlus \uAC12 \uC77C\uCE58 \uC5EC\uBD80 (CRM: \uBD88\uC77C\uCE58 \uC0AC\uB840 \uC874\uC7AC)
+3. APC \uB370\uC774\uD130 \uC804\uC1A1 \uD655\uC778`},
+      {title:'6. \uD2B8\uB7EC\uBE14\uC288\uD305 (CRM \uC2E4\uC81C \uC0AC\uB840)',content:`**\uC124\uCE58/\uC6B4\uC601 \uC911 \uBE48\uBC1C \uBB38\uC81C** (CRM 263\uAC74 \uBD84\uC11D)
+
+| \uC99D\uC0C1 | \uC6D0\uC778 | \uD574\uACB0 \uBC29\uBC95 | CRM \uBE48\uB3C4 |
+|------|------|----------|---------|
+| \uD504\uB85C\uADF8\uB7A8 \uC2E4\uD589 \uC548 \uB428 | \uB7F0\uD0C0\uC784 \uBBF8\uC124\uCE58 | .NET, VC++ \uC7AC\uC124\uCE58 | \uC911 |
+| 3D \uB192\uC774 \uBD80\uC815\uD655 | \uCE98\uB9AC\uBE0C\uB808\uC774\uC158 \uBBF8\uC218\uD589 | Height Cal + Bright Light Cal \uC7AC\uC2E4\uD589 | \uB192\uC74C |
+| CH0 \uC774\uBBF8\uC9C0 \uB108\uBB34 \uC5B4\uB450\uC6C0 | TOP light \uC124\uC815 \uACFC\uB2E4 | TOP light \uAC12 \uD558\uD5A5 \uC870\uC815 | \uC911 |
+| RAMDISK \uB77C\uC774\uC120\uC2A4 \uC2E4\uD328 | BIOS \uC2DC\uAC04 \uC624\uB958 | BIOS\uC5D0\uC11C \uC62C\uBC14\uB978 \uC2DC\uAC04 \uC124\uC815 | \uC911 |
+| \uCE74\uBA54\uB77C \uBD88\uB7C9 | \uC2E0\uADDC \uC124\uCE58 \uC2DC \uD558\uB4DC\uC6E8\uC5B4 \uACB0\uD568 | \uCE74\uBA54\uB77C \uAD50\uCCB4 (\uC124\uCE58 \uC804 \uD14C\uC2A4\uD2B8 \uAD8C\uC7A5) | \uB0AE\uC74C |
+| SPC \uB370\uC774\uD130 \uBD88\uC77C\uCE58 | GUI\uC640 SPCPlus \uC9D1\uACC4 \uBC29\uC2DD \uCC28\uC774 | \uBC84\uC804 \uC5C5\uADF8\uB808\uC774\uB4DC \uB610\uB294 \uD68C\uD53C \uBC29\uBC95 \uC801\uC6A9 | \uC911 |
+| Auto Repair \uD6C4 Bad \uCD9C\uB825 | APC \uB370\uC774\uD130 \uC5F0\uB3D9 \uBC84\uADF8 | \uBC29\uBB38 \uC810\uAC80 \uBC0F \uD14C\uC2A4\uD2B8 \uC870\uCE58 | \uB0AE\uC74C |
+| \uBCF4\uB4DC \uC815\uB82C \uC2E4\uD328 | \uD53C\uB4C0\uC15C \uC778\uC2DD \uBD88\uB7C9 | \uD53C\uB4C0\uC15C \uC704\uCE58/\uBC1D\uAE30 \uC7AC\uC124\uC815 | \uC911 |
+| MES \uC804\uC1A1 \uC2E4\uD328 | \uB124\uD2B8\uC6CC\uD06C \uC124\uC815 \uC624\uB958 | IP/\uD3EC\uD2B8 \uD655\uC778, \uBC29\uD654\uBCBD \uCCB4\uD06C | \uC911 |
+| Z Move Per PCB \uCD94\uAC00 | \uAE30\uB2A5 \uCD94\uAC00 \uC694\uCCAD | SPI GUI 5.0.0.0_H01_T03 \uC5C5\uADF8\uB808\uC774\uB4DC | \uB0AE\uC74C |`}
+    ]
+  },
+  ReviewStation:{
+    name:'Review Station (\uC624\uD504\uB77C\uC778 \uB9AC\uBDF0 \uC2A4\uD14C\uC774\uC158)',
+    icon:'\u{1F5A5}\uFE0F',
+    desc:'\uAC80\uC0AC \uACB0\uACFC \uC624\uD504\uB77C\uC778 \uB9AC\uBDF0 \uBC0F \uD310\uC815 \uC2A4\uD14C\uC774\uC158 \uC124\uCE58 \uAC00\uC774\uB4DC \u2014 CRM 80\uAC74 \uC2E4\uC81C \uC0AC\uB840 \uAE30\uBC18',
+    sections:[
+      {title:'1. \uC2DC\uC2A4\uD15C \uC694\uAD6C\uC0AC\uD56D',content:`**\uD558\uB4DC\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+
+| \uD56D\uBAA9 | \uCD5C\uC18C \uC0AC\uC591 | \uAD8C\uC7A5 \uC0AC\uC591 | \uBE44\uACE0 |
+|------|----------|----------|------|
+| CPU | Intel Core i5-10400 | Intel Core i7-12700 \uC774\uC0C1 | \u2014 |
+| RAM | 16GB DDR4 | 32GB DDR4 | Win10 \uC5C5\uADF8\uB808\uC774\uB4DC \uC2DC \uCD94\uAC00 RAM |
+| GPU | \uB0B4\uC7A5 \uADF8\uB798\uD53D \uAC00\uB2A5 | NVIDIA GTX 1650 \uC774\uC0C1 | 3D \uC774\uBBF8\uC9C0 \uB80C\uB354\uB9C1 \uC2DC \uAD8C\uC7A5 |
+| SSD | 256GB | 512GB \uC774\uC0C1 | \uAC80\uC0AC \uC774\uBBF8\uC9C0 \uCE90\uC2DC\uC6A9 |
+| \uBAA8\uB2C8\uD130 | 1920\u00D71080 | 2560\u00D71440 (\uB4C0\uC5BC \uBAA8\uB2C8\uD130 \uAD8C\uC7A5) | 2D+3D \uB3D9\uC2DC \uBCF4\uAE30 |
+| NIC | 1GbE | 1GbE | \uAC80\uC0AC \uC7A5\uBE44\uC640 \uAC19\uC740 \uB124\uD2B8\uC6CC\uD06C |
+
+**\uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+- Windows 10 Pro 64bit \uB610\uB294 Windows 11 Pro
+- .NET Framework 4.8
+- Visual C++ Redistributable 2019
+- \uB124\uD2B8\uC6CC\uD06C \uACF5\uC720\uD3F4\uB354 \uC811\uADFC \uAD8C\uD55C (\uAC80\uC0AC \uB370\uC774\uD130 \uC77D\uAE30\uC6A9)`},
+      {title:'2. \uC124\uCE58 \uC804 \uC900\uBE44',content:`**\uCCB4\uD06C\uB9AC\uC2A4\uD2B8**
+- \uAC80\uC0AC \uC7A5\uBE44(AOI/SPI)\uC640 **\uAC19\uC740 \uB124\uD2B8\uC6CC\uD06C \uC138\uADF8\uBA3C\uD2B8**\uC5D0 \uC704\uCE58 (\uD544\uC218)
+- \uAC80\uC0AC \uB370\uC774\uD130 \uC800\uC7A5 \uACBD\uB85C \uC811\uADFC \uAC00\uB2A5 \uD655\uC778 (\uB124\uD2B8\uC6CC\uD06C \uACF5\uC720\uD3F4\uB354)
+- \uC7A5\uBE44 PC\uC5D0\uC11C \uACF5\uC720\uD3F4\uB354\uAC00 \uC5F4\uB824 \uC788\uB294\uC9C0 \uD655\uC778
+- DB \uC11C\uBC84 \uC811\uC18D \uD655\uC778 (Review Station\uC774 DB \uAE30\uBC18\uC778 \uACBD\uC6B0)
+
+**\uB124\uD2B8\uC6CC\uD06C \uC124\uC815** (CRM \uC124\uCE58 \uC0AC\uB840 \uAE30\uBC18)
+- Review Station PC\uC5D0 \uACE0\uC815 IP \uC124\uC815
+- \uAC80\uC0AC \uC7A5\uBE44 PC\uC640 \uB124\uD2B8\uC6CC\uD06C \uC5F0\uACB0 \uD655\uC778: \\\`ping <\uC7A5\uBE44IP>\\\`
+- \uACF5\uC720\uD3F4\uB354 \uC811\uADFC \uAD8C\uD55C \uC124\uC815: \uAC80\uC0AC \uB370\uC774\uD130 \uD3F4\uB354 \uC77D\uAE30/\uC4F0\uAE30
+- \uBC29\uD654\uBCBD \uC608\uC678 \uCD94\uAC00: Review Station \uC2E4\uD589 \uD30C\uC77C
+
+**KSmart \uC5F0\uB3D9 \uC2DC \uCD94\uAC00 \uD655\uC778**
+- KSmart \uC11C\uBC84 IP/\uD3EC\uD2B8 \uD655\uC778
+- Review Station \u2192 KSmart \uB124\uD2B8\uC6CC\uD06C \uD1B5\uC2E0 \uD655\uC778`},
+      {title:'3. \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58',content:`**Step 1: Review Station \uC124\uCE58**
+1. \\\`KY_ReviewStation_Setup_vX.X.X.exe\\\` \uC2E4\uD589 (\uAD00\uB9AC\uC790 \uAD8C\uD55C)
+2. \uC124\uCE58 \uACBD\uB85C: \\\`C:\\\\KohYoung\\\\ReviewStation\\\\\\\`
+3. \uAD6C\uC131\uC694\uC18C:
+   - Review Application (\uD544\uC218)
+   - Image Viewer (\uD544\uC218)
+   - Report Generator (\uC120\uD0DD)
+4. \uC124\uCE58 \uC644\uB8CC \uD6C4 \uC7AC\uBD80\uD305
+
+**Step 2: \uC7A5\uBE44 \uC5F0\uACB0 \uC124\uC815** (Installation Report \uD45C\uC900 \uC808\uCC28)
+1. Review Station \uC2E4\uD589
+2. \\\`Settings \u2192 Machine Connection\\\`
+3. \uAC80\uC0AC \uC7A5\uBE44 IP \uC8FC\uC18C \uC785\uB825
+4. \uB370\uC774\uD130 \uACBD\uB85C \uC124\uC815: \uAC80\uC0AC \uACB0\uACFC \uC800\uC7A5 \uD3F4\uB354 \uACBD\uB85C \uC9C0\uC815
+5. \uC5F0\uACB0 \uD14C\uC2A4\uD2B8 \u2014 "Connected" \uD655\uC778
+
+> **CRM \uC2E4\uC0AC\uB840**: \uC7A5\uBE44 \uC5F0\uACB0 \uC2DC \uB124\uD2B8\uC6CC\uD06C \uC138\uADF8\uBA3C\uD2B8 \uBD88\uC77C\uCE58\uB85C \uC5F0\uACB0 \uC2E4\uD328 \u2192 \uB3D9\uC77C \uC11C\uBE0C\uB137 \uC124\uC815\uC73C\uB85C \uD574\uACB0
+
+**Step 3: \uC0AC\uC6A9\uC790 \uACC4\uC815 \uC124\uC815**
+1. \uAD00\uB9AC\uC790 \uACC4\uC815 \uC0DD\uC131 (\uCD08\uAE30 ID: admin)
+2. \uC791\uC5C5\uC790\uBCC4 \uACC4\uC815 \uC0DD\uC131
+3. \uAD8C\uD55C \uC124\uC815: \uD310\uC815 \uBCC0\uACBD \uAD8C\uD55C, \uB370\uC774\uD130 \uC0AD\uC81C \uAD8C\uD55C \uB4F1`},
+      {title:'4. \uCD08\uAE30 \uC124\uC815',content:`**4-1. \uD45C\uC2DC \uC124\uC815**
+- \uC774\uBBF8\uC9C0 \uD45C\uC2DC \uBAA8\uB4DC: 2D / 3D / Overlay \uC120\uD0DD
+- \uC0C9\uC0C1 \uB9F5 \uC124\uC815: \uB192\uC774\uBCC4 \uCEEC\uB7EC \uB9E4\uD551
+- \uD310\uC815 \uAE30\uC900 \uD45C\uC2DC: Pass/Fail \uACBD\uACC4\uC120 \uD45C\uC2DC \uC5EC\uBD80
+
+**4-2. \uD310\uC815 \uC6CC\uD06C\uD50C\uB85C\uC6B0 \uC124\uC815**
+- \uB9AC\uBDF0 \uC21C\uC11C: NG \u2192 Repair \u2192 Pass \uB610\uB294 \uC804\uCCB4
+- Auto-skip \uC870\uAC74: \uD2B9\uC815 \uBD88\uB7C9 \uC720\uD615 \uC790\uB3D9 \uC2A4\uD0B5
+- \uC7AC\uD310\uC815 \uADDC\uCE59: \uB9AC\uBDF0 \uD6C4 \uD310\uC815 \uBCC0\uACBD \uD5C8\uC6A9 \uBC94\uC704
+
+**4-3. Outlet Pass \uAE30\uB2A5 \uC124\uC815** (\uD574\uB2F9 \uC2DC)
+- MES \uC11C\uBC84\uC640 \uC5F0\uB3D9 \uC2DC Outlet Pass \uAE30\uB2A5\uC73C\uB85C Pass PCB\uC5D0 "OK" \uC804\uC1A1
+- GUI 3.6.2412_H10 \uC774\uC0C1 + MCS 770.01.86 \uC774\uC0C1 \uD544\uC694 (CRM \uC2E4\uC0AC\uB840)
+
+**4-4. \uB9AC\uD3EC\uD2B8 \uC124\uC815**
+- \uB9AC\uD3EC\uD2B8 \uD15C\uD50C\uB9BF \uC120\uD0DD
+- \uC790\uB3D9 \uB9AC\uD3EC\uD2B8 \uC0DD\uC131 \uAC04\uACA9 (\uC2DC\uD504\uD2B8\uBCC4/\uC77C\uBCC4)
+- \uB9AC\uD3EC\uD2B8 \uCD9C\uB825 \uACBD\uB85C \uC124\uC815`},
+      {title:'5. \uAC80\uC99D \uBC0F \uD14C\uC2A4\uD2B8',content:`**\uAE30\uBCF8 \uB3D9\uC791 \uD655\uC778**
+1. Review Station \uD504\uB85C\uADF8\uB7A8 \uC815\uC0C1 \uC2E4\uD589
+2. \uC7A5\uBE44 \uC5F0\uACB0 \uC0C1\uD0DC \uD655\uC778 (\uC628\uB77C\uC778 \uD45C\uC2DC)
+3. \uACFC\uAC70 \uAC80\uC0AC \uB370\uC774\uD130 \uB85C\uB4DC \uD14C\uC2A4\uD2B8
+4. \uC774\uBBF8\uC9C0 \uBDF0\uC5B4 \uC815\uC0C1 \uD45C\uC2DC \uD655\uC778 (2D/3D \uBAA8\uB450)
+
+**\uB9AC\uBDF0 \uC6CC\uD06C\uD50C\uB85C\uC6B0 \uD14C\uC2A4\uD2B8**
+1. \uBD88\uB7C9 \uD310\uC815 \uBCF4\uB4DC \uB9AC\uBDF0 \uC2E4\uD589
+2. \uD310\uC815 \uBCC0\uACBD (NG \u2192 Pass) \uD14C\uC2A4\uD2B8
+3. \uBCC0\uACBD \uB0B4\uC5ED \uB85C\uADF8 \uD655\uC778
+4. \uB9AC\uD3EC\uD2B8 \uC0DD\uC131 \uD14C\uC2A4\uD2B8
+
+**\uB2E4\uC911 \uC7A5\uBE44 \uC5F0\uACB0 \uD14C\uC2A4\uD2B8** (\uD574\uB2F9 \uC2DC)
+1. \uBCF5\uC218 AOI/SPI \uC7A5\uBE44 \uC5F0\uACB0 \uD655\uC778
+2. \uC7A5\uBE44\uBCC4 \uB370\uC774\uD130 \uBD84\uB9AC \uD45C\uC2DC \uD655\uC778
+3. \uB77C\uC778\uBCC4 \uB9AC\uBDF0 \uD544\uD130 \uB3D9\uC791 \uD655\uC778`},
+      {title:'6. \uD2B8\uB7EC\uBE14\uC288\uD305 (CRM \uC2E4\uC81C \uC0AC\uB840)',content:`**\uC124\uCE58/\uC6B4\uC601 \uC911 \uBE48\uBC1C \uBB38\uC81C** (CRM 80\uAC74 \uBD84\uC11D)
+
+| \uC99D\uC0C1 | \uC6D0\uC778 | \uD574\uACB0 \uBC29\uBC95 | CRM \uBE48\uB3C4 |
+|------|------|----------|---------|
+| \uC7A5\uBE44 \uC5F0\uACB0 \uC548 \uB428 | \uC11C\uBE0C\uB137/\uB124\uD2B8\uC6CC\uD06C \uBD88\uC77C\uCE58 | \uB3D9\uC77C \uC11C\uBE0C\uB137 \uC124\uC815, \uBC29\uD654\uBCBD \uD655\uC778 | \uB192\uC74C |
+| \uC774\uBBF8\uC9C0 \uB85C\uB4DC \uC548 \uB428 | \uACF5\uC720\uD3F4\uB354 \uC811\uADFC \uAD8C\uD55C \uC5C6\uC74C | Windows \uACF5\uC720 \uD3F4\uB354 \uAD8C\uD55C \uC7AC\uC124\uC815 | \uB192\uC74C |
+| \uD504\uB85C\uADF8\uB7A8 \uB290\uB9BC | \uB300\uB7C9 \uB370\uC774\uD130 \uB85C\uB4DC | \uB370\uC774\uD130 \uBCF4\uAD00\uC8FC\uAE30 \uC124\uC815, \uC624\uB798\uB41C \uB370\uC774\uD130 \uC544\uCE74\uC774\uBE0C | \uC911 |
+| \uD310\uC815 \uBCC0\uACBD \uC548 \uB428 | \uC0AC\uC6A9\uC790 \uAD8C\uD55C \uBD80\uC871 | \uAD00\uB9AC\uC790\uC5D0\uAC8C \uAD8C\uD55C \uC694\uCCAD | \uB0AE\uC74C |
+| \uB9AC\uD3EC\uD2B8 \uC0DD\uC131 \uC2E4\uD328 | \uCD9C\uB825 \uACBD\uB85C \uC811\uADFC \uBD88\uAC00 | \uB9AC\uD3EC\uD2B8 \uD3F4\uB354 \uAD8C\uD55C \uD655\uC778 | \uB0AE\uC74C |
+| MES \uC5F0\uB3D9 \uC2DC OK \uBBF8\uC804\uC1A1 | GUI/MCS \uBC84\uC804 \uB0AE\uC74C | GUI 3.6.2412_H10 + MCS 770.01.86 \uC5C5\uADF8\uB808\uC774\uB4DC | \uC911 |
+| 3D \uC774\uBBF8\uC9C0 \uAE68\uC9D0 | GPU \uB4DC\uB77C\uC774\uBC84 \uAD6C\uBC84\uC804 | NVIDIA \uB4DC\uB77C\uC774\uBC84 \uC5C5\uB370\uC774\uD2B8 | \uB0AE\uC74C |`}
+    ]
+  },
+  KPO:{
+    name:'KPO (Koh Young Process Optimizer)',
+    icon:'\u2699\uFE0F',
+    desc:'\uD504\uB9B0\uD130 \uACF5\uC815 \uCD5C\uC801\uD654 \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58 \uBC0F \uC124\uC815 \uAC00\uC774\uB4DC \u2014 CRM 14\uAC74 \uC0AC\uB840 \uAE30\uBC18',
+    sections:[
+      {title:'1. \uC2DC\uC2A4\uD15C \uC694\uAD6C\uC0AC\uD56D',content:`**\uD558\uB4DC\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+
+| \uD56D\uBAA9 | \uCD5C\uC18C \uC0AC\uC591 | \uAD8C\uC7A5 \uC0AC\uC591 | \uBE44\uACE0 |
+|------|----------|----------|------|
+| CPU | Intel Core i5-10400 | Intel Core i7-12700 \uC774\uC0C1 | \u2014 |
+| RAM | 8GB DDR4 | 16GB DDR4 \uC774\uC0C1 | \u2014 |
+| SSD | 256GB | 512GB \uC774\uC0C1 | \u2014 |
+| \uBAA8\uB2C8\uD130 | 1920\u00D71080 | 2560\u00D71440 | \u2014 |
+| NIC | 1GbE | 1GbE | KSmart/\uD504\uB9B0\uD130 \uC5F0\uB3D9 |
+
+**\uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+- Windows 10 Pro 64bit \uB610\uB294 Windows 11 Pro
+- .NET Framework 4.8
+- \uC6F9 \uBE0C\uB77C\uC6B0\uC800: Chrome 90 \uC774\uC0C1 (\uC6F9 UI \uC811\uC18D \uC2DC)
+- KSmart \uC11C\uBC84 \uC5F0\uB3D9 \uD544\uC218 (SPI/AOI \uAC80\uC0AC \uB370\uC774\uD130 \uC218\uC9D1)
+- \uD504\uB9B0\uD130 \uC7A5\uBE44\uC640\uC758 \uD1B5\uC2E0 \uC5F0\uACB0 (APC \uD53C\uB4DC\uBC31)`},
+      {title:'2. \uC124\uCE58 \uC804 \uC900\uBE44',content:`**\uCCB4\uD06C\uB9AC\uC2A4\uD2B8**
+- KSmart \uC11C\uBC84 \uC124\uCE58 \uBC0F \uC815\uC0C1 \uAD6C\uB3D9 \uD655\uC778 (KPO \uB370\uC774\uD130 \uC18C\uC2A4)
+- SPI \uAC80\uC0AC \uC7A5\uBE44 \u2192 KSmart \uB370\uC774\uD130 \uC804\uC1A1 \uC815\uC0C1 \uD655\uC778
+- \uD504\uB9B0\uD130 \uC7A5\uBE44\uC640\uC758 APC \uC5F0\uB3D9 \uAC00\uB2A5 \uC5EC\uBD80 \uD655\uC778
+- KPO \uC11C\uBC84 PC \uB610\uB294 KSmart \uC11C\uBC84\uC5D0 \uC124\uCE58 \uC704\uCE58 \uACB0\uC815
+- DB \uC811\uC18D \uC815\uBCF4 \uD655\uC778: KSmart DB \uD638\uC2A4\uD2B8, \uD3EC\uD2B8, \uACC4\uC815
+
+**\uB124\uD2B8\uC6CC\uD06C \uC124\uC815**
+- KPO \uC11C\uBC84 PC \uACE0\uC815 IP \uC124\uC815
+- KSmart \uC11C\uBC84\uC640 \uB124\uD2B8\uC6CC\uD06C \uC5F0\uACB0 \uD655\uC778
+- \uD504\uB9B0\uD130 \uC7A5\uBE44\uC640 \uB124\uD2B8\uC6CC\uD06C \uC5F0\uACB0 \uD655\uC778
+- \uC6F9 UI \uC811\uC18D \uD3EC\uD2B8: \uAE30\uBCF8 8585
+
+**\uD504\uB9B0\uD130 \uC5F0\uB3D9 \uD655\uC778\uC0AC\uD56D** (CRM \uC2E4\uC0AC\uB840 \uAE30\uBC18)
+- \uD504\uB9B0\uD130 \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uBC84\uC804 \uD638\uD658\uC131 \uD655\uC778
+- Theta-error \uBCF4\uC815 \uAE30\uB2A5 \uD655\uC778 \u2014 \uD2B9\uC815 Job \uD30C\uC77C\uC5D0\uC11C Theta-error \uB204\uC801 \uC0AC\uB840 \uC874\uC7AC`},
+      {title:'3. \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58',content:`**Step 1: KPO \uC11C\uBE44\uC2A4 \uC124\uCE58**
+1. \\\`KPO_Setup_vX.X.X.exe\\\` \uC2E4\uD589 (\uAD00\uB9AC\uC790 \uAD8C\uD55C)
+2. \uC124\uCE58 \uACBD\uB85C: \\\`C:\\\\KohYoung\\\\KPO\\\\\\\`
+3. \uAD6C\uC131\uC694\uC18C:
+   - KPO Core Service (\uD544\uC218)
+   - KPO Web UI (\uD544\uC218)
+   - KPO Analytics Engine (\uD544\uC218)
+4. DB \uC5F0\uACB0 \uC124\uC815: KSmart DB \uC815\uBCF4 \uC785\uB825
+5. \uC11C\uBE44\uC2A4 \uD3EC\uD2B8 \uC124\uC815 (\uAE30\uBCF8: 8585)
+6. \uC124\uCE58 \uC644\uB8CC
+
+**Step 2: \uC11C\uBE44\uC2A4 \uC2DC\uC791**
+1. Windows \uC11C\uBE44\uC2A4\uC5D0\uC11C \\\`KohYoung KPO Service\\\` \uD655\uC778
+2. \uC11C\uBE44\uC2A4 \uC2DC\uC791 \uC720\uD615: \uC790\uB3D9
+3. \uC11C\uBE44\uC2A4 \uC2DC\uC791 \u2192 \uC815\uC0C1 \uC2E4\uD589 \uD655\uC778
+
+**Step 3: \uC6F9 UI \uC811\uC18D**
+1. \uBE0C\uB77C\uC6B0\uC800\uC5D0\uC11C \\\`http://<KPO\uC11C\uBC84IP>:8585\\\` \uC811\uC18D
+2. \uCD08\uAE30 \uAD00\uB9AC\uC790 \uACC4\uC815: admin / admin (\uBE44\uBC00\uBC88\uD638 \uC989\uC2DC \uBCC0\uACBD)
+3. \uB77C\uC774\uC120\uC2A4 \uB4F1\uB85D: \\\`Settings \u2192 License\\\`\uC5D0\uC11C \uB77C\uC774\uC120\uC2A4 \uD0A4 \uC785\uB825`},
+      {title:'4. \uCD08\uAE30 \uC124\uC815',content:`**4-1. \uB370\uC774\uD130 \uC18C\uC2A4 \uC5F0\uACB0**
+- KSmart DB \uC5F0\uACB0 \uC124\uC815 \uD655\uC778
+- SPI \uAC80\uC0AC \uB370\uC774\uD130 \uC218\uC9D1 \uD65C\uC131\uD654
+- \uB77C\uC778\uBCC4/\uC7A5\uBE44\uBCC4 \uB370\uC774\uD130 \uC218\uC9D1 \uC124\uC815
+- \uB370\uC774\uD130 \uB3D9\uAE30\uD654 \uC8FC\uAE30 \uC124\uC815 (\uAE30\uBCF8: \uC2E4\uC2DC\uAC04)
+
+**4-2. \uD504\uB9B0\uD130 APC \uC5F0\uB3D9 \uC124\uC815**
+- \uD504\uB9B0\uD130 IP/\uD3EC\uD2B8 \uC785\uB825
+- APC \uD53C\uB4DC\uBC31 \uD30C\uB77C\uBBF8\uD130 \uC120\uD0DD: Offset X/Y, Theta
+- \uD53C\uB4DC\uBC31 \uD55C\uACC4\uAC12(Limit) \uC124\uC815
+- \uC790\uB3D9/\uC218\uB3D9 \uD53C\uB4DC\uBC31 \uBAA8\uB4DC \uC120\uD0DD
+
+> **CRM \uC2E4\uC0AC\uB840**: \uD2B9\uC815 Job \uD30C\uC77C\uC5D0\uC11C Theta-error\uAC00 \uB204\uC801 \uC99D\uAC00\uD558\uB294 \uD604\uC0C1 \u2192 \uD504\uB9B0\uD130 S/W \uC5C5\uB370\uC774\uD2B8\uB85C \uD574\uACB0
+
+**4-3. \uACF5\uC815 \uD30C\uB77C\uBBF8\uD130 \uC124\uC815**
+- \uBAA8\uB2C8\uD130\uB9C1 \uB300\uC0C1: Volume, Height, Area, Offset \uB4F1
+- \uAD00\uB9AC \uD55C\uACC4(Spec Limit) \uC124\uC815
+- \uACBD\uBCF4(Alert) \uC870\uAC74: Cpk \uAE30\uC900, \uC5F0\uC18D NG \uAC1C\uC218
+
+**4-4. SPC/CPK \uC124\uC815**
+- SPC Plus \uC5F0\uB3D9 \uD655\uC778
+- CPK \uC0B0\uCD9C \uAE30\uC900 \uC124\uC815 (\uACE0\uAC1D \uC694\uAD6C\uC0AC\uD56D\uC5D0 \uB9DE\uAC8C \uC870\uC815)
+- \uB300\uC2DC\uBCF4\uB4DC \uAD6C\uC131: X-bar R, Cpk \uD2B8\uB80C\uB4DC`},
+      {title:'5. \uAC80\uC99D \uBC0F \uD14C\uC2A4\uD2B8',content:`**\uAE30\uBCF8 \uB3D9\uC791 \uD655\uC778**
+1. \uC6F9 UI \uC815\uC0C1 \uC811\uC18D \uD655\uC778
+2. SPI \uC2E4\uC2DC\uAC04 \uB370\uC774\uD130 \uC218\uC2E0 \uD655\uC778
+3. SPC \uCC28\uD2B8 \uC815\uC0C1 \uD45C\uC2DC \uD655\uC778
+4. \uC54C\uB9BC \uC124\uC815 \uD14C\uC2A4\uD2B8
+
+**APC \uD53C\uB4DC\uBC31 \uD14C\uC2A4\uD2B8**
+1. \uD504\uB9B0\uD130 \uC5F0\uACB0 \uC0C1\uD0DC \uD655\uC778
+2. \uC624\uD504\uC14B \uBCF4\uC815 \uBA85\uB839 \uC804\uC1A1 \uD14C\uC2A4\uD2B8
+3. \uBCF4\uC815 \uACB0\uACFC SPI \uC7AC\uCE21\uC815\uC73C\uB85C \uD655\uC778
+4. Theta-error \uD2B8\uB80C\uB4DC \uBAA8\uB2C8\uD130\uB9C1
+
+**\uACF5\uC815 \uBD84\uC11D \uD14C\uC2A4\uD2B8**
+1. \uACFC\uAC70 \uB370\uC774\uD130 \uAE30\uBC18 Cpk \uC0B0\uCD9C
+2. \uC774\uC0C1 \uD328\uD134 \uAC10\uC9C0 \uD14C\uC2A4\uD2B8
+3. \uB9AC\uD3EC\uD2B8 \uC0DD\uC131 \uBC0F \uB2E4\uC6B4\uB85C\uB4DC \uD14C\uC2A4\uD2B8`},
+      {title:'6. \uD2B8\uB7EC\uBE14\uC288\uD305 (CRM \uC2E4\uC81C \uC0AC\uB840)',content:`**\uC124\uCE58/\uC6B4\uC601 \uC911 \uBE48\uBC1C \uBB38\uC81C** (CRM 14\uAC74 \uBD84\uC11D)
+
+| \uC99D\uC0C1 | \uC6D0\uC778 | \uD574\uACB0 \uBC29\uBC95 | CRM \uBE48\uB3C4 |
+|------|------|----------|---------|
+| \uC6F9 UI \uC811\uC18D \uC548 \uB428 | \uC11C\uBE44\uC2A4 \uBBF8\uC2E4\uD589 | KPO Service \uC7AC\uC2DC\uC791 | \uC911 |
+| \uB370\uC774\uD130 \uC218\uC2E0 \uC548 \uB428 | KSmart DB \uC5F0\uACB0 \uC2E4\uD328 | DB \uC811\uC18D\uC815\uBCF4 \uD655\uC778, \uB124\uD2B8\uC6CC\uD06C \uCCB4\uD06C | \uC911 |
+| Theta-error \uB204\uC801 \uC99D\uAC00 | \uD2B9\uC815 Job \uD30C\uC77C + \uD504\uB9B0\uD130 S/W \uBC84\uADF8 | \uD504\uB9B0\uD130 S/W \uC5C5\uB370\uC774\uD2B8 | \uB192\uC74C |
+| SPC \uCC28\uD2B8 \uBE48 \uD654\uBA74 | \uB370\uC774\uD130 \uD544\uD130 \uC124\uC815 \uC624\uB958 | \uB0A0\uC9DC \uBC94\uC704, \uB77C\uC778/\uC7A5\uBE44 \uD544\uD130 \uD655\uC778 | \uC911 |
+| CPK \uAC12 \uC774\uC0C1 | SPC Plus \uC9D1\uACC4 \uAE30\uC900 \uBD88\uC77C\uCE58 | KSmart \uBC84\uC804\uACFC SPC \uC124\uC815 \uD655\uC778 | \uC911 |
+| \uC54C\uB9BC \uBBF8\uC218\uC2E0 | \uC774\uBA54\uC77C \uC11C\uBC84 \uC124\uC815 \uC624\uB958 | SMTP \uC124\uC815 \uD655\uC778 | \uB0AE\uC74C |
+| \uB290\uB9B0 \uB85C\uB529 | \uB300\uC6A9\uB7C9 \uB370\uC774\uD130 \uC870\uD68C | \uC870\uD68C \uAE30\uAC04 \uCD95\uC18C, DB \uC778\uB371\uC2A4 \uD655\uC778 | \uB0AE\uC74C |`}
+    ]
+  },
+  KSmart:{
+    name:'KSmart (Smart Factory Platform)',
+    icon:'\u{1F4CA}',
+    desc:'\uC2A4\uB9C8\uD2B8 \uD329\uD1A0\uB9AC \uB370\uC774\uD130 \uC218\uC9D1\u00B7\uBD84\uC11D \uD50C\uB7AB\uD3FC \uC124\uCE58 \uAC00\uC774\uB4DC \u2014 CRM 167\uAC74 \uC2E4\uC81C \uC0AC\uB840 \uAE30\uBC18',
+    sections:[
+      {title:'1. \uC2DC\uC2A4\uD15C \uC694\uAD6C\uC0AC\uD56D',content:`**\uC11C\uBC84 \uD558\uB4DC\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+
+| \uD56D\uBAA9 | \uCD5C\uC18C \uC0AC\uC591 | \uAD8C\uC7A5 \uC0AC\uC591 | \uBE44\uACE0 |
+|------|----------|----------|------|
+| CPU | Intel Xeon E-2234 (4C/8T) | Intel Xeon Silver 4310 \uC774\uC0C1 | \uB3D9\uC2DC \uC811\uC18D \uC7A5\uBE44 \uC218\uC5D0 \uB530\uB77C |
+| RAM | 32GB ECC | 64GB ECC \uC774\uC0C1 | DB \uCE90\uC2DC \uC131\uB2A5\uC5D0 \uC9C1\uACB0 |
+| \uC2A4\uD1A0\uB9AC\uC9C0 | 1TB SSD + 4TB HDD | 2TB NVMe + 8TB HDD (RAID) | \uC7A5\uAE30 \uB370\uC774\uD130 \uBCF4\uAD00 \uC2DC |
+| NIC | 1GbE \u00D7 2 | 10GbE \u00D7 2 | \uB2E4\uC218 \uC7A5\uBE44 \uB3D9\uC2DC \uC5F0\uACB0 |
+| OS | Windows Server 2019 | Windows Server 2022 | \u2014 |
+
+**\uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC694\uAD6C\uC0AC\uD56D**
+- Windows Server 2019/2022 Standard \uC774\uC0C1
+- **MySQL** (KSmart \uAE30\uBCF8 DB) \u2014 MYSQL \uC7A5\uC560 \uC2DC \uC11C\uBC84 \uC804\uCCB4 \uC811\uC18D \uBD88\uAC00 (CRM \uBE48\uBC1C)
+- .NET 6.0 Runtime
+- IIS 10 (Web Dashboard)
+- Java Runtime 11 \uC774\uC0C1 (\uC77C\uBD80 \uC11C\uBE44\uC2A4\uC6A9)
+
+**\uC5D0\uC774\uC804\uD2B8 PC \uC694\uAD6C\uC0AC\uD56D (\uC7A5\uBE44 \uCE21)**
+- Windows 10 Pro 64bit
+- .NET Framework 4.8
+- \uC7A5\uBE44 PC\uC5D0 \uC124\uCE58\uB418\uC5B4 \uB370\uC774\uD130\uB97C \uC11C\uBC84\uB85C \uC804\uC1A1`},
+      {title:'2. \uC124\uCE58 \uC804 \uC900\uBE44',content:`**\uC11C\uBC84 \uCCB4\uD06C\uB9AC\uC2A4\uD2B8**
+- \uC11C\uBC84 OS \uC124\uCE58 \uBC0F Windows \uC5C5\uB370\uC774\uD2B8 \uC644\uB8CC
+- **MySQL \uC124\uCE58 \uBC0F \uC124\uC815** \u2014 root/kyadmin \uACC4\uC815 \uBE44\uBC00\uBC88\uD638 \uC124\uC815
+- IIS \uC5ED\uD560 \uC124\uCE58 (Server Manager \u2192 Add Roles)
+- \uACE0\uC815 IP \uC124\uC815 \uBC0F DNS \uB4F1\uB85D
+- SSL \uC778\uC99D\uC11C \uC900\uBE44 (HTTPS \uC0AC\uC6A9 \uC2DC)
+- \uBC31\uC5C5 \uC2A4\uD1A0\uB9AC\uC9C0 \uC900\uBE44 (DB \uC790\uB3D9 \uBC31\uC5C5\uC6A9 \u2014 USB \uBC0F \uC6D0\uACA9 PC \uBAA8\uB450 \uC9C0\uC6D0)
+
+**\uB124\uD2B8\uC6CC\uD06C \uC124\uC815**
+- \uC11C\uBC84 \uD3EC\uD2B8 \uAC1C\uBC29:
+  - TCP 80/443: \uC6F9 \uB300\uC2DC\uBCF4\uB4DC (LM Web Page)
+  - TCP 3306: MySQL
+  - TCP 8080: API \uC11C\uBE44\uC2A4
+  - TCP 8883: MQTT (IoT \uB370\uC774\uD130 \uC218\uC9D1 \uC2DC)
+- \uC7A5\uBE44 PC \u2192 \uC11C\uBC84 \uAC04 \uB124\uD2B8\uC6CC\uD06C \uC5F0\uACB0 \uD655\uC778
+- VPN \uC124\uC815 (\uC6D0\uACA9 \uC811\uC18D \uC2DC)
+
+**MySQL kyadmin \uACC4\uC815 \uC8FC\uC758** (CRM \uC2E4\uC0AC\uB840)
+- kyadmin \uACC4\uC815\uC774 \uC0AD\uC81C\uB418\uBA74 KSmart \uC11C\uBC84 \uC804\uCCB4 \uC811\uC18D \uBD88\uAC00
+- \uACE0\uAC1D\uC774 \uC2E4\uC218\uB85C kyadmin \uC0AD\uC81C\uD558\uB294 \uC0AC\uB840 \uC874\uC7AC \u2192 \uACC4\uC815 \uBCF4\uD638 \uC124\uC815 \uD544\uC218`},
+      {title:'3. \uC11C\uBC84 \uC18C\uD504\uD2B8\uC6E8\uC5B4 \uC124\uCE58',content:`**Step 1: KSmart \uC11C\uBC84 \uC124\uCE58**
+1. \\\`SMART_X.X.X.X_H0X\\\` \uC124\uCE58 \uD328\uD0A4\uC9C0 \uC2E4\uD589 (\uAD00\uB9AC\uC790 \uAD8C\uD55C)
+2. \uAD6C\uC131\uC694\uC18C:
+   - KSmart Core Service (\uD544\uC218)
+   - KSmart LM (Line Monitor) Web Dashboard (\uD544\uC218)
+   - KSmart API Gateway (\uD544\uC218)
+   - KSmart Data Collector (\uD544\uC218)
+   - KSmart SPC Module (\uC120\uD0DD)
+   - KSmart Report Service (\uC120\uD0DD)
+3. MySQL DB \uC5F0\uACB0 \uC124\uC815: \uC811\uC18D \uC815\uBCF4 \uC785\uB825
+4. \uC6F9 \uC11C\uBE44\uC2A4 \uD3EC\uD2B8 \uC124\uC815 (\uAE30\uBCF8: 80/443)
+5. \uC124\uCE58 \uC644\uB8CC \uD6C4 \uC11C\uBE44\uC2A4 \uC790\uB3D9 \uC2DC\uC791
+
+> **CRM \uC2E4\uC0AC\uB840**: SMART_2.2.0.1_H01 \uBC84\uC804\uC5D0\uC11C SPC \uB370\uC774\uD130 Uncommitted \uCC98\uB9AC \uBC84\uADF8 \u2192 \uCC28\uAE30 \uB9B4\uB9AC\uC2A4\uC5D0\uC11C \uC218\uC815
+
+**Step 2: DB \uCD08\uAE30\uD654**
+1. KSmart DB \uC790\uB3D9 \uC0DD\uC131 \uD655\uC778
+2. \uCD08\uAE30 \uB9C8\uC2A4\uD130 \uB370\uC774\uD130 \uC785\uB825:
+   - \uACF5\uC7A5/\uB77C\uC778/\uC7A5\uBE44 \uAD6C\uC870 \uB4F1\uB85D
+   - \uC81C\uD488(PCB) \uB9C8\uC2A4\uD130 \uB4F1\uB85D
+   - \uC0AC\uC6A9\uC790 \uACC4\uC815 \uC0DD\uC131
+
+**Step 3: LM \uC6F9 \uB300\uC2DC\uBCF4\uB4DC \uD655\uC778**
+1. \\\`http://<\uC11C\uBC84IP>\\\` \uB610\uB294 \\\`https://<\uC11C\uBC84IP>\\\` \uC811\uC18D
+2. \uCD08\uAE30 \uB85C\uADF8\uC778: admin / admin (\uC989\uC2DC \uBCC0\uACBD)
+3. \uB300\uC2DC\uBCF4\uB4DC \uC815\uC0C1 \uD45C\uC2DC \uD655\uC778`},
+      {title:'4. \uC5D0\uC774\uC804\uD2B8 \uC124\uCE58 \uBC0F \uC7A5\uBE44 \uC5F0\uB3D9',content:`**\uAC01 \uAC80\uC0AC \uC7A5\uBE44 PC\uC5D0 \uC124\uCE58:**
+
+**Step 1: KSmart Agent(Client) \uC124\uCE58**
+1. \\\`KSmart_Agent_Setup_vX.X.X.exe\\\` \uC2E4\uD589 (\uAD00\uB9AC\uC790 \uAD8C\uD55C)
+2. \uC124\uCE58 \uACBD\uB85C: \\\`C:\\\\KohYoung\\\\KSmartAgent\\\\\\\`
+3. \uC11C\uBC84 \uC5F0\uACB0 \uC124\uC815:
+   - KSmart \uC11C\uBC84 IP/\uD3EC\uD2B8 \uC785\uB825
+   - \uC7A5\uBE44 ID \uC785\uB825 (\uC11C\uBC84\uC5D0 \uB4F1\uB85D\uB41C ID\uC640 \uC77C\uCE58)
+4. \uB370\uC774\uD130 \uC218\uC9D1 \uC124\uC815:
+   - \uC218\uC9D1 \uD56D\uBAA9: \uAC80\uC0AC \uACB0\uACFC, SPC \uB370\uC774\uD130, \uC774\uBBF8\uC9C0 (\uC120\uD0DD)
+   - \uC804\uC1A1 \uC8FC\uAE30: \uC2E4\uC2DC\uAC04 / \uBC30\uCE58 (\uAE30\uBCF8: \uC2E4\uC2DC\uAC04)
+
+**Step 2: \uC5F0\uACB0 \uD14C\uC2A4\uD2B8**
+1. Agent \uC11C\uBE44\uC2A4 \uC2DC\uC791
+2. \uC11C\uBC84 LM Dashboard\uC5D0\uC11C \uC7A5\uBE44 \uC628\uB77C\uC778 \uD655\uC778
+3. \uAC80\uC0AC \uC2E4\uD589 \u2192 \uC11C\uBC84\uC5D0 \uB370\uC774\uD130 \uC218\uC2E0 \uD655\uC778
+
+> **CRM \uC2E4\uC0AC\uB840**: \uB300\uB7C9 \uBC30\uD3EC(\uB2E4\uC218 \uC7A5\uBE44 \uB3D9\uC2DC \uC5F0\uACB0) \uC2DC LM \uC11C\uBC84 \uC5F0\uACB0 \uAC04\uD5D0\uC801 \uB04A\uAE40 \u2192 DB \uCD5C\uC801\uD654 \uBC0F \uB3D9\uC2DC \uBC30\uD3EC \uC81C\uD55C\uC73C\uB85C \uD574\uACB0
+
+**DB \uBC31\uC5C5 \uC124\uC815**
+1. \\\`putty\\\`\uB97C \uD1B5\uD55C \uC11C\uBC84 \uC811\uC18D \u2192 \uBC31\uC5C5 \uC2A4\uD06C\uB9BD\uD2B8 \uC124\uC815
+2. USB \uBC0F \uC6D0\uACA9 PC \uBC31\uC5C5 \uACBD\uB85C \uC124\uC815
+3. \uC790\uB3D9 \uBC31\uC5C5 \uC2A4\uCF00\uC904 \uC124\uC815 (\uC77C\uBCC4 \uAD8C\uC7A5)`},
+      {title:'5. \uAC80\uC99D \uBC0F \uD14C\uC2A4\uD2B8',content:`**\uC11C\uBC84 \uB3D9\uC791 \uD655\uC778**
+1. LM \uC6F9 \uB300\uC2DC\uBCF4\uB4DC \uC815\uC0C1 \uC811\uC18D
+2. \uBAA8\uB4E0 \uC7A5\uBE44 \uC628\uB77C\uC778 \uC0C1\uD0DC \uD655\uC778
+3. \uC2E4\uC2DC\uAC04 \uB370\uC774\uD130 \uC218\uC2E0 \uD655\uC778
+4. MySQL \uC11C\uBE44\uC2A4 \uC815\uC0C1 \uB3D9\uC791 \uD655\uC778
+
+**\uB370\uC774\uD130 \uBD84\uC11D \uD14C\uC2A4\uD2B8**
+1. Production Status \uC2E4\uC2DC\uAC04 \uC5C5\uB370\uC774\uD2B8 \uD655\uC778
+2. Yield \uB300\uC2DC\uBCF4\uB4DC \u2014 AOI Offline\uACFC KSmart \uB370\uC774\uD130 \uC77C\uCE58 \uD655\uC778 (CRM: \uBD88\uC77C\uCE58 \uC0AC\uB840)
+3. SPC \uCC28\uD2B8 \uC815\uC0C1 \uD45C\uC2DC \uD655\uC778
+4. \uBD88\uB7C9 Pareto \uCC28\uD2B8 \uD655\uC778
+5. \uC77C\uBCC4/\uC8FC\uBCC4 \uB9AC\uD3EC\uD2B8 \uC790\uB3D9 \uC0DD\uC131 \uD655\uC778
+
+**\uC131\uB2A5 \uD14C\uC2A4\uD2B8**
+1. \uB2E4\uC218 \uC7A5\uBE44 \uB3D9\uC2DC \uC811\uC18D \uC2DC \uC751\uB2F5 \uC18D\uB3C4 \uD655\uC778
+2. SPC@KSmart \uC870\uD68C \uC18D\uB3C4 \uD655\uC778 (\uB290\uB9B0 \uACBD\uC6B0 DB \uB370\uC774\uD130 \uC0AD\uC81C \uD544\uC694)
+3. LM \uC6F9 \uD398\uC774\uC9C0 \uB85C\uB529 \uC18D\uB3C4 \uD655\uC778`},
+      {title:'6. \uD2B8\uB7EC\uBE14\uC288\uD305 (CRM \uC2E4\uC81C \uC0AC\uB840)',content:`**\uC124\uCE58/\uC6B4\uC601 \uC911 \uBE48\uBC1C \uBB38\uC81C** (CRM 167\uAC74 \uBD84\uC11D)
+
+| \uC99D\uC0C1 | \uC6D0\uC778 | \uD574\uACB0 \uBC29\uBC95 | CRM \uBE48\uB3C4 |
+|------|------|----------|---------|
+| \uC11C\uBC84 \uC811\uC18D \uBD88\uAC00 (MYSQL Failed) | MySQL \uC11C\uBE44\uC2A4 \uB2E4\uC6B4 | MySQL \uC11C\uBE44\uC2A4 \uC7AC\uC2DC\uC791, kyadmin \uACC4\uC815 \uD655\uC778 | \uB9E4\uC6B0 \uB192\uC74C |
+| LM \uC6F9 \uD398\uC774\uC9C0 \uB04A\uAE40 | DB \uBE44\uCD5C\uC801\uD654 | DB Optimize \uC2E4\uD589 \u2192 \uB04A\uAE40 \uD574\uACB0 | \uB192\uC74C |
+| LM \uC11C\uBC84 \uAC04\uD5D0\uC801 \uC5F0\uACB0 \uC2E4\uD328 | \uB300\uB7C9 \uC7A5\uBE44 \uB3D9\uC2DC \uBC30\uD3EC \uBD80\uD558 | \uB3D9\uC2DC \uBC30\uD3EC \uC218 \uC81C\uD55C, \uC11C\uBC84 \uB9AC\uC18C\uC2A4 \uD655\uC778 | \uB192\uC74C |
+| Production/Yield \uB370\uC774\uD130 \uBD88\uC77C\uCE58 | Agent \uC804\uC1A1 \uC9C0\uC5F0, \uACE0\uAC1D \uB124\uD2B8\uC6CC\uD06C \uB3C4\uBA54\uC778 \uC774\uC288 | R&D \uC9C1\uC811 \uC9C0\uC6D0, \uB124\uD2B8\uC6CC\uD06C \uC810\uAC80 | \uC911 |
+| SPC \uB370\uC774\uD130 Uncommitted | \uBC84\uC804 \uBC84\uADF8 (2.2.0.1) | \uCC28\uAE30 \uB9B4\uB9AC\uC2A4 \uC5C5\uADF8\uB808\uC774\uB4DC | \uC911 |
+| SPC@KSmart \uC18D\uB3C4 \uB290\uB9BC | \uB300\uC6A9\uB7C9 \uB370\uC774\uD130 \uCD95\uC801 | putty \uC811\uC18D\uD558\uC5EC \uBD88\uD544\uC694 \uB370\uC774\uD130 \uC0AD\uC81C | \uC911 |
+| \uBC31\uC5C5 \uC2E4\uD328 (USB/\uC6D0\uACA9) | \uBC31\uC5C5 \uACBD\uB85C \uC811\uADFC \uBD88\uAC00 | putty\uB85C \uC811\uC18D\uD558\uC5EC \uBC31\uC5C5 \uACBD\uB85C \uC218\uC815 | \uC911 |
+| \uB77C\uC774\uC120\uC2A4 \uBCC0\uD658 \uC624\uB958 | \uB2E4\uC218 \uC7A5\uBE44 \uB77C\uC774\uC120\uC2A4 \uC77C\uAD04 \uBCC0\uD658 \uC774\uC288 | \uAC1C\uBCC4 \uC7A5\uBE44\uBCC4 \uB77C\uC774\uC120\uC2A4 \uC7AC\uBC1C\uAE09 | \uB0AE\uC74C |
+| Agent \uC5F0\uACB0 \uC2E4\uD328 | \uBC29\uD654\uBCBD \uCC28\uB2E8 | \uD3EC\uD2B8 3306/8080 \uAC1C\uBC29, IP \uD654\uC774\uD2B8\uB9AC\uC2A4\uD2B8 | \uC911 |
+| \uB300\uC2DC\uBCF4\uB4DC \uB290\uB9BC | DB \uC778\uB371\uC2A4 \uBBF8\uC0DD\uC131 | DB \uC720\uC9C0\uBCF4\uC218 \uC2A4\uD06C\uB9BD\uD2B8 \uC2E4\uD589 | \uC911 |`}
+    ]
+  }
+};
+let _installProduct=null;
+function renderInstallGuide(product){
+  _installProduct=product||_installProduct||'AOI';
+  const g=INSTALL_GUIDES[_installProduct];
+  if(!g){$('#root').innerHTML='<div class="view"><div class="muted">가이드를 찾을 수 없습니다.</div></div>';return;}
+  let tocHtml=g.sections.map((s,i)=>`<div class="toc-item d0" data-idx="${i}" style="cursor:pointer">${esc(s.title)}</div>`).join('');
+  $('#root').innerHTML=`<div class="viewer-wrap">
+    <div class="viewer-toc" id="vtoc">
+      <div class="toc-head">${g.icon} ${esc(g.name)}</div>
+      <div style="padding:6px 16px;font-size:11.5px;color:var(--dim);line-height:1.5">${esc(g.desc)}</div>
+      ${tocHtml}
+    </div>
+    <div class="viewer-content" id="vcontent">
+      <div class="vc-empty">← 좌측 목차에서 항목을 선택하세요</div>
+    </div>
+  </div>`;
+  $('#vtoc').addEventListener('click',e=>{
+    const ti=e.target.closest('.toc-item');
+    if(!ti||ti.dataset.idx==null)return;
+    const idx=+ti.dataset.idx;
+    const sec=g.sections[idx];
+    if(!sec)return;
+    document.querySelectorAll('#vtoc .toc-item').forEach(n=>n.classList.toggle('active',+n.dataset.idx===idx));
+    $('#vcontent').innerHTML=`<h2>${esc(sec.title)}</h2><div class="vc-body">${renderMd(sec.content)}</div>`;
+    $('#vcontent').scrollTop=0;
+  });
+  const first=document.querySelector('#vtoc .toc-item');
+  if(first)first.click();
+}
+
+function renderFlowchart(){
+  $('#root').innerHTML='<iframe id="flowFrame" src="/flowchart.html?embed=1" style="width:100%;height:calc(100vh - 62px);border:none"></iframe>';
+}
+async function renderStats(){
+  $('#root').innerHTML='<div class="view"><span class="spin"></span> 집계 중…</div>';
+  const s=STATS||await api('/api/stats'); STATS=s;
+  const sd=s.statusDist||[]; const maxP=Math.max(...sd.map(p=>p.c),1);
+  const gtsTop=[['GUI 크래시/행',473],['3D 이미지 복원 불안정',543],['KSmart 서버 연결 실패',487],['오검출(False Call)',270],['캘리브레이션 실패',436],['PC 교체/SW 설치',536],['MES 통신 오류',121],['Job/Recipe 문제',281],['DB/데이터 손상',200],['바코드 인식 불량',138]];
+  $('#root').innerHTML=`<div class="view">
+    <div class="mrow">
+      <div class="card met" style="margin:0"><div class="v">${s.total.toLocaleString()}</div><div class="l">전체 지식 문서</div></div>
+      <div class="card met" style="margin:0"><div class="v">${s.cases.toLocaleString()}</div><div class="l">서비스 케이스</div></div>
+      <div class="card met" style="margin:0"><div class="v">${s.reports.toLocaleString()}</div><div class="l">서비스 리포트</div></div>
+      <div class="card met" style="margin:0"><div class="v">${(s.manuals||0).toLocaleString()}</div><div class="l">제품 매뉴얼</div></div>
+      <div class="card met" style="margin:0"><div class="v">${s.resolved.toLocaleString()}</div><div class="l">해결 완료 케이스</div></div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div class="card" style="text-align:center;min-width:200px"><h4>전체 해결률</h4>${donut(s.resolutionRate)}
+        <div class="muted" style="font-size:12px">${s.resolved.toLocaleString()} / ${s.cases.toLocaleString()}</div></div>
+      <div class="card" style="flex:1;min-width:320px"><h4>연도별 케이스 추이</h4>${lineChart(s.byYear)}</div>
+    </div>
+    <div class="card"><h4>케이스 상태 분포</h4><div class="bars">${sd.map(p=>{
+      const w=Math.round(p.c/maxP*100);
+      return `<div class="bar"><div class="bl2" title="${esc(p.status)}">${esc(p.status)}</div><div class="bt"><div class="bf" style="width:${w}%"></div></div><div class="bv">${p.c.toLocaleString()}</div></div>`;
+    }).join('')}</div></div>
+    <div class="card"><h4>GTS Top 10 이슈 (기획서 3.2 — 서비스 리포트 3,394건 분석)</h4>
+      <table><thead><tr><th>순위</th><th>이슈</th><th>건수</th></tr></thead><tbody>
+      ${gtsTop.map((x,i)=>`<tr><td>${i+1}</td><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('')}</tbody></table>
+      <div class="muted" style="font-size:11.5px;margin-top:8px">이 Top 10에 대해 Resolution Guide 플로우차트가 제공됩니다(기획서 3장).</div>
+    </div>
+  </div>`;
+}
+
+
+/* ---------- 초기화 ---------- */
+(async()=>{
+  try{ STATS=await api('/api/stats');
+    $('#liveCnt').textContent=STATS.total.toLocaleString();
+    $('#sideMeta').innerHTML=`<b>실제 데이터 연동</b><br>케이스 ${STATS.cases.toLocaleString()}<br>리포트 ${STATS.reports.toLocaleString()}<br>매뉴얼 ${(STATS.manuals||0).toLocaleString()}<br>해결률 ${STATS.resolutionRate}%`;
+  }catch{ $('#sideMeta').innerHTML='<b>데이터 로드 실패</b>'; }
+  const hash=(location.hash||'#chat').slice(1);
+  if(hash.startsWith('viewer:')){
+    const m=decodeURIComponent(hash.slice(7));
+    go('viewer',{manual:m});
+  } else if(hash.startsWith('install:')){
+    const p=decodeURIComponent(hash.slice(8));
+    go('install',{product:p});
+  } else {
+    go(VIEWS[hash]?hash:'chat');
+  }
+})();
+</script>
+</body>
+</html>

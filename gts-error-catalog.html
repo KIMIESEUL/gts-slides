@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Error Message Catalog — As-Is / To-Be</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --border: #e2e8f0;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --green-bg: #ecfdf5;
+    --orange: #ea580c;
+    --orange-light: #ffedd5;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --red-bg: #fef2f2;
+    --purple: #7c3aed;
+    --purple-light: #ede9fe;
+    --yellow: #ca8a04;
+    --yellow-light: #fef9c3;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --mono: 'JetBrains Mono', 'Consolas', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.7;
+  }
+
+  /* LAYOUT */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .sidebar-header {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: rgba(255,255,255,0.6);
+  }
+  .sidebar-header h1 {
+    font-size: 18px; font-weight: 900; line-height: 1.3;
+  }
+  .sidebar-header h1 span { color: #60a5fa; }
+  .sidebar-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-top: 14px;
+  }
+  .sidebar-stat .num { font-size: 16px; font-weight: 900; color: #fbbf24; }
+  .sidebar-stat .label { font-size: 10px; color: rgba(255,255,255,0.4); }
+
+  .sidebar-menu { flex: 1; padding: 12px 0; }
+  .menu-label {
+    padding: 8px 24px 6px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+  .menu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 24px; cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px; font-weight: 500;
+    user-select: none;
+  }
+  .menu-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.85);
+  }
+  .menu-item.active {
+    background: rgba(37,99,235,0.15);
+    border-left-color: #60a5fa;
+    color: white; font-weight: 700;
+  }
+  .menu-icon {
+    font-size: 15px; width: 22px; text-align: center; flex-shrink: 0;
+  }
+  .menu-item-count {
+    margin-left: auto; font-size: 11px;
+    color: rgba(255,255,255,0.3); font-weight: 600; flex-shrink: 0;
+  }
+  .menu-item.active .menu-item-count { color: rgba(255,255,255,0.6); }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 10px; color: rgba(255,255,255,0.3); line-height: 1.5;
+  }
+
+  /* MAIN */
+  .main { flex: 1; margin-left: 280px; min-height: 100vh; }
+
+  /* CONTAINER */
+  .container { margin: 0; padding: 40px 56px; }
+
+  /* CATALOG CARD */
+  .cat-section { display: none; }
+  .cat-section.active { display: block; }
+
+  .err-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .err-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+
+  .err-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    background: #f8fafc;
+  }
+  .err-code {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .err-code.critical { background: var(--red-light); color: var(--red); }
+  .err-code.high { background: var(--orange-light); color: var(--orange); }
+  .err-code.medium { background: var(--yellow-light); color: var(--yellow); }
+  .err-title { font-size: 17px; font-weight: 700; flex: 1; }
+  .err-freq {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .err-freq strong { color: var(--red); font-size: 16px; display: block; }
+
+  .err-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  /* AS-IS */
+  .err-asis {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+    background: var(--red-bg);
+  }
+  .err-asis .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .err-asis .label::before { content: '✕'; }
+
+  .msg-box {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .msg-box.bad {
+    background: #1e1e1e;
+    color: #e2e2e2;
+    border: 1px solid #333;
+  }
+  .msg-box.bad .msg-title-bar {
+    color: #ff6b6b;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+
+  .problem-list {
+    font-size: 13px;
+    color: var(--red);
+    line-height: 1.8;
+  }
+  .problem-list li {
+    list-style: none;
+    padding-left: 18px;
+    position: relative;
+  }
+  .problem-list li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+
+  /* TO-BE */
+  .err-tobe {
+    padding: 24px 28px;
+    background: var(--green-bg);
+  }
+  .err-tobe .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .err-tobe .label::before { content: '✓'; }
+
+  .msg-box.good {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #14532d;
+  }
+  .msg-box.good .msg-code {
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  .msg-box.good .msg-desc {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #166534;
+    margin-bottom: 8px;
+  }
+  .msg-box.good .msg-steps {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    color: #15803d;
+    line-height: 1.8;
+  }
+  .msg-box.good .msg-steps .step-num {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: #166534;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 18px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+
+  .improve-list {
+    font-size: 13px;
+    color: var(--green);
+    line-height: 1.8;
+  }
+  .improve-list li {
+    list-style: none;
+    padding-left: 18px;
+    position: relative;
+    color: #065f46;
+  }
+  .improve-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  /* DATA EVIDENCE */
+  .err-evidence {
+    padding: 16px 28px;
+    background: #f1f5f9;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 32px;
+    font-size: 12px;
+    color: var(--text-2);
+    flex-wrap: wrap;
+  }
+  .ev-item strong { color: var(--text); }
+
+  /* SUMMARY SECTION */
+  .summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .summary h3 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .summary-stat {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--bg);
+  }
+  .summary-stat .num {
+    font-size: 28px;
+    font-weight: 900;
+  }
+  .summary-stat .label {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 4px;
+  }
+  .summary-stat.red .num { color: var(--red); }
+  .summary-stat.orange .num { color: var(--orange); }
+  .summary-stat.blue .num { color: var(--blue); }
+  .summary-stat.green .num { color: var(--green); }
+
+  /* PRINCIPLE */
+  .principle {
+    background: #0f172a;
+    color: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .principle h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #60a5fa;
+    margin-bottom: 16px;
+  }
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .principle-item {
+    border-left: 2px solid rgba(255,255,255,0.2);
+    padding-left: 16px;
+  }
+  .principle-item .p-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .principle-item .p-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+  .principle-item .p-heuristic {
+    font-size: 11px;
+    color: #fbbf24;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { width: 60px; overflow: hidden; }
+    .sidebar-header, .sidebar-footer, .menu-label { display: none; }
+    .menu-item { padding: 12px 18px; justify-content: center; }
+    .menu-item span:not(.menu-icon) { display: none; }
+    .main { margin-left: 60px; }
+    .container { padding: 20px 16px; }
+    .err-body { grid-template-columns: 1fr; }
+    .err-asis { border-right: none; border-bottom: 1px solid var(--border); }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .principle-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-badge">Error Message Catalog</div>
+      <h1>Error Message<br><span>Catalog</span></h1>
+      <div class="sidebar-stats">
+        <div class="sidebar-stat"><div class="num">15</div><div class="label">카탈로그 항목</div></div>
+        <div class="sidebar-stat"><div class="num">4,232</div><div class="label">관련 CRM 케이스</div></div>
+        <div class="sidebar-stat"><div class="num">0%</div><div class="label">현재 자체 해결률</div></div>
+        <div class="sidebar-stat"><div class="num">~40%</div><div class="label">목표 자체 해결률</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <div class="menu-label">Categories</div>
+      <div class="menu-item active" onclick="switchCat('overview', this)">
+        <span class="menu-icon">&#9776;</span><span>Overview</span>
+      </div>
+      <div class="menu-item" onclick="switchCat('crash', this)">
+        <span class="menu-icon">&#9888;</span><span>GUI 크래시/행</span>
+        <span class="menu-item-count">3</span>
+      </div>
+      <div class="menu-item" onclick="switchCat('camera', this)">
+        <span class="menu-icon">&#9673;</span><span>카메라/이미지</span>
+        <span class="menu-item-count">3</span>
+      </div>
+      <div class="menu-item" onclick="switchCat('inspect', this)">
+        <span class="menu-icon">&#9881;</span><span>검사/티칭</span>
+        <span class="menu-item-count">3</span>
+      </div>
+      <div class="menu-item" onclick="switchCat('connect', this)">
+        <span class="menu-icon">&#8644;</span><span>연동/통신</span>
+        <span class="menu-item-count">3</span>
+      </div>
+      <div class="menu-item" onclick="switchCat('data', this)">
+        <span class="menu-icon">&#9776;</span><span>데이터/파일</span>
+        <span class="menu-item-count">3</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      GTS Support UX 최적화 프로젝트<br>
+      CRM 6,769건 + 서비스 리포트 3,750건 &middot; 2026.07
+    </div>
+  </nav>
+
+  <main class="main">
+<div class="container">
+
+<!-- ===== OVERVIEW ===== -->
+<div class="cat-section active" id="cat-overview">
+
+  <div class="principle">
+    <h3>에러 메시지 재설계 3원칙</h3>
+    <div class="principle-grid">
+      <div class="principle-item">
+        <div class="p-title">1. 무엇이 일어났는지 말하라</div>
+        <div class="p-desc">"Error occurred" 대신 구체적인 원인을 사용자 언어로 설명. 에러 코드는 유지하되, 사람이 읽을 수 있는 설명을 반드시 동반.</div>
+        <div class="p-heuristic">Nielsen #9 — Help users recognize, diagnose, and recover from errors</div>
+      </div>
+      <div class="principle-item">
+        <div class="p-title">2. 어떻게 해결하는지 알려줘라</div>
+        <div class="p-desc">서비스 리포트 3,750건에서 추출한 실제 해결 패턴을 3단계 조치로 구조화. 고객이 직접 시도할 수 있는 조치 → 지사 대응 → HQ 에스컬레이션 순서.</div>
+        <div class="p-heuristic">Nielsen #10 — Help and documentation</div>
+      </div>
+      <div class="principle-item">
+        <div class="p-title">3. 심각도를 구분하라</div>
+        <div class="p-desc">즉시 중단 필요(Critical) vs 계속 사용 가능(Warning) vs 참고 사항(Info)을 시각적으로 구분. 모든 에러를 동일하게 표시하면 사용자는 전부 무시하거나 전부 두려워한다.</div>
+        <div class="p-heuristic">Nielsen #1 — Visibility of system status</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h3>카테고리별 에러 분포 (CRM 데이터 기반)</h3>
+    <div class="summary-grid">
+      <div class="summary-stat red">
+        <div class="num">473건</div>
+        <div class="label">GUI 크래시/행/버그</div>
+      </div>
+      <div class="summary-stat orange">
+        <div class="num">811건</div>
+        <div class="label">카메라/이미지</div>
+      </div>
+      <div class="summary-stat blue">
+        <div class="num">547건</div>
+        <div class="label">검사/티칭/에러알람</div>
+      </div>
+      <div class="summary-stat green">
+        <div class="num">992건</div>
+        <div class="label">연동/통신/데이터</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAT: GUI CRASH ===== -->
+<div class="cat-section" id="cat-crash">
+
+  <!-- ERR-01 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code critical">ERR-GUI-001</span>
+      <span class="err-title">GUI 응답 없음 / 프리징</span>
+      <span class="err-freq"><strong>360건</strong>서비스 리포트</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Application Not Responding</div>
+          (응답 없음 - 프로그램이 응답하지 않습니다)<br><br>
+          [프로그램 닫기] &ensp; [기다리기]
+        </div>
+        <ul class="problem-list">
+          <li>Windows 기본 메시지 — 제품 고유 안내 없음</li>
+          <li>원인 정보 제로 (메모리? 디스크? SW 버그?)</li>
+          <li>"기다리기"를 눌러도 복구되는 경우 거의 없음</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-GUI-001 | GUI 응답 지연</div>
+          <div class="msg-desc">GUI가 응답하지 않습니다. 메모리 사용량이 임계치(90%)를 초과했을 수 있습니다.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>GUI를 재시작하세요 (검사 데이터는 자동 저장됩니다)<br>
+            <span class="step-num">2</span>재발 시: AoiGuiSetup.ini > MemoryLimit 값을 확인하세요<br>
+            <span class="step-num">3</span>지속 시: SW 버전 업데이트를 확인하세요 (현재: v{version})
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>자동 메모리 모니터링으로 프리징 전 사전 경고</li>
+          <li>자동 저장 기능 안내로 재시작 두려움 제거</li>
+          <li>3단계 조치로 자체 해결 가이드</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>CRM 빈도:</strong> GUI/UI 1,019건 중 Error/Crash 473건 (25.2%)</span>
+      <span><strong>주요 고객:</strong> Huawei SSL, Xinli, Qualcomm</span>
+      <span><strong>리포트 해결:</strong> GUI 재시작(33%) → SW 업데이트(28%) → ini 수정(14%)</span>
+    </div>
+  </div>
+
+  <!-- ERR-02 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code critical">ERR-GUI-002</span>
+      <span class="err-title">GUI 비정상 종료 (Crash)</span>
+      <span class="err-freq"><strong>282건</strong>SW 업데이트로 해결</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ KYGui has stopped working</div>
+          A problem caused the program to stop working correctly.<br>
+          Windows will close the program and notify you if a solution is available.<br><br>
+          [Close program]
+        </div>
+        <ul class="problem-list">
+          <li>Windows 기본 충돌 메시지 — 원인 불명</li>
+          <li>크래시 덤프가 생성되지만 사용자가 접근 불가</li>
+          <li>어떤 조치를 해야 하는지 전혀 안내 없음</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-GUI-002 | GUI 비정상 종료</div>
+          <div class="msg-desc">GUI가 예기치 않게 종료되었습니다. 크래시 로그가 자동 저장되었습니다.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>GUI를 다시 실행하세요. 마지막 검사 데이터는 복구됩니다<br>
+            <span class="step-num">2</span>반복 발생 시: 현재 SW 버전({version})의 알려진 이슈일 수 있습니다<br>
+            <span class="step-num">3</span>[크래시 리포트 전송] — Help Desk에 로그가 자동 첨부됩니다
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>크래시 로그 자동 수집 + Help Desk 자동 첨부</li>
+          <li>알려진 이슈 DB와 자동 매칭 → 패치 안내</li>
+          <li>"데이터 복구됨" 안내로 사용자 불안 감소</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결 패턴:</strong> SW 버전 업데이트 45.7%가 이 유형</span>
+      <span><strong>Regression:</strong> 2.8→2.9, 2.9→2.9.2 버전업 시 크래시 급증</span>
+      <span><strong>평균 해결일:</strong> 146일 (GUI/UI 카테고리)</span>
+    </div>
+  </div>
+
+  <!-- ERR-03 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-GUI-003</span>
+      <span class="err-title">검사 속도 점진적 저하</span>
+      <span class="err-freq"><strong>60건</strong>Inspection/Teaching</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">(메시지 없음)</div>
+          사용자가 체감으로만 인지.<br>
+          "어제보다 검사가 느린 것 같다"<br>
+          에러 메시지 없이 점진적으로 악화됨.
+        </div>
+        <ul class="problem-list">
+          <li>경고 메시지 자체가 없음 — 사용자가 직접 체감</li>
+          <li>메모리 누수(GUI 2.9+)가 주 원인이나 진단 불가</li>
+          <li>생산 라인 정지 시까지 인지 못하는 경우 다수</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">WARN-PERF-001 | 검사 성능 저하 감지</div>
+          <div class="msg-desc">검사 시간이 기준 대비 30% 이상 증가했습니다. (현재: {n}ms → 기준: {base}ms)</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>GUI 재시작으로 메모리를 초기화하세요 (예상 복구 시간: 2분)<br>
+            <span class="step-num">2</span>재발 주기 확인: [성능 모니터] 메뉴에서 추이 그래프를 보세요<br>
+            <span class="step-num">3</span>매일 재발 시 SW 업데이트가 필요할 수 있습니다
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>검사 시간 자동 모니터링 → 임계치 초과 시 사전 경고</li>
+          <li>성능 추이 그래프 제공 → 재발 주기 시각화</li>
+          <li>생산 정지 전에 조치할 수 있는 타이밍 확보</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>원인:</strong> GUI 2.9+ 메모리 누수 추정</span>
+      <span><strong>해결:</strong> PC 재부팅(임시, 118건) → SW 업데이트(근본)</span>
+      <span><strong>특이사항:</strong> 현재 에러 메시지 자체가 없음 — 사전 감지 시스템 신규 제안</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CAT: CAMERA ===== -->
+<div class="cat-section" id="cat-camera">
+
+  <!-- ERR-04 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code critical">ERR-CAM-001</span>
+      <span class="err-title">카메라 연결 끊김</span>
+      <span class="err-freq"><strong>157건</strong>그래버보드/케이블</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Error</div>
+          Camera connection failed.<br>
+          Error Code: 0x80040001
+        </div>
+        <ul class="problem-list">
+          <li>16진수 에러코드 — 사용자가 의미 파악 불가</li>
+          <li>어떤 카메라인지, 물리적 문제인지 SW 문제인지 불명</li>
+          <li>케이블 확인? 보드 교체? 드라이버 재설치? 판단 불가</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-CAM-001 | 카메라 연결 끊김</div>
+          <div class="msg-desc">카메라 #{n}번과의 연결이 끊겼습니다. 그래버 보드 또는 링크 케이블을 확인하세요.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>카메라 케이블 연결 상태를 확인하세요 (뒷면 커넥터 #{n})<br>
+            <span class="step-num">2</span>GUI를 재시작하세요 — 일시적 통신 오류일 수 있습니다<br>
+            <span class="step-num">3</span>지속 시: 그래버 보드 교체가 필요합니다 → Help Desk 접수
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>어떤 카메라인지 번호로 특정 → 물리적 위치 안내</li>
+          <li>SW vs HW 문제 순차 판별 가이드</li>
+          <li>Help Desk 접수 시 진단 정보 자동 첨부</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>CRM 빈도:</strong> Camera/Image 811건 중 HW 연결 관련 ~200건</span>
+      <span><strong>해결:</strong> 케이블 교체(501건) → 그래버보드 교체(157건)</span>
+      <span><strong>주요 지역:</strong> 미주(Critical 50%), 동남아</span>
+    </div>
+  </div>
+
+  <!-- ERR-05 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code critical">ERR-CAM-002</span>
+      <span class="err-title">3D 복원 불안정 / 이미지 품질 저하</span>
+      <span class="err-freq"><strong>543건</strong>서비스 리포트</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ 3D Reconstruction Error</div>
+          3D image reconstruction failed.<br>
+          Please check the camera module.
+        </div>
+        <ul class="problem-list">
+          <li>"camera module 확인" — 구체적으로 뭘 확인하라는 건지 불명</li>
+          <li>Glass 오염 / PZT 불량 / 미러 이탈 중 어떤 건지 모름</li>
+          <li>캘리브레이션이 필요한 건지 하드웨어 교체인지 불명</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-CAM-002 | 3D 복원 품질 저하</div>
+          <div class="msg-desc">3D 이미지 복원 품질이 기준 이하입니다. 광학 모듈 점검이 필요합니다.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>Glass 표면 클리닝을 수행하세요 (에탄올 + 렌즈 티슈)<br>
+            <span class="step-num">2</span>클리닝 후 KY Cal 캘리브레이션을 재수행하세요<br>
+            <span class="step-num">3</span>미해결 시: PZT 케이블 텐션 점검 → Help Desk 접수
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>가장 빈번한 원인(Glass 오염, 542건) 순서로 조치 안내</li>
+          <li>캘리브레이션 필요성을 명시적으로 안내</li>
+          <li>단계별 해결률 표시 (1단계로 62% 해결)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결 패턴:</strong> Glass 클리닝(62건) → KY Cal(542건) → PZT 교체(116건) → 미러 재조정</span>
+      <span><strong>특이사항:</strong> 캘리브레이션이 모든 광학 조치 후 필수 (24.5%)</span>
+    </div>
+  </div>
+
+  <!-- ERR-06 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-CAL-001</span>
+      <span class="err-title">캘리브레이션 실패</span>
+      <span class="err-freq"><strong>542건</strong>KY Cal 재수행</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Calibration Failed</div>
+          KY Calibration has failed.<br>
+          Error in step 3.
+        </div>
+        <ul class="problem-list">
+          <li>"step 3"이 무엇인지 사용자가 알 수 없음</li>
+          <li>Glass 문제? 조명 문제? 타겟 위치 문제? 불명</li>
+          <li>재시도 가능한 건지 HW 점검이 필요한 건지 불명</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-CAL-001 | 캘리브레이션 실패 (Phase 3: 높이 교정)</div>
+          <div class="msg-desc">높이 교정 단계에서 측정값이 허용 범위를 벗어났습니다. (측정: {val}μm, 허용: ±{tol}μm)</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>캘리브레이션 타겟 표면을 클리닝하세요<br>
+            <span class="step-num">2</span>타겟 위치가 올바른지 확인 후 재시도하세요<br>
+            <span class="step-num">3</span>3회 연속 실패 시: Glass 또는 PZT 점검이 필요합니다
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>실패 단계명을 사용자 언어로 번역 ("Phase 3" → "높이 교정")</li>
+          <li>측정값 vs 허용값 비교 → 얼마나 벗어났는지 정량 제시</li>
+          <li>재시도 횟수 기반 에스컬레이션 안내</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>빈도:</strong> 서비스 리포트 해결 방법 1위 — KY Cal 재수행 542건</span>
+      <span><strong>관련:</strong> 모든 광학 조치(Glass, PZT, 미러) 후 캘리브레이션 필수</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CAT: INSPECTION ===== -->
+<div class="cat-section" id="cat-inspect">
+
+  <!-- ERR-07 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-INS-001</span>
+      <span class="err-title">오검출 / False Call 다수 발생</span>
+      <span class="err-freq"><strong>270건</strong>서비스 리포트</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">(메시지 없음)</div>
+          검사 결과에 NG가 다수 표시되지만,<br>
+          실제 불량이 아닌 경우.<br>
+          사용자가 매번 수동으로 Review 해야 함.
+        </div>
+        <ul class="problem-list">
+          <li>오검출 경고 시스템 없음 — NG 비율 이상 시 알림 없음</li>
+          <li>Tolerance 조정이 필요한 건지 알고리즘 문제인지 불명</li>
+          <li>Review 부담 → 생산성 저하 → 결국 Help Desk 등록</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">WARN-INS-001 | 오검출률 이상 감지</div>
+          <div class="msg-desc">최근 100보드 NG 비율이 {n}%로, 기준({base}%)보다 높습니다. Tolerance 조정이 필요할 수 있습니다.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>해당 Component의 Tolerance 설정을 확인하세요<br>
+            <span class="step-num">2</span>Fiducial 전략을 변경해 보세요 (글로벌 → 로컬)<br>
+            <span class="step-num">3</span>SW 버전 업데이트 후 발생 시: 이전 버전 원복을 고려하세요
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>NG 비율 자동 모니터링 → 임계치 초과 시 사전 경고</li>
+          <li>가장 빈번한 원인(Tolerance, Fiducial) 순서 안내</li>
+          <li>버전 Regression 가능성 자동 감지</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결:</strong> Tolerance 조정(100건) → Fiducial 전략 변경 → SW 원복/패치</span>
+      <span><strong>관련:</strong> AI Flux OLT 재학습 필요한 경우도 있음</span>
+    </div>
+  </div>
+
+  <!-- ERR-08 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-INS-002</span>
+      <span class="err-title">Teaching 데이터 유실 / 초기화</span>
+      <span class="err-freq"><strong>84건</strong>Pad/Component 티칭</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Teaching data not found</div>
+          Component teaching data is missing or corrupted.
+        </div>
+        <ul class="problem-list">
+          <li>"missing or corrupted" — 유실인지 손상인지 불명</li>
+          <li>복구 가능한 건지, 처음부터 다시 해야 하는 건지 불명</li>
+          <li>Huawei SSL에서 검사조건 유실 반복 40건 — 최대 pain point</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-INS-002 | Teaching 데이터 유실</div>
+          <div class="msg-desc">Component "{name}"의 Teaching 데이터를 찾을 수 없습니다. 마지막 백업: {date}</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>[백업에서 복원] — 마지막 백업 시점의 데이터를 복원합니다<br>
+            <span class="step-num">2</span>LM/Local 모드 전환 이력을 확인하세요 (전환 시 유실 가능)<br>
+            <span class="step-num">3</span>반복 발생 시: Job 백업 자동화 설정을 확인하세요
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>자동 백업 시스템 + 원클릭 복원 기능</li>
+          <li>LM↔Local 모드 전환 시 안전 체크 추가</li>
+          <li>유실 원인(모드 전환 등) 명시</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>핵심 원인:</strong> Huawei SSL — LM↔Local 모드 전환 시 검사조건 유실 (~40건)</span>
+      <span><strong>빈도:</strong> Pad/Component 티칭 84건 (Inspection/Teaching 최다)</span>
+    </div>
+  </div>
+
+  <!-- ERR-09 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code medium">ERR-ALM-001</span>
+      <span class="err-title">일반 에러/알람</span>
+      <span class="err-freq"><strong>253건</strong>Error/Alarm 전체</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Error</div>
+          An error has occurred.<br>
+          Please contact support.
+        </div>
+        <ul class="problem-list">
+          <li>"An error has occurred" — 가장 무의미한 에러 메시지</li>
+          <li>"contact support"만 안내 — 자체 해결 경로 제로</li>
+          <li>Problem 비율 96% — 거의 전부 장애성 이슈</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-{MODULE}-{CODE} | {에러 요약}</div>
+          <div class="msg-desc">{구체적 원인 설명 — 사용자 언어}</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>{고객 자체 조치 — Self-Resolvable}<br>
+            <span class="step-num">2</span>{지사 대응 조치 — Field Service}<br>
+            <span class="step-num">3</span>{HQ 에스컬레이션 조건 — 명시적 기준}
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>모듈별 에러 코드 체계화 (GUI/CAM/INS/CAL/COM)</li>
+          <li>3-tier 조치 구조 표준화 (자체→지사→HQ)</li>
+          <li>에러 코드로 Help Desk 자동 분류 → IssueCategory 사용률 향상</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>현재:</strong> IssueCategory 사용률 0%</span>
+      <span><strong>목표:</strong> 에러 코드 → 자동 분류 → 데이터 기반 개선 루프</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CAT: CONNECTION ===== -->
+<div class="cat-section" id="cat-connect">
+
+  <!-- ERR-10 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-COM-001</span>
+      <span class="err-title">KSmart 서버 연결 실패</span>
+      <span class="err-freq"><strong>304건</strong>서버 재시작/설정</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Connection Error</div>
+          Failed to connect to KSmart server.<br>
+          Check network connection.
+        </div>
+        <ul class="problem-list">
+          <li>네트워크 문제인지 서버 다운인지 클라이언트 문제인지 불명</li>
+          <li>"Check network" — 구체적으로 뭘 체크하라는 건지 불명</li>
+          <li>유럽 KPO 연동 183건 — 지역별 최대 이슈</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-COM-001 | KSmart 서버 연결 실패</div>
+          <div class="msg-desc">KSmart 서버({ip}:{port})에 연결할 수 없습니다. 서버 상태: {status}</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>KSmart 서비스 상태를 확인하세요 (Windows 서비스 → KSmartService)<br>
+            <span class="step-num">2</span>서비스 중지 시: 서비스를 재시작하세요<br>
+            <span class="step-num">3</span>KsClientMaster 버전을 확인하세요 (현재: {ver}, 권장: {rec_ver})
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>서버 IP/포트 + 상태(응답/미응답/타임아웃) 명시</li>
+          <li>서비스 재시작 방법 직접 안내</li>
+          <li>클라이언트 버전 불일치 자동 감지</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결:</strong> KSmart 서비스 재시작(304건) → KsClientMaster 업데이트</span>
+      <span><strong>유럽:</strong> KPO-P 프린터 연동 183건 — 유럽 최대 이슈</span>
+    </div>
+  </div>
+
+  <!-- ERR-11 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-COM-002</span>
+      <span class="err-title">MES 통신 오류</span>
+      <span class="err-freq"><strong>121건</strong>MES 설정/통신</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ MES Communication Error</div>
+          MES communication timeout.
+        </div>
+        <ul class="problem-list">
+          <li>어떤 MES 프로토콜(SECS/GEM, PLC, iTAC)인지 불명</li>
+          <li>타임아웃 시간이나 재시도 횟수 정보 없음</li>
+          <li>한국 MES 연동 80건 — 한국 특화 이슈</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-COM-002 | MES 통신 타임아웃</div>
+          <div class="msg-desc">{protocol} 통신이 {timeout}ms 내 응답하지 않았습니다. (대상: {host}:{port})</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>MES 서버 상태를 확인하세요<br>
+            <span class="step-num">2</span>MES 설정 파일의 IP/포트가 올바른지 확인하세요<br>
+            <span class="step-num">3</span>[통신 테스트] — 연결 상태를 진단합니다
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>프로토콜 종류 + 대상 서버 정보 명시</li>
+          <li>내장 통신 테스트 도구로 자체 진단</li>
+          <li>MES 설정 가이드 링크 제공</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>한국:</strong> MES 연동 80건 (SECS/GEM, PLC, iTAC) — 한국 특화</span>
+      <span><strong>해결:</strong> MES 설정/통신 수정 121건</span>
+    </div>
+  </div>
+
+  <!-- ERR-12 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code medium">ERR-COM-003</span>
+      <span class="err-title">바코드 리더 인식 실패</span>
+      <span class="err-freq"><strong>138건</strong>Barcode 카테고리</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Barcode Read Error</div>
+          Failed to read barcode.
+        </div>
+        <ul class="problem-list">
+          <li>바코드 종류(1D/2D/QR)나 위치 정보 없음</li>
+          <li>리더 하드웨어 문제인지 인식 설정 문제인지 불명</li>
+          <li>Problem 72%, ER 28% — 기능 요청도 높은 영역</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-COM-003 | 바코드 인식 실패</div>
+          <div class="msg-desc">바코드를 읽지 못했습니다. 마지막 스캔 이미지를 확인하세요.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>[스캔 이미지 보기] — 바코드 영역이 올바른지 확인<br>
+            <span class="step-num">2</span>바코드 타입 설정을 확인하세요 (현재: {type})<br>
+            <span class="step-num">3</span>리더 하드웨어 연결 상태를 점검하세요
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>마지막 스캔 이미지 미리보기로 시각적 확인</li>
+          <li>바코드 타입 자동 감지 제안</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결일:</strong> 평균 139일</span>
+      <span><strong>관련:</strong> Fiducial/BadMark 티칭 14건과 연관</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CAT: DATA ===== -->
+<div class="cat-section" id="cat-data">
+
+  <!-- ERR-13 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code critical">ERR-DAT-001</span>
+      <span class="err-title">DB / 데이터 손상</span>
+      <span class="err-freq"><strong>120건</strong>DB/데이터 복구</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Database Error</div>
+          Database access failed.<br>
+          Error: file is not a database
+        </div>
+        <ul class="problem-list">
+          <li>SQLite 내부 에러 메시지 그대로 노출</li>
+          <li>데이터 복구 가능 여부 불명</li>
+          <li>어떤 DB(검사결과? Job? 설정?)인지 불명</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-DAT-001 | 검사 데이터베이스 손상</div>
+          <div class="msg-desc">검사 결과 DB에 접근할 수 없습니다. 자동 백업에서 복원을 시도합니다.</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>[자동 복원 시작] — 마지막 정상 백업({date})에서 복원<br>
+            <span class="step-num">2</span>복원 실패 시: 레지스트리 백업을 확인하세요<br>
+            <span class="step-num">3</span>모든 복원 실패 시: Help Desk에 접수하세요 (DB 파일 자동 첨부)
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>자동 백업 + 원클릭 복원 기능</li>
+          <li>내부 에러코드 대신 사용자 언어로 번역</li>
+          <li>손상된 DB 파일 자동 첨부로 분석 가속</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결:</strong> DB/데이터 복구 120건 + 레지스트리 복원 80건</span>
+      <span><strong>관련:</strong> PC 교체 시 6단계 표준 절차의 일부</span>
+    </div>
+  </div>
+
+  <!-- ERR-14 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code high">ERR-DAT-002</span>
+      <span class="err-title">Job/Recipe 로드 실패</span>
+      <span class="err-freq"><strong>197건</strong>Job 재작성</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Job Load Error</div>
+          Failed to load job file.<br>
+          File may be corrupted.
+        </div>
+        <ul class="problem-list">
+          <li>어떤 Job 파일인지 경로 정보 없음</li>
+          <li>"may be corrupted" — 추측성 메시지</li>
+          <li>버전 호환성 문제인 경우가 많으나 안내 없음</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-DAT-002 | Job 로드 실패</div>
+          <div class="msg-desc">Job "{filename}"을 로드할 수 없습니다. (Job 버전: {v1}, 현재 SW: {v2})</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>Job 파일의 SW 버전 호환성을 확인하세요<br>
+            <span class="step-num">2</span>[Job 변환] — 현재 SW 버전에 맞게 자동 변환을 시도합니다<br>
+            <span class="step-num">3</span>변환 실패 시: ePM에서 Job을 재작성하세요
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>Job 버전 vs SW 버전 호환성 자동 체크</li>
+          <li>자동 변환 도구 내장</li>
+          <li>Job 파일 경로 명시</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결:</strong> ePM Job 재작성 197건</span>
+      <span><strong>원인:</strong> SW 버전 업데이트 후 Job 호환성 문제 다수</span>
+    </div>
+  </div>
+
+  <!-- ERR-15 -->
+  <div class="err-card">
+    <div class="err-header">
+      <span class="err-code medium">ERR-DAT-003</span>
+      <span class="err-title">리포트 생성/내보내기 실패</span>
+      <span class="err-freq"><strong>120건</strong>Report/Export</span>
+    </div>
+    <div class="err-body">
+      <div class="err-asis">
+        <div class="label">현재 (As-Is)</div>
+        <div class="msg-box bad">
+          <div class="msg-title-bar">⊘ Export Error</div>
+          Failed to export report.
+        </div>
+        <ul class="problem-list">
+          <li>디스크 부족? 권한 문제? 데이터 오류? 원인 불명</li>
+          <li>어떤 형식(CSV, PDF, Excel)인지 불명</li>
+          <li>ER 45% — 기능 자체가 부족한 영역</li>
+        </ul>
+      </div>
+      <div class="err-tobe">
+        <div class="label">개선안 (To-Be)</div>
+        <div class="msg-box good">
+          <div class="msg-code">ERR-DAT-003 | 리포트 내보내기 실패</div>
+          <div class="msg-desc">리포트를 {format} 형식으로 저장할 수 없습니다. (대상 경로: {path})</div>
+          <div class="msg-steps">
+            <span class="step-num">1</span>저장 경로의 디스크 공간을 확인하세요 (잔여: {free}GB)<br>
+            <span class="step-num">2</span>다른 경로에 저장을 시도하세요<br>
+            <span class="step-num">3</span>데이터 크기가 큰 경우: 기간을 분할하여 내보내세요
+          </div>
+        </div>
+        <ul class="improve-list">
+          <li>저장 경로 + 디스크 공간 정보 명시</li>
+          <li>대안 경로 자동 제안</li>
+          <li>대용량 데이터 분할 내보내기 가이드</li>
+        </ul>
+      </div>
+    </div>
+    <div class="err-evidence">
+      <span><strong>해결일:</strong> 평균 148일</span>
+      <span><strong>특이사항:</strong> ER 45% — 현재 없는 기능을 요청하는 케이스 다수 (SPC 연동, 커스텀 리포트 등)</span>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- container -->
+  </main>
+</div><!-- layout -->
+
+<script>
+function switchCat(catId, el) {
+  document.querySelectorAll('.cat-section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.menu-item').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('cat-' + catId).classList.add('active');
+  if (el) el.classList.add('active');
+  document.querySelector('.main').scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
