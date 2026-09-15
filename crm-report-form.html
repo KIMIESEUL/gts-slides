@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Service Report Form</title>
+<style>
+:root {
+  --primary: #1a73e8;
+  --primary-light: #e8f0fe;
+  --dark: #0d1b2a;
+  --text: #1f2937;
+  --text-2: #6b7280;
+  --border: #d1d5db;
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI'; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, var(--dark), #1b2d4f);
+  color: #fff; padding: 32px 40px 0;
+}
+.header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+.header p { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 20px; }
+
+/* ── Tabs ── */
+.tab-bar {
+  display: flex; gap: 0;
+}
+.tab-btn {
+  padding: 12px 28px;
+  font-size: 14px; font-weight: 600; font-family: 'Segoe UI';
+  border: none; cursor: pointer;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  border-radius: 8px 8px 0 0;
+  transition: all 0.15s;
+}
+.tab-btn:hover { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+.tab-btn.active { background: var(--bg); color: var(--text); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── Form Layout ── */
+.form-container {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 40px;
+  align-items: start;
+}
+.form-area { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Guide Layout ── */
+.guide-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 40px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-header {
+  padding: 14px 20px;
+  font-size: 14px; font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  border-bottom: 1px solid #c7d7fe;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-header .num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+}
+.card-body { padding: 20px; }
+
+/* ── Form Fields ── */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text); margin-bottom: 5px;
+}
+.field label .hint {
+  font-weight: 400; color: var(--text-2); font-size: 12px; margin-left: 6px;
+}
+.field input[type="text"],
+.field input[type="date"],
+.field input[type="number"],
+.field select,
+.field textarea {
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: 6px;
+  font-size: 14px; font-family: 'Segoe UI';
+  color: var(--text); background: #fff;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+}
+.field textarea { resize: vertical; min-height: 80px; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.radio-group, .check-group { display: flex; gap: 16px; flex-wrap: wrap; }
+.radio-group label, .check-group label {
+  font-size: 13px; font-weight: 400; cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+}
+.radio-group input, .check-group input { accent-color: var(--primary); }
+
+.checkbox-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; cursor: pointer;
+}
+.checkbox-row input { accent-color: var(--primary); }
+
+.tag-input-wrap {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 10px; min-height: 38px; cursor: text;
+}
+.tag-input-wrap:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+}
+.tag { background: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 600;
+  padding: 3px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
+.tag .remove { cursor: pointer; font-size: 14px; line-height: 1; }
+.tag-input-wrap input {
+  border: none; outline: none; font-size: 13px; font-family: 'Segoe UI';
+  flex: 1; min-width: 100px; padding: 2px 0;
+}
+
+.required::after { content: ' *'; color: var(--danger); }
+
+/* ── Preview Panel ── */
+.preview-panel {
+  position: sticky; top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: calc(100vh - 48px);
+  display: flex; flex-direction: column;
+}
+.preview-header {
+  padding: 14px 20px;
+  font-size: 14px; font-weight: 700;
+  color: #fff; background: var(--dark);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.preview-body {
+  padding: 16px;
+  overflow-y: auto; flex: 1;
+}
+.preview-body pre {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px; line-height: 1.6;
+  color: var(--text); white-space: pre-wrap; word-break: break-all;
+}
+
+/* ── Buttons ── */
+.btn {
+  padding: 10px 20px; border: none; border-radius: 6px;
+  font-size: 14px; font-weight: 600; font-family: 'Segoe UI';
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #1557b0; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #047857; }
+.btn-outline { background: #fff; color: var(--text); border: 1px solid var(--border); }
+.btn-outline:hover { background: var(--bg); }
+.btn-group { display: flex; gap: 10px; margin-top: 8px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 30px; right: 30px;
+  background: var(--dark); color: #fff;
+  padding: 14px 24px; border-radius: 8px;
+  font-size: 14px; font-weight: 600;
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 999;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Guide Styles ── */
+.guide-card {
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 24px 28px;
+  margin-bottom: 18px;
+}
+.guide-card h2 {
+  font-size: 17px; font-weight: 700; color: var(--primary);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.guide-card h2 .gnum {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; flex-shrink: 0;
+}
+.guide-card p.desc {
+  font-size: 14px; color: var(--text); margin-bottom: 12px; line-height: 1.7;
+}
+.guide-card p.desc strong { color: var(--dark); }
+
+.compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  margin: 14px 0 0;
+}
+.compare-box {
+  border-radius: 8px; padding: 14px 16px;
+  font-size: 13px; line-height: 1.7;
+}
+.compare-box.bad { background: #fef2f2; border: 1px solid #fecaca; }
+.compare-box.good { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.compare-box .clabel {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 8px;
+}
+.compare-box.bad .clabel { color: var(--danger); }
+.compare-box.good .clabel { color: var(--success); }
+.compare-box code {
+  display: block; background: rgba(0,0,0,0.04);
+  padding: 10px 12px; border-radius: 6px;
+  font-family: 'Consolas', monospace; font-size: 12px;
+  white-space: pre-wrap; line-height: 1.6;
+}
+
+.tip {
+  background: var(--primary-light); border-radius: 8px;
+  padding: 12px 16px; margin: 12px 0 0;
+  font-size: 13px; color: var(--primary);
+  border-left: 3px solid var(--primary);
+}
+.tip strong { font-weight: 700; }
+
+.guide-summary {
+  background: linear-gradient(135deg, var(--dark), #1b2d4f);
+  color: #fff; border-radius: 10px;
+  padding: 24px 28px; margin-top: 24px;
+}
+.guide-summary h2 { font-size: 17px; margin-bottom: 14px; color: #fff; }
+.guide-summary ol { padding-left: 18px; font-size: 14px; line-height: 2.1; }
+.guide-summary li { color: rgba(255,255,255,0.88); }
+.guide-summary li strong { color: #fff; }
+
+/* ── Effect Section ── */
+.effect-section {
+  margin-top: 32px; margin-bottom: 8px;
+}
+.effect-section h2 {
+  font-size: 20px; font-weight: 700; color: var(--dark);
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+.effect-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 20px;
+}
+.effect-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.effect-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.effect-card.blue::before { background: var(--primary); }
+.effect-card.green::before { background: var(--success); }
+.effect-card.orange::before { background: var(--warning); }
+.effect-card.purple::before { background: #7c3aed; }
+.effect-icon {
+  font-size: 28px; margin-bottom: 10px;
+}
+.effect-card h3 {
+  font-size: 15px; font-weight: 700; color: var(--dark);
+  margin-bottom: 8px;
+}
+.effect-card p {
+  font-size: 13px; color: var(--text-2); line-height: 1.65;
+}
+.effect-card .metric {
+  display: inline-block;
+  margin-top: 10px; padding: 4px 12px;
+  border-radius: 20px; font-size: 12px; font-weight: 700;
+}
+.effect-card.blue .metric { background: var(--primary-light); color: var(--primary); }
+.effect-card.green .metric { background: #ecfdf5; color: var(--success); }
+.effect-card.orange .metric { background: #fffbeb; color: var(--warning); }
+.effect-card.purple .metric { background: #f5f3ff; color: #7c3aed; }
+
+.effect-flow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.effect-flow h3 {
+  font-size: 15px; font-weight: 700; color: var(--dark);
+  margin-bottom: 16px;
+}
+.flow-steps {
+  display: flex; align-items: stretch; gap: 0;
+}
+.flow-step {
+  flex: 1; text-align: center; padding: 16px 12px;
+  position: relative;
+}
+.flow-step::after {
+  content: '';
+  position: absolute; right: -8px; top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid var(--primary);
+  z-index: 1;
+}
+.flow-step:last-child::after { display: none; }
+.flow-step .ficon { font-size: 24px; margin-bottom: 6px; }
+.flow-step .flabel {
+  font-size: 12px; font-weight: 700; color: var(--primary);
+  text-transform: uppercase; letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+.flow-step .fdesc {
+  font-size: 12px; color: var(--text-2); line-height: 1.5;
+}
+
+.effect-bottom {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff; border-radius: 10px;
+  padding: 22px 28px;
+  display: flex; align-items: center; gap: 20px;
+}
+.effect-bottom .eb-icon { font-size: 36px; flex-shrink: 0; }
+.effect-bottom h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.effect-bottom p { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+
+/* ── Template Tab ── */
+.tpl-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 40px;
+}
+.tpl-intro {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 26px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary);
+}
+.tpl-intro h2 {
+  font-size: 17px; font-weight: 700; color: var(--dark); margin-bottom: 8px;
+}
+.tpl-intro p {
+  font-size: 14px; color: var(--text-2); line-height: 1.7;
+}
+.tpl-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.tpl-box-header {
+  padding: 12px 20px;
+  background: var(--dark); color: #fff;
+  font-size: 14px; font-weight: 700;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.tpl-box-header .tpl-copy-btn {
+  padding: 6px 16px; border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 5px; background: transparent; color: #fff;
+  font-size: 12px; font-weight: 600; font-family: 'Segoe UI';
+  cursor: pointer; transition: all 0.15s;
+}
+.tpl-box-header .tpl-copy-btn:hover {
+  background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.6);
+}
+.tpl-box-body {
+  padding: 20px 24px;
+}
+.tpl-box-body pre {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px; line-height: 1.8;
+  color: var(--text); white-space: pre-wrap;
+  background: var(--bg);
+  padding: 20px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.tpl-box-body .tpl-note {
+  font-size: 13px; color: var(--text-2); margin-top: 12px;
+  line-height: 1.6;
+}
+.tpl-section-label {
+  font-size: 13px; font-weight: 700; color: var(--primary);
+  text-transform: uppercase; letter-spacing: 0.3px;
+  margin-bottom: 10px; margin-top: 20px;
+}
+.tpl-section-label:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<!-- Header + Tabs -->
+<div class="header">
+  <h1>CRM 서비스 리포트 구조화 프로젝트</h1>
+  <p>AI가 학습할 수 있는 형식으로 케이스 리포트를 표준화하여, 유사 케이스 자동 매칭 · 해결책 추천 · 반복 이슈 사전 예방을 실현합니다</p>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('guide')">작성 가이드</button>
+    <button class="tab-btn" onclick="switchTab('effect')">기대 효과</button>
+    <button class="tab-btn" onclick="switchTab('template')">CRM 템플릿</button>
+    <button class="tab-btn" onclick="switchTab('form')">리포트 작성</button>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 1: 가이드 ═══════════ -->
+<div class="tab-content active" id="tab-guide">
+<div class="guide-container">
+
+  <div class="guide-card">
+    <h2><span class="gnum">1</span> 스크린샷 대신 텍스트로 써라</h2>
+    <p class="desc">AI는 이미지 안의 텍스트를 직접 읽지 못합니다. 에러 메시지, 로그, 설정값은 <strong>반드시 텍스트로 복사</strong>해서 붙여넣어야 AI가 검색하고 패턴을 찾을 수 있습니다.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>에러 화면 스크린샷 첨부
+(이미지에 에러 메시지가 있지만
+AI는 읽을 수 없음)</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>에러 메시지:
+"NullReferenceException at
+KYInspection.FOV.CalcOffset()
+Line 342: object reference not set"</code>
+      </div>
+    </div>
+    <div class="tip"><strong>팁:</strong> 스크린샷은 참고용으로 남기되, 핵심 정보(에러 메시지, 설정값, 로그)는 항상 텍스트로 함께 작성하세요.</div>
+  </div>
+
+  <div class="guide-card">
+    <h2><span class="gnum">2</span> 증상과 원인을 분리해서 써라</h2>
+    <p class="desc">하나의 문장에 증상, 원인, 해결을 섞어 쓰면 AI가 각각을 구분하지 못합니다. <strong>"무엇이 발생했는지"</strong>와 <strong>"왜 발생했는지"</strong>를 명확히 나눠서 작성하세요.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>Calibration 하고 나서 Fiducial이
+안 잡혀서 FOV 좌표를 다시 설정했더니
+해결됨</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>증상: Calibration 후 Fiducial 인식 실패
+원인: Calibration 시 FOV 좌표 초기화 되나
+      재설정 프로세스 누락
+해결: FOV 좌표 수동 재설정 후 정상</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-card">
+    <h2><span class="gnum">3</span> 재현 절차를 순서대로 써라</h2>
+    <p class="desc">AI가 동일 증상의 케이스를 자동으로 묶으려면, <strong>어떤 순서로 했을 때 문제가 생기는지</strong> 명확한 단계가 필요합니다.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>JOB을 열고 Calibration 후에
+Component를 추가하면 문제 발생</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>재현 절차:
+1. AOI GUI 실행
+2. JOB 열기 (기존 JOB)
+3. Calibration 수행 (Full Cal)
+4. Component 추가 → Apply
+5. GUI 응답 없음 (Hang) 발생</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-card">
+    <h2><span class="gnum">4</span> 고정된 분류값을 사용해라</h2>
+    <p class="desc">같은 문제를 "GUI 멈춤", "화면 정지", "프리징", "응답 없음"으로 제각각 쓰면 AI는 같은 문제인지 모릅니다. <strong>정해진 카테고리와 용어</strong>를 사용하세요.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>카테고리: 없음 (자유 서술)
+"GUI가 먹통이 됨"
+"화면이 안 움직여요"
+"프로그램이 멈췄습니다"</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>카테고리: GUI/UI
+하위: Stability
+증상 키워드: GUI Hang
+근본 원인: SW 버그
+해결 방법: SW 패치</code>
+      </div>
+    </div>
+    <div class="tip"><strong>팁:</strong> 리포트 작성 탭의 드롭다운 항목을 사용하면 자동으로 통일된 분류값이 적용됩니다.</div>
+  </div>
+
+  <div class="guide-card">
+    <h2><span class="gnum">5</span> 환경 정보를 빠뜨리지 마라</h2>
+    <p class="desc">같은 증상이라도 <strong>제품, SW 버전, 고객사</strong>에 따라 원인이 다릅니다. AI는 이 환경 정보를 조건으로 사용해서 더 정확한 답을 찾습니다.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>고객사에서 에러 발생했다고 연락옴.
+확인해보니 설정 문제였음.</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>제품: AOI
+SW 버전: 3.2.1.4
+고객사: Samsung SDI (VIP)
+지역: Korea
+OS: Windows 10 21H2</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-card">
+    <h2><span class="gnum">6</span> 해결 방법을 구체적으로 써라</h2>
+    <p class="desc">"해결됨"만 쓰면 AI는 아무것도 배우지 못합니다. <strong>정확히 어떤 파일/설정/값을 어떻게 변경했는지</strong> 써야 다음에 같은 문제가 왔을 때 AI가 답을 줄 수 있습니다.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>설정 변경 후 해결됨</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>해결 상세:
+1. AoiGuiSetup.ini 열기
+2. [Memory] 섹션
+   MaxHeapSize=2048 → 4096 변경
+3. AOI GUI 재시작
+4. 동일 JOB → 정상 동작 확인</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-card">
+    <h2><span class="gnum">7</span> AI용 메타데이터를 추가해라</h2>
+    <p class="desc">난이도, 재발 가능성, Self-Resolution 가능 여부, 키워드 같은 <strong>메타 정보</strong>는 AI가 케이스를 분류하고 우선순위를 정하는 데 핵심입니다.</p>
+    <div class="compare">
+      <div class="compare-box bad">
+        <div class="clabel">현재 방식</div>
+        <code>(메타 정보 없음)
+그냥 케이스 닫기</code>
+      </div>
+      <div class="compare-box good">
+        <div class="clabel">AI 최적화</div>
+        <code>난이도: 중
+재발 가능성: 높음
+Self-Resolution: 가능
+키워드: Memory, HeapSize, GUI Hang
+유사 케이스: CAS-00042, CAS-00105</code>
+      </div>
+    </div>
+    <div class="tip"><strong>팁:</strong> 특히 <strong>Self-Resolution 가능 여부</strong>는 고객이 스스로 해결할 수 있는 케이스를 AI가 자동 분류하는 핵심 기준이 됩니다.</div>
+  </div>
+
+  <div class="guide-summary">
+    <h2>요약: AI가 학습 잘 하는 리포트 7원칙</h2>
+    <ol>
+      <li><strong>텍스트로 써라</strong> — 스크린샷 속 텍스트는 AI가 못 읽는다</li>
+      <li><strong>증상/원인/해결을 분리해라</strong> — 한 문장에 섞지 마라</li>
+      <li><strong>재현 절차를 단계별로 써라</strong> — 1, 2, 3 순서대로</li>
+      <li><strong>고정된 분류값을 써라</strong> — 같은 문제는 같은 용어로</li>
+      <li><strong>환경 정보를 빠뜨리지 마라</strong> — 제품, 버전, 고객사</li>
+      <li><strong>해결 방법을 구체적으로 써라</strong> — 파일명, 설정값까지</li>
+      <li><strong>메타데이터를 추가해라</strong> — 난이도, 재발, 키워드</li>
+    </ol>
+  </div>
+
+  <div style="text-align:center; margin-top:28px;">
+    <button class="btn btn-primary" onclick="switchTab('effect')" style="padding:14px 40px; font-size:15px;">기대 효과 보기 →</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════ TAB 2: 기대 효과 ═══════════ -->
+<div class="tab-content" id="tab-effect">
+<div class="guide-container">
+
+  <div class="effect-section">
+
+    <!-- Before / After 비교 -->
+    <div class="guide-card" style="margin-bottom:24px; border-left:4px solid var(--primary); padding:28px 28px;">
+      <h2 style="margin-bottom:14px; font-size:18px;">현재 vs 구조화 리포트</h2>
+      <div class="compare">
+        <div class="compare-box bad">
+          <div class="clabel">현재 방식의 한계</div>
+          <code>- 자유 서술형 텍스트 (비정형)
+- 에러 정보가 스크린샷 안에 존재
+- 카테고리/분류 없음
+- 해결 방법: "설정 변경 후 해결"
+- 메타데이터 없음
+→ AI가 학습 불가, 검색 불가</code>
+        </div>
+        <div class="compare-box good">
+          <div class="clabel">구조화 리포트</div>
+          <code>- 정형화된 JSON 필드
+- 에러 메시지 텍스트 복사
+- 통일된 카테고리 분류 체계
+- 해결: 파일명 + 설정값 + 단계
+- 난이도, 키워드, 재발 가능성
+→ AI 즉시 학습, 패턴 분석 가능</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- 핵심 효과 6가지 -->
+    <h2 style="font-size:18px; font-weight:700; color:var(--dark); margin-bottom:18px;">핵심 효과</h2>
+
+    <div class="effect-grid">
+      <div class="effect-card blue">
+        <div class="effect-icon">&#x1F50D;</div>
+        <h3>유사 케이스 자동 매칭</h3>
+        <p>구조화된 카테고리, 증상 키워드, 에러 메시지가 있으면 AI가 과거 케이스에서 동일/유사 사례를 자동으로 찾아줍니다. 엔지니어가 CRM을 수동으로 검색하며 시간을 소비할 필요가 없어집니다.</p>
+        <span class="metric">케이스 검색 시간 대폭 단축</span>
+      </div>
+      <div class="effect-card green">
+        <div class="effect-icon">&#x1F916;</div>
+        <h3>AI 자동 답변 품질 향상</h3>
+        <p>증상/원인/해결이 분리되어 있으면 AI가 "이 증상 → 이 원인 → 이 해결법" 패턴을 학습합니다. 데이터가 100건, 1000건 쌓일수록 AI 추천 정확도가 올라갑니다.</p>
+        <span class="metric">정확한 해결책 추천 가능</span>
+      </div>
+      <div class="effect-card orange">
+        <div class="effect-icon">&#x26A1;</div>
+        <h3>Self-Resolution 비율 증가</h3>
+        <p>난이도 "하" + Self-Resolution 가능 케이스가 분류되면, 고객이 직접 해결할 수 있는 가이드를 자동 생성할 수 있습니다. TS 엔지니어의 단순 반복 업무가 줄어듭니다.</p>
+        <span class="metric">단순 문의 처리 자동화</span>
+      </div>
+      <div class="effect-card purple">
+        <div class="effect-icon">&#x1F4CA;</div>
+        <h3>반복 이슈 사전 예방</h3>
+        <p>재발 가능성 "높음" 케이스, 특정 SW 버전에 집중되는 이슈를 AI가 자동 감지합니다. R&D에 데이터 기반 개선 요청이 가능해집니다.</p>
+        <span class="metric">데이터 기반 제품 개선</span>
+      </div>
+      <div class="effect-card blue">
+        <div class="effect-icon">&#x1F468;&#x200D;&#x1F393;</div>
+        <h3>신규 엔지니어 온보딩 단축</h3>
+        <p>과거 케이스가 검색 가능한 형태로 축적되면, 신규 엔지니어가 "이 증상 어떻게 해결?"을 AI에게 물어보고 바로 답을 얻습니다. 선배에게 매번 물어볼 필요가 줄어듭니다.</p>
+        <span class="metric">경험 전수 자동화</span>
+      </div>
+      <div class="effect-card green">
+        <div class="effect-icon">&#x23F1;&#xFE0F;</div>
+        <h3>케이스 처리 시간 단축</h3>
+        <p>기존: 증상 확인 → 수동 검색 → 시행착오 → 해결.<br>개선: 증상 입력 → AI가 유사 케이스 + 해결법 추천 → 바로 적용. 처리 사이클이 크게 짧아집니다.</p>
+        <span class="metric">평균 해결 시간 감소</span>
+      </div>
+    </div>
+
+    <!-- 데이터 활용 흐름 -->
+    <div class="effect-flow">
+      <h3>데이터 활용 흐름</h3>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="ficon">&#x1F4DD;</div>
+          <div class="flabel">작성</div>
+          <div class="fdesc">구조화된 폼으로<br>리포트 작성</div>
+        </div>
+        <div class="flow-step">
+          <div class="ficon">&#x1F4BE;</div>
+          <div class="flabel">축적</div>
+          <div class="fdesc">JSON 데이터가<br>DB에 저장</div>
+        </div>
+        <div class="flow-step">
+          <div class="ficon">&#x1F9E0;</div>
+          <div class="flabel">학습</div>
+          <div class="fdesc">AI가 패턴 분석<br>모델 학습</div>
+        </div>
+        <div class="flow-step">
+          <div class="ficon">&#x1F4A1;</div>
+          <div class="flabel">추천</div>
+          <div class="fdesc">새 케이스에<br>해결책 자동 추천</div>
+        </div>
+        <div class="flow-step">
+          <div class="ficon">&#x1F4C8;</div>
+          <div class="flabel">개선</div>
+          <div class="fdesc">반복 이슈 감지<br>제품에 피드백</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 구체적 시나리오 -->
+    <h2 style="font-size:18px; font-weight:700; color:var(--dark); margin:28px 0 18px;">실제 활용 시나리오</h2>
+
+    <div class="guide-card" style="margin-bottom:16px;">
+      <h2><span class="gnum" style="background:var(--primary);">1</span> 엔지니어가 새 케이스를 받았을 때</h2>
+      <p class="desc" style="margin-bottom:0;">고객: "AOI GUI가 JOB 열 때 멈춰요"<br>
+      → 엔지니어가 증상 "GUI Hang" + 카테고리 "GUI/UI" + 제품 "AOI" 입력<br>
+      → AI가 과거 유사 케이스 5건 자동 추천: "80%가 메모리 설정 문제, MaxHeapSize 변경으로 해결"<br>
+      → 엔지니어가 바로 설정 변경 → <strong>해결 시간: 기존 2일 → 30분</strong></p>
+    </div>
+
+    <div class="guide-card" style="margin-bottom:16px;">
+      <h2><span class="gnum" style="background:var(--warning);">2</span> 특정 버전에서 이슈가 급증할 때</h2>
+      <p class="desc" style="margin-bottom:0;">SW 3.2.1 버전에서 "Camera 연결 실패" 케이스가 2주간 8건 발생<br>
+      → AI가 패턴 감지: "3.2.1 버전 + Camera/Image 카테고리 이상 급증"<br>
+      → 자동 알림 → R&D에 데이터와 함께 리포트 전달<br>
+      → <strong>고객 불만 확산 전에 핫픽스 대응 가능</strong></p>
+    </div>
+
+    <div class="guide-card" style="margin-bottom:16px;">
+      <h2><span class="gnum" style="background:var(--success);">3</span> 고객이 Self-Resolution 가이드를 받을 때</h2>
+      <p class="desc" style="margin-bottom:0;">난이도 "하" + Self-Resolution 가능 케이스 300건 축적<br>
+      → AI가 이 데이터로 고객용 FAQ / 트러블슈팅 가이드 자동 생성<br>
+      → 고객 포털에 배포: "이 증상이면 이렇게 해보세요"<br>
+      → <strong>고객 직접 해결 → TS 팀 단순 문의 40% 감소</strong></p>
+    </div>
+
+    <!-- 핵심 메시지 -->
+    <div class="effect-bottom" style="margin-top:24px;">
+      <div class="eb-icon">&#x1F3AF;</div>
+      <div>
+        <h3>핵심: 지금 10분 더 쓰면, 나중에 수십 시간을 아낀다</h3>
+        <p>구조화된 리포트 1건에 기존보다 5~10분 더 걸리지만, 100건이 쌓이면 AI가 패턴을 학습하고 자동 추천이 시작됩니다. 1000건이 쌓이면 사전 예방, Self-Resolution 자동화가 가능해집니다. 데이터의 품질이 AI의 품질을 결정합니다.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="text-align:center; margin-top:28px;">
+    <button class="btn btn-primary" onclick="switchTab('form')" style="padding:14px 40px; font-size:15px;">리포트 작성하기 →</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════ TAB 3: CRM 템플릿 ═══════════ -->
+<div class="tab-content" id="tab-template">
+<div class="tpl-container">
+
+  <div class="tpl-intro">
+    <h2>Dynamics CRM에 바로 붙여넣는 약식 템플릿</h2>
+    <p>아래 템플릿을 복사해서 CRM의 <strong>Issue Description &amp; Note</strong> 탭에 붙여넣고 빈칸만 채우세요. 기존 Problem Details 양식을 대체하며, AI가 학습할 수 있는 구조화된 형식입니다.</p>
+  </div>
+
+  <!-- 전체 템플릿 -->
+  <div class="tpl-box">
+    <div class="tpl-box-header">
+      <span>전체 템플릿 (복사해서 CRM에 붙여넣기)</span>
+      <button class="tpl-copy-btn" onclick="copyTemplate('full')">복사</button>
+    </div>
+    <div class="tpl-box-body">
+      <pre id="tpl-full">═══════════════════════════════════════
+[ISSUE REPORT - AI Structured Format]
+═══════════════════════════════════════
+
+■ BASIC INFO
+  Product     : [AOI / SPI / DPI / RtoS / KSmart / BRM / KPO / CEditor]
+  SW Version  :
+  Region      : [China / Korea / Japan / Vietnam / Americas / SE Asia / Europe]
+  VIP         : [Y / N]
+
+■ SYMPTOM
+  Summary     :
+  Category    : [GUI/UI / Camera/Image / Inspection/Teaching / Error/Alarm / Review SW / Board Handling / SPC / Barcode / Report/Export / Stability / Other]
+  Sub-Category:
+  Frequency   : [Always / Intermittent / Once]
+
+■ ERROR MESSAGE (텍스트로 복사 - 스크린샷 X)
+
+  (에러 팝업, 로그 메시지 원문을 여기에 붙여넣기)
+
+
+■ REPRODUCTION STEPS
+  1.
+  2.
+  3.
+  4.
+  5.
+
+■ ENVIRONMENT (문제 발생 전 변경 사항)
+  Job Changed      : [Y / N]
+  SW Upgraded      : [Y / N] → version:
+  HW Modified      : [Y / N] → detail:
+  Calibration Done : [Y / N]
+  Special Options  :
+
+■ ROOT CAUSE
+  Type        : [SW Bug / Config Error / HW Issue / User Error / Environment / Unknown]
+  Detail      :
+
+
+■ RESOLUTION
+  Method      : [SW Patch / Config Change / Reboot / Reinstall / HW Replace / Escalation / Guide / Other]
+  Detail      :
+
+  Days to Resolve :
+  Escalated to R&D: [Y / N]
+
+■ AI METADATA
+  Difficulty      : [High / Medium / Low]
+  Recurrence Risk : [High / Medium / Low]
+  Self-Resolution : [Y / N]
+  Keywords        :
+  Related Cases   :
+
+═══════════════════════════════════════</pre>
+      <p class="tpl-note">* 대괄호 [ ] 안의 항목에서 해당하는 것을 선택하고 나머지는 삭제하세요.<br>* 스크린샷은 별도 첨부하되, 에러 메시지/로그는 반드시 텍스트로도 작성하세요.</p>
+    </div>
+  </div>
+
+  <!-- 간소화 버전 -->
+  <div class="tpl-box">
+    <div class="tpl-box-header">
+      <span>간소화 버전 (빠른 케이스용)</span>
+      <button class="tpl-copy-btn" onclick="copyTemplate('short')">복사</button>
+    </div>
+    <div class="tpl-box-body">
+      <pre id="tpl-short">■ Product/Version:
+■ Category       :
+■ Symptom        :
+■ Error Message  :
+■ Steps          : 1.  2.  3.
+■ Root Cause     :
+■ Resolution     :
+■ Difficulty     : [H/M/L]
+■ Self-Resolution: [Y/N]
+■ Keywords       : </pre>
+      <p class="tpl-note">* 단순 케이스나 빠른 기록이 필요할 때 사용하세요. 핵심 필드만 포함되어 있습니다.</p>
+    </div>
+  </div>
+
+  <!-- 작성 예시 -->
+  <div class="tpl-box">
+    <div class="tpl-box-header">
+      <span>작성 예시 (실제 케이스)</span>
+      <button class="tpl-copy-btn" onclick="copyTemplate('example')">복사</button>
+    </div>
+    <div class="tpl-box-body">
+      <pre id="tpl-example">═══════════════════════════════════════
+[ISSUE REPORT - AI Structured Format]
+═══════════════════════════════════════
+
+■ BASIC INFO
+  Product     : AOI
+  SW Version  : 3.2.1.4
+  Region      : China
+  VIP         : Y
+
+■ SYMPTOM
+  Summary     : ODD 메뉴에서 Body Offset 감지 알고리즘 추가 요청
+  Category    : Inspection/Teaching
+  Sub-Category: Component 티칭(AOI)
+  Frequency   : Always
+
+■ ERROR MESSAGE (텍스트로 복사 - 스크린샷 X)
+
+  N/A (기능 요청 건)
+
+
+■ REPRODUCTION STEPS
+  1. AOI GUI 실행
+  2. ODD 메뉴 진입
+  3. Body 검사 영역 확인
+  4. Body Offset 측정 기능 없음 확인
+  5. 고객이 Body Edge 위치 기반 Offset 측정 요청
+
+■ ENVIRONMENT (문제 발생 전 변경 사항)
+  Job Changed      : N
+  SW Upgraded      : N
+  HW Modified      : N
+  Calibration Done : N
+  Special Options  : Polygon ROI, Bad Mark 사용 중
+
+■ ROOT CAUSE
+  Type        : SW Bug
+  Detail      : 현재 ODD 메뉴에 Body Offset 계산 기능이 미구현 상태.
+                Calculation 섹션에 Body Offset 메서드 추가 필요.
+                Parameter 섹션에서 Offset 값 설정 가능하도록 UI 추가 필요.
+                X/Y 축 스케일 표시로 Body Edge 위치/크기 시각화 필요.
+
+■ RESOLUTION
+  Method      : Escalation
+  Detail      : 기존 GUI에서 개발 불가 판단.
+                RTOS 플랫폼에서 개발 필요.
+                요구사항:
+                A) Calculation 섹션에 Body Offset 계산 메서드 추가
+                B) Parameter 섹션에서 Offset 값 설정
+                C) X/Y 축 스케일 추가 (Box 크기, Body Edge 위치 시각화)
+  Days to Resolve : (진행 중)
+  Escalated to R&D: Y
+
+■ AI METADATA
+  Difficulty      : High
+  Recurrence Risk : Medium
+  Self-Resolution : N
+  Keywords        : ODD, Body Offset, Calculation, RTOS, Algorithm
+  Related Cases   :
+
+═══════════════════════════════════════</pre>
+      <p class="tpl-note">* 위 스크린샷의 Huawei 케이스를 구조화 형식으로 변환한 예시입니다.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════ TAB 4: 리포트 폼 ═══════════ -->
+<div class="tab-content" id="tab-form">
+<div class="form-container">
+  <div class="form-area">
+
+    <!-- 1. 기본 정보 -->
+    <div class="card">
+      <div class="card-header"><span class="num">1</span> 기본 정보 Basic Info</div>
+      <div class="card-body">
+        <div class="field-row">
+          <div class="field">
+            <label class="required">케이스 번호</label>
+            <input type="text" id="caseNo" placeholder="CAS-00001" oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label>작성일</label>
+            <input type="date" id="reportDate" oninput="updatePreview()">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>작성자</label>
+            <input type="text" id="author" placeholder="홍길동" oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label class="required">고객사</label>
+            <input type="text" id="customer" placeholder="Samsung SDI" oninput="updatePreview()">
+          </div>
+        </div>
+        <div class="field-row-3">
+          <div class="field">
+            <label class="required">제품</label>
+            <select id="product" onchange="updatePreview()">
+              <option value="">선택</option>
+              <option>AOI</option><option>SPI</option><option>DPI</option>
+              <option>RtoS</option><option>KSmart</option><option>BRM/MES</option>
+              <option>KPO</option><option>CEditor</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="required">지역</label>
+            <select id="region" onchange="updatePreview()">
+              <option value="">선택</option>
+              <option>China</option><option>Korea</option><option>Japan</option>
+              <option>Vietnam</option><option>Americas</option><option>SE Asia</option>
+              <option>Europe</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>SW 버전</label>
+            <input type="text" id="swVersion" placeholder="3.2.1" oninput="updatePreview()">
+          </div>
+        </div>
+        <div class="field">
+          <label class="checkbox-row"><input type="checkbox" id="isVip" onchange="updatePreview()"> VIP 고객 (Huawei, Flex, Jabil, Samsung 등)</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 이슈 정보 -->
+    <div class="card">
+      <div class="card-header"><span class="num">2</span> 이슈 정보 Issue</div>
+      <div class="card-body">
+        <div class="field">
+          <label class="required">증상 요약 <span class="hint">한 문장으로 핵심 증상</span></label>
+          <input type="text" id="symptom" placeholder="JOB 열기 시 GUI 응답 없음 (Hang)" oninput="updatePreview()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="required">카테고리</label>
+            <select id="category" onchange="onCategoryChange(); updatePreview()">
+              <option value="">선택</option>
+              <option>GUI/UI</option><option>Camera/Image</option>
+              <option>Inspection/Teaching</option><option>Error/Alarm</option>
+              <option>Review SW</option><option>Board Handling</option>
+              <option>SPC</option><option>Barcode</option>
+              <option>Report/Export</option><option>Stability</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>하위 카테고리</label>
+            <select id="subCategory" onchange="updatePreview()">
+              <option value="">카테고리 먼저 선택</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>에러 메시지 원문 <span class="hint">스크린샷 대신 텍스트로 복사</span></label>
+          <textarea id="errorMsg" placeholder="Error occurred: NullReferenceException at Module.Init()&#10;Stack trace: ..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field">
+          <label>재현 조건 <span class="hint">단계별로 작성 (가이드 원칙 3 참고)</span></label>
+          <textarea id="reproduction" placeholder="1. AOI GUI 실행&#10;2. JOB 열기 → Component 추가&#10;3. Apply 클릭 시 GUI 크래시" oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field">
+          <label>발생 빈도</label>
+          <div class="radio-group">
+            <label><input type="radio" name="frequency" value="항상" onchange="updatePreview()"> 항상</label>
+            <label><input type="radio" name="frequency" value="간헐적" onchange="updatePreview()"> 간헐적</label>
+            <label><input type="radio" name="frequency" value="1회성" onchange="updatePreview()"> 1회성</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 분석 -->
+    <div class="card">
+      <div class="card-header"><span class="num">3</span> 원인 분석 Analysis</div>
+      <div class="card-body">
+        <div class="field">
+          <label class="required">근본 원인 유형</label>
+          <select id="rootCauseType" onchange="updatePreview()">
+            <option value="">선택</option>
+            <option>SW 버그</option><option>설정 오류</option>
+            <option>HW 문제</option><option>사용자 실수</option>
+            <option>환경 문제</option><option>미확인</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>근본 원인 상세 <span class="hint">증상과 분리해서 원인만 작성 (가이드 원칙 2)</span></label>
+          <textarea id="rootCauseDetail" placeholder="SQL 쿼리 타임아웃으로 인한 GUI 프리징. DB 테이블 락 발생 원인은..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field">
+          <label>관련 로그 / 에러 코드 <span class="hint">텍스트로 복사 (이미지 X)</span></label>
+          <textarea id="logs" placeholder="[2026-09-14 14:23:01] ERROR: SQL timeout after 30000ms&#10;Query: SELECT * FROM InspectionResult WHERE..." oninput="updatePreview()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 해결 -->
+    <div class="card">
+      <div class="card-header"><span class="num">4</span> 해결 Resolution</div>
+      <div class="card-body">
+        <div class="field">
+          <label class="required">해결 방법 <span class="hint">복수 선택 가능</span></label>
+          <div class="check-group">
+            <label><input type="checkbox" value="SW 패치" onchange="updatePreview()"> SW 패치</label>
+            <label><input type="checkbox" value="설정 변경" onchange="updatePreview()"> 설정 변경</label>
+            <label><input type="checkbox" value="PC 재부팅" onchange="updatePreview()"> PC 재부팅</label>
+            <label><input type="checkbox" value="재설치" onchange="updatePreview()"> 재설치</label>
+            <label><input type="checkbox" value="HW 교체" onchange="updatePreview()"> HW 교체</label>
+            <label><input type="checkbox" value="에스컬레이션" onchange="updatePreview()"> 에스컬레이션</label>
+            <label><input type="checkbox" value="가이드 제공" onchange="updatePreview()"> 가이드 제공</label>
+            <label><input type="checkbox" value="기타" onchange="updatePreview()"> 기타</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>해결 상세 <span class="hint">파일명, 설정값, 변경 전/후 포함 (가이드 원칙 6)</span></label>
+          <textarea id="resolutionDetail" placeholder="1. AoiGuiSetup.ini 열기&#10;2. [Memory] MaxHeapSize=2048 → 4096&#10;3. GUI 재시작 → 정상 확인" oninput="updatePreview()"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>해결 소요일</label>
+            <input type="number" id="resolutionDays" min="0" step="1" placeholder="3" oninput="updatePreview()">
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <label class="checkbox-row"><input type="checkbox" id="escalated" onchange="updatePreview()"> R&D 에스컬레이션</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. AI 메타데이터 -->
+    <div class="card">
+      <div class="card-header"><span class="num">5</span> AI 학습 메타데이터</div>
+      <div class="card-body">
+        <div class="field-row">
+          <div class="field">
+            <label>난이도</label>
+            <div class="radio-group">
+              <label><input type="radio" name="difficulty" value="상" onchange="updatePreview()"> 상</label>
+              <label><input type="radio" name="difficulty" value="중" onchange="updatePreview()"> 중</label>
+              <label><input type="radio" name="difficulty" value="하" onchange="updatePreview()"> 하</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>재발 가능성</label>
+            <div class="radio-group">
+              <label><input type="radio" name="recurrence" value="높음" onchange="updatePreview()"> 높음</label>
+              <label><input type="radio" name="recurrence" value="보통" onchange="updatePreview()"> 보통</label>
+              <label><input type="radio" name="recurrence" value="낮음" onchange="updatePreview()"> 낮음</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="checkbox-row"><input type="checkbox" id="selfResolvable" onchange="updatePreview()"> Self-Resolution 가능 (고객이 가이드만으로 해결 가능)</label>
+        </div>
+        <div class="field">
+          <label>핵심 키워드 <span class="hint">Enter로 태그 추가</span></label>
+          <div class="tag-input-wrap" id="tagWrap" onclick="this.querySelector('input').focus()">
+            <input type="text" id="tagInput" placeholder="키워드 입력 후 Enter" onkeydown="handleTag(event)">
+          </div>
+        </div>
+        <div class="field">
+          <label>유사 케이스 번호</label>
+          <input type="text" id="relatedCases" placeholder="CAS-00042, CAS-00105" oninput="updatePreview()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copyJSON()">JSON 복사</button>
+      <button class="btn btn-success" onclick="saveLocal()">임시 저장</button>
+      <button class="btn btn-outline" onclick="loadLocal()">불러오기</button>
+      <button class="btn btn-outline" onclick="clearForm()">초기화</button>
+    </div>
+
+  </div>
+
+  <!-- JSON Preview Panel -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <span>JSON Preview</span>
+      <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,0.5);">실시간 미리보기</span>
+    </div>
+    <div class="preview-body">
+      <pre id="jsonPreview">{}</pre>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Tab switching ── */
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  var btns = document.querySelectorAll('.tab-btn');
+  var idx = {guide:0, effect:1, template:2, form:3};
+  btns[idx[id] || 0].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ── Template copy ── */
+function copyTemplate(type) {
+  var el = document.getElementById('tpl-' + type);
+  if (el) {
+    navigator.clipboard.writeText(el.textContent).then(function() {
+      showToast('템플릿이 클립보드에 복사되었습니다');
+    });
+  }
+}
+
+/* ── Form logic ── */
+var tags = [];
+
+var SUB_CATEGORIES = {
+  'GUI/UI': ['Error/Crash/Bug','Inspection/Teaching UI','Display/Rendering','Recipe/Job','Review/Result UI','Setup/Config','Performance','Dialog/Popup','Layout/Navigation','Language/Locale','Other GUI'],
+  'Camera/Image': ['Camera 연결','Image 캡처','3D 복원','조명','Calibration'],
+  'Inspection/Teaching': ['Pad 티칭(SPI)','Component 티칭(AOI)','FOV/Fiducial','Bridge/Solder','Pairing','OCV/OCR'],
+  'Error/Alarm': ['에러 팝업','알람 설정','에러 로그'],
+  'Review SW': ['Review 화면','결과 필터','통계'],
+  'Board Handling': ['컨베이어','Board 감지','정렬'],
+  'SPC': ['SPC 차트','Rule 설정','데이터 전송'],
+  'Barcode': ['바코드 인식','스캐너 연결','포맷'],
+  'Report/Export': ['리포트 생성','PDF/Excel','데이터 Export'],
+  'Stability': ['크래시','메모리 릭','성능 저하'],
+  'Other': ['기타']
+};
+
+function onCategoryChange() {
+  var cat = document.getElementById('category').value;
+  var sub = document.getElementById('subCategory');
+  sub.innerHTML = '<option value="">선택</option>';
+  if (cat && SUB_CATEGORIES[cat]) {
+    SUB_CATEGORIES[cat].forEach(function(s) {
+      sub.innerHTML += '<option>' + s + '</option>';
+    });
+  }
+}
+
+function getRadioValue(name) {
+  var el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : '';
+}
+
+function getCheckedValues() {
+  var checks = document.querySelectorAll('.check-group input[type="checkbox"]:checked');
+  return Array.from(checks).map(function(c) { return c.value; });
+}
+
+function collectData() {
+  return {
+    basic: {
+      caseNo: document.getElementById('caseNo').value,
+      reportDate: document.getElementById('reportDate').value,
+      author: document.getElementById('author').value,
+      customer: document.getElementById('customer').value,
+      product: document.getElementById('product').value,
+      region: document.getElementById('region').value,
+      swVersion: document.getElementById('swVersion').value,
+      isVip: document.getElementById('isVip').checked
+    },
+    issue: {
+      symptom: document.getElementById('symptom').value,
+      category: document.getElementById('category').value,
+      subCategory: document.getElementById('subCategory').value,
+      errorMessage: document.getElementById('errorMsg').value,
+      reproduction: document.getElementById('reproduction').value,
+      frequency: getRadioValue('frequency')
+    },
+    analysis: {
+      rootCauseType: document.getElementById('rootCauseType').value,
+      rootCauseDetail: document.getElementById('rootCauseDetail').value,
+      logs: document.getElementById('logs').value
+    },
+    resolution: {
+      methods: getCheckedValues(),
+      detail: document.getElementById('resolutionDetail').value,
+      days: document.getElementById('resolutionDays').value ? parseInt(document.getElementById('resolutionDays').value) : null,
+      escalated: document.getElementById('escalated').checked
+    },
+    meta: {
+      difficulty: getRadioValue('difficulty'),
+      recurrence: getRadioValue('recurrence'),
+      selfResolvable: document.getElementById('selfResolvable').checked,
+      keywords: tags.slice(),
+      relatedCases: document.getElementById('relatedCases').value
+    }
+  };
+}
+
+function updatePreview() {
+  var data = collectData();
+  document.getElementById('jsonPreview').textContent = JSON.stringify(data, null, 2);
+}
+
+function handleTag(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    var val = e.target.value.trim();
+    if (val && tags.indexOf(val) === -1) {
+      tags.push(val);
+      renderTags();
+      updatePreview();
+    }
+    e.target.value = '';
+  }
+}
+
+function removeTag(idx) {
+  tags.splice(idx, 1);
+  renderTags();
+  updatePreview();
+}
+
+function renderTags() {
+  var wrap = document.getElementById('tagWrap');
+  var input = document.getElementById('tagInput');
+  wrap.querySelectorAll('.tag').forEach(function(t) { t.remove(); });
+  tags.forEach(function(t, i) {
+    var span = document.createElement('span');
+    span.className = 'tag';
+    span.innerHTML = t + ' <span class="remove" onclick="removeTag('+i+')">&times;</span>';
+    wrap.insertBefore(span, input);
+  });
+}
+
+function copyJSON() {
+  var data = collectData();
+  var json = JSON.stringify(data, null, 2);
+  navigator.clipboard.writeText(json).then(function() {
+    showToast('JSON이 클립보드에 복사되었습니다');
+  });
+}
+
+function saveLocal() {
+  var data = collectData();
+  localStorage.setItem('crm-report-draft', JSON.stringify(data));
+  showToast('임시 저장 완료');
+}
+
+function loadLocal() {
+  var saved = localStorage.getItem('crm-report-draft');
+  if (!saved) { showToast('저장된 데이터가 없습니다'); return; }
+  var data = JSON.parse(saved);
+  document.getElementById('caseNo').value = data.basic.caseNo || '';
+  document.getElementById('reportDate').value = data.basic.reportDate || '';
+  document.getElementById('author').value = data.basic.author || '';
+  document.getElementById('customer').value = data.basic.customer || '';
+  document.getElementById('product').value = data.basic.product || '';
+  document.getElementById('region').value = data.basic.region || '';
+  document.getElementById('swVersion').value = data.basic.swVersion || '';
+  document.getElementById('isVip').checked = data.basic.isVip || false;
+  document.getElementById('symptom').value = data.issue.symptom || '';
+  document.getElementById('category').value = data.issue.category || '';
+  onCategoryChange();
+  document.getElementById('subCategory').value = data.issue.subCategory || '';
+  document.getElementById('errorMsg').value = data.issue.errorMessage || '';
+  document.getElementById('reproduction').value = data.issue.reproduction || '';
+  setRadio('frequency', data.issue.frequency);
+  document.getElementById('rootCauseType').value = data.analysis.rootCauseType || '';
+  document.getElementById('rootCauseDetail').value = data.analysis.rootCauseDetail || '';
+  document.getElementById('logs').value = data.analysis.logs || '';
+  setChecks(data.resolution.methods || []);
+  document.getElementById('resolutionDetail').value = data.resolution.detail || '';
+  document.getElementById('resolutionDays').value = data.resolution.days || '';
+  document.getElementById('escalated').checked = data.resolution.escalated || false;
+  setRadio('difficulty', data.meta.difficulty);
+  setRadio('recurrence', data.meta.recurrence);
+  document.getElementById('selfResolvable').checked = data.meta.selfResolvable || false;
+  tags = data.meta.keywords || [];
+  renderTags();
+  document.getElementById('relatedCases').value = data.meta.relatedCases || '';
+  updatePreview();
+  showToast('불러오기 완료');
+}
+
+function setRadio(name, val) {
+  document.querySelectorAll('input[name="'+name+'"]').forEach(function(r) { r.checked = (r.value === val); });
+}
+
+function setChecks(vals) {
+  document.querySelectorAll('.check-group input[type="checkbox"]').forEach(function(c) {
+    c.checked = vals.indexOf(c.value) !== -1;
+  });
+}
+
+function clearForm() {
+  document.querySelectorAll('input[type="text"], input[type="date"], input[type="number"], textarea').forEach(function(el) { el.value = ''; });
+  document.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(function(el) { el.checked = false; });
+  tags = [];
+  renderTags();
+  onCategoryChange();
+  updatePreview();
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+// Init
+document.getElementById('reportDate').value = new Date().toISOString().split('T')[0];
+updatePreview();
+</script>
+</body>
+</html>
