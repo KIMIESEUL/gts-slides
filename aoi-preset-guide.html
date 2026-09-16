@@ -453,7 +453,7 @@ function addRuleCard(rank, rule) {
   for (const [key, val] of Object.entries(rule.changes)) {
     const def = DEFAULTS[key] || '?';
     const arrow = def !== val ? `<span class="default-val">${esc(def)}</span><span class="arrow">&gt;</span>` : '';
-    changesHtml += `<div class="change-row"><span class="key">${esc(key)}</span>${arrow}<span class="new-val">${esc(val)}</span></div>`;
+    changesHtml += `<div class="change-row"><input type="checkbox" checked style="width:14px;height:14px;accent-color:var(--accent);margin:0;cursor:pointer;"><span class="key">${esc(key)}</span>${arrow}<span class="new-val">${esc(val)}</span></div>`;
   }
   card.innerHTML = `
     <div class="rule-top">
